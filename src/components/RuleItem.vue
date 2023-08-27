@@ -1,20 +1,11 @@
 <template>
-  <div class="content" @mouseenter="isContentHovered = true" @mouseleave="isContentHovered = false">
+  <div class="content">
       <h4 style="margin-top:unset">Step {{rule.id}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
         <div style="min-width: 4rem;">Is taken</div>
-        <div>
-          <button title="with conditions" type="button" style="background-color: #f4f4f4;border-bottom: 1px solid #161616;display: flex;padding: 0 3rem 0 1rem;height: 2rem;align-items: center;max-height: 2rem;">
-            <span class="bx--list-box__label">with conditions</span>
-            <div class="bx--list-box__menu-icon">
-              <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" name="chevron--down" aria-label="Open menu" width="16" height="16" viewBox="0 0 16 16" role="img">
-                <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
-                <title>Open menu</title>
-              </svg>
-            </div>
-          </button>
-        </div>
+        <CustomSelect :options="options" @selected="selectedOption = $event"/>
       </div>
+      <CustomCondition v-if="selectedOption == 'with conditions'" />
       <hr/>
       <section>
         <h5>Assistant says</h5>
@@ -89,8 +80,7 @@
       </div>
 
 
-      <div class="add-rem" v-show="isContentHovered">
-        <button @click="$emit('add', rule.id)" class="main-button">+ ADD</button>
+      <div class="topright">
         <button @click="$emit('remove', rule.id)" class="main-button">
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
             <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
@@ -100,17 +90,21 @@
         </button>
       </div>
     </div>
+    <h2 class="plus-separator"><button @click="$emit('add', rule.id)" class="line-center">+</button></h2>
 </template>
 <script>
 import TextEditor from './TextEditor.vue'
+import CustomCondition from './CustomCondition.vue'
+import CustomSelect from './CustomSelect.vue'
 export default {
-  components:{TextEditor},
+  components:{TextEditor, CustomCondition, CustomSelect},
    props: {
     rule: Object,
   },
   data() {
     return {
-      isContentHovered: false,
+      selectedOption: 'without conditions',
+      options: ['without conditions', 'with conditions'],
       optionsVisible: false,
       activeIndex: null,
       response_options: ['Options', 'Regex', 'Free text'],
@@ -119,12 +113,12 @@ export default {
         'Details for regex',
         'Details for free text',
       ],
-      step_options: ['Continue to next step', 'Re-ask previous steps', 'Go to a subaction', 'Search for the answer', 'Connect to agent', 'End the action'],
+      step_options: ['Continue to next step', 'Re-ask previous steps', 'Go to a subaction', 'Connect to agent', 'End the action'],// 'Search for the answer',
       step_details: [
         'Details for continuing to next step',
         'Details for re-asking previous steps',
         'Details for going to a subaction',
-        'Details for searching for the answer',
+        /*'Details for searching for the answer',*/
         'Details for connecting to agent',
         'Details for ending the action'
       ]
@@ -139,13 +133,13 @@ export default {
     },
     hideDetails() {
       this.activeIndex = null;
-    }
+    },
   }
 }
 </script>
-<style scoped>
+<style>
 .content{
-  margin: 25px 100px 100px 100px;
+  margin: 25px 100px 25px 100px;
   padding: 2%;
   border: 1px solid #d3d3d3;
   box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
@@ -179,20 +173,47 @@ export default {
     word-break: break-word;
 }
 
-.add-rem {
+.topright{
   position: absolute;
-  bottom: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  opacity: 0; /* Initially hidden */
-  transition: opacity 0.3s ease-in-out;
+  top: 1rem;
+  right: 1rem;
 }
 
-.content:hover .add-rem {
-  opacity: 1; /* Show on hover */
+.line-center{
+  content: "\002B";
+  display: inline-block;
+  position: relative;
+  font-size: 1.3rem;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  background: var(--border__color);;
+  border-radius:10%;
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+  cursor: pointer;
+  color: white;
+}
+
+.line-center:hover{
+  background: var(--hover__color);
+}
+
+h2{
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+h2[class="plus-separator"]:after{
+  margin: 0px 100px 25px 100px;
+  content:"";
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  border-top:medium double var(--border__color);;
+  z-index:-1;
 }
 
 /*CUSTOM SELECT */

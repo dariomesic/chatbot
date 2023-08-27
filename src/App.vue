@@ -20,7 +20,7 @@
               <div class="conversation-steps">
                   <p class="text-style" style="font-weight:600;margin-left: 2%;">Conversation steps</p>
                   <Card
-                    v-for="(card, index) in leftCards"
+                    v-for="(card, index) in rules"
                     :key="index"
                     :card="card"
                     @click="scrollToCard(index)"
@@ -48,7 +48,7 @@
         </transition>
       </div>
       <div class="right-side" ref="rightSide">
-        <div v-for="(rule, index) in rightRules" :key="index">
+        <div v-for="(rule, index) in rules" :key="index">
           <transition name="card-slide" mode="out-in">
             <div :ref="'scrollableCard_' + index">
               <Rule
@@ -76,12 +76,7 @@ export default {
   },
   data() {
     return {
-      leftCards: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-      ],
-      rightRules: [
+      rules: [
         { id: 1 },
         { id: 2 },
         { id: 3 },
@@ -95,7 +90,7 @@ watch: {
   position: {
     handler(val) {
       this.$nextTick(() => {
-        for (let i = 0; i < this.rightRules.length; i++) {
+        for (let i = 0; i < this.rules.length; i++) {
           const refName = 'scrollableCard_' + i;
           if (this.$refs[refName]) {
             const element = this.$refs[refName][0];
@@ -122,24 +117,17 @@ watch: {
       this.isLeftPanelCollapsed = !this.isLeftPanelCollapsed;
     },
     addRule(idToAdd) {
-      for (let i = idToAdd; i < this.rightRules.length; i++) {
-        this.rightRules[i].id++;
-        this.leftCards[i].id++;
+      for (let i = idToAdd; i < this.rules.length; i++) {
+        this.rules[i].id++;
       }
-      this.rightRules.push({ id: idToAdd + 1 });
-      this.leftCards.push({ id: idToAdd + 1 });
-
-      this.rightRules.sort((a, b) => a.id - b.id);
-      this.leftCards.sort((a, b) => a.id - b.id);
+      this.rules.push({ id: idToAdd + 1 });
+      this.rules.sort((a, b) => a.id - b.id);
     },
 		removeRule(idToRemove) {
-      if(this.rightRules.length != 1){
-        this.rightRules = this.rightRules.filter(rule => rule.id !== idToRemove);
-        this.leftCards = this.leftCards.filter(card => card.id !== idToRemove);
-
-        for (let i = idToRemove - 1; i < this.rightRules.length; i++) {
-            this.rightRules[i].id--;
-            this.leftCards[i].id--;
+      if(this.rules.length != 1){
+        this.rules = this.rules.filter(rule => rule.id !== idToRemove);
+        for (let i = idToRemove - 1; i < this.rules.length; i++) {
+            this.rules[i].id--;
         }
       }
     },
@@ -151,6 +139,7 @@ watch: {
   --hover__color: #E5E5E5;
   --background: #f4f4f4;
   --main__color: #0f62fe;
+  --border__color: #d2d2d2;
 
   --font__size: 15px;
   --font__family: IBM Plex Sans,Helvetica Neue,Arial,sans-serif;
@@ -208,7 +197,7 @@ ul, li{
 }
 
 hr{
-    background-color: #d2d2d2;
+    background-color: var(--border__color);
     border: 0;
     height: 1px;
     margin: 0.5rem 0 0;
