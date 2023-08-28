@@ -13,14 +13,14 @@
 
         <!--RESPONSE PART-->
         <div class="main-container" @click="toggleOptions">
-          <div class="clickable-div">
-            <span>
-              <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <div class="clickable-div" tabindex="1">
+            <span style="align-items: center;display: flex;color:#0f62fe">
+              <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 2c1.4 0 2.5 1.1 2.5 2.5S9.4 7 8 7 5.5 5.9 5.5 4.5 6.6 2 8 2M8 1C6.1 1 4.5 2.6 4.5 4.5S6.1 8 8 8s3.5-1.6 3.5-3.5S9.9 1 8 1zM13 15h-1v-2.5c0-1.4-1.1-2.5-2.5-2.5h-3C5.1 10 4 11.1 4 12.5V15H3v-2.5C3 10.6 4.6 9 6.5 9h3c1.9 0 3.5 1.6 3.5 3.5V15z"></path>
               </svg>
               Definirajte odgovor korisnika
             </span>
-              <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <svg style="fill:#0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
               </svg>
           </div>
@@ -28,6 +28,7 @@
             <div class="options-container">
               <div
                 class="option"
+                tabindex="1"
                 v-for="(option, index) in response_options"
                 :key="index"
                 @mouseenter="showDetails(index)"
@@ -48,14 +49,14 @@
 
       <!--NEXT STEP-->
       <div class="main-container" @click="toggleOptions">
-        <div class="clickable-div">
-          <span>
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <div class="clickable-div" tabindex="1">
+          <span style="align-items: center;display: flex;;color:#0f62fe">
+            <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"></path>
             </svg>
             Nastavite na idući korak
           </span>
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <svg style="fill:#0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
             </svg>
         </div>
@@ -63,6 +64,7 @@
           <div class="options-container">
             <div
               class="option"
+              tabindex="1"
               v-for="(option, index) in step_options"
               :key="index"
               @mouseenter="showDetails(index)"
@@ -238,6 +240,10 @@ h2[class="plus-separator"]:after{
   border-bottom-left-radius: 4px;
 }
 
+.clickable-div:focus{
+  border: .135rem solid #0f62fe
+}
+
 .options-details-container {
   position: absolute;
   top: 100%;
@@ -280,6 +286,10 @@ h2[class="plus-separator"]:after{
 .option:hover {
   background-color: #f5f5f5;
   transition: .2s;
+}
+
+.option:focus {
+  outline:.135rem solid #0f62fe
 }
 
 .details {

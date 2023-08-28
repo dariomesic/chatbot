@@ -1,5 +1,5 @@
 <template>
-    <div class="custom-select-wrapper">
+    <div class="custom-select-wrapper" tabindex="1">
         <div class="custom-select" @click="optionsVisible = !optionsVisible">
             <div class="selected-option">
             <span class="option-text">{{ title }}</span>
@@ -9,7 +9,7 @@
             </svg>
             </div>
             <div v-if="optionsVisible" class="options">
-                <div class="option" v-for="option in options" :key="option" @click="$emit('selected', option); title = option">
+                <div class="option" v-for="option in options" :key="option" @click="$emit('selected', option); title = option" tabindex="1">
                     {{ option }}
                 </div>
             </div>
@@ -40,6 +40,10 @@ export default {
 .custom-select:hover {
   background: var(--hover__color);
   transition: .2s;
+}
+
+.custom-select-wrapper:focus {
+  outline:.125rem solid #0f62fe
 }
 
 .custom-select {
@@ -74,5 +78,10 @@ export default {
   background-color: #fff;
   border: 1px solid #ccc;
   border-top: none;
+  z-index: 2;
+}
+
+.option:focus {
+  border: 1px solid #0f62fe
 }
 </style>
