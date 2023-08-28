@@ -1,6 +1,6 @@
 <template>
   <div class="text-editor">
-    <div>
+    <div style="display:flex;width:100%">
       <button @click="applyFormat('bold')">
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Bold (Ctrl+B)" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
             <path d="M18.25,25H9V7h8.5a5.25,5.25,0,0,1,4,8.65A5.25,5.25,0,0,1,18.25,25ZM12,22h6.23a2.25,2.25,0,1,0,0-4.5H12Zm0-7.5h5.5a2.25,2.25,0,1,0,0-4.5H12Z"></path>
@@ -105,6 +105,6 @@ export default {
   resize: vertical;
   background: var(--background);
   border: none;
-  border-top: 1px solid grey;
+  border-top: 1px solid #e0e0e0;
 }
 </style>
