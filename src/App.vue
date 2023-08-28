@@ -31,18 +31,13 @@
             </div>
             <hr/>
             <div class="button-container">
-                <button class="background-button" type="button">
+                <button class="background-button" type="button" style="margin-right: 1rem;">
                   <span>New step</span>
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" class="svg">
                     <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
                   </svg>
                 </button>
-                <button class="preview" type="button">
-                  Preview
-                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Preview" aria-hidden="true" width="24" height="24" viewBox="0 0 32 32" role="img" class="svg">
-                    <path d="M7,28a1,1,0,0,1-1-1V5a1,1,0,0,1,1.4819-.8763l20,11a1,1,0,0,1,0,1.7525l-20,11A1.0005,1.0005,0,0,1,7,28ZM8,6.6909V25.3088L24.9248,16Z"></path>
-                  </svg>
-                </button>
+                <div/>
               </div>
           </section>
         </transition>
@@ -59,6 +54,12 @@
             </div>
           </transition>
         </div>
+        <button class="preview" type="button">
+          Preview
+          <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Preview" aria-hidden="true" width="24" height="24" viewBox="0 0 32 32" role="img" class="svg">
+            <path d="M7,28a1,1,0,0,1-1-1V5a1,1,0,0,1,1.4819-.8763l20,11a1,1,0,0,1,0,1.7525l-20,11A1.0005,1.0005,0,0,1,7,28ZM8,6.6909V25.3088L24.9248,16Z"></path>
+          </svg>
+        </button>
       </div>
     </div>
  </div>
@@ -182,6 +183,7 @@ html, body {
 }
 
 .right-side {
+  position: relative;
   flex: 1;
 }
 
@@ -260,6 +262,10 @@ button {
 }
 
 .preview{
+  z-index: 2;
+  position: fixed;
+  right:1rem;
+  bottom: 1rem;
   border: 1px solid var(--main__color);
   min-height: 2.5rem;
   padding: calc(0.675rem - 3px) 60px calc(0.675rem - 3px) 12px;
@@ -319,8 +325,7 @@ p{
 }
 
 .button-container {
-  display: flex;
-  justify-content: space-around;
+  text-align: right;
   background-color: var(--background);
   position: fixed;
   z-index: 2;
