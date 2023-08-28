@@ -197,6 +197,7 @@ export default {
 
 .line-center:hover{
   background: var(--hover__color);
+  transition: .2s;
 }
 
 h2{
@@ -268,7 +269,7 @@ h2[class="plus-separator"]:after{
   background: white;
   padding: 8px;
   border-bottom: 1px solid #ccc;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
   cursor: pointer;
 }
 
@@ -278,6 +279,7 @@ h2[class="plus-separator"]:after{
 
 .option:hover {
   background-color: #f5f5f5;
+  transition: .2s;
 }
 
 .details {

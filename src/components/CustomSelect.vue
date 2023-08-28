@@ -37,6 +37,11 @@ export default {
   align-items: center;
 }
 
+.custom-select:hover {
+  background: var(--hover__color);
+  transition: .2s;
+}
+
 .custom-select {
   position: relative;
   display: flex;

@@ -50,6 +50,7 @@
 
 .header button:hover{
     background: var(--hover__color);
+    transition: .2s;
 }
 
 input[type=text]:focus {

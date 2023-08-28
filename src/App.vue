@@ -172,7 +172,7 @@ html, body {
 .left-panel {
   background-color: var(--background);
   flex: 0 0 25%;
-  transition: flex 0.3s ease-in-out;
+  transition: flex 0.2s ease-in-out;
   position: sticky;
   top: calc(3rem + 60px); /* Keep the left panel fixed at the top */
   overflow-y: auto;
@@ -226,6 +226,7 @@ button {
 .color-button{
   color: var(--main__color);
   padding: calc(0.375rem - 3px) 16px;
+  min-height: 2rem;
 }
 
 .main-button{
@@ -244,11 +245,12 @@ button {
 
 .main-button:hover{
   background-color: var(--hover__color);
-  transition: .3s;
+  transition: .2s;
 }
 
 .color-button:hover{
   background: var(--hover__color);
+  transition: .2s;
 }
 
 .background-button{
@@ -261,6 +263,7 @@ button {
 
 .background-button:hover{
     background-color: #0b4ecd;
+    transition: .2s;
 }
 
 .preview{
@@ -277,6 +280,7 @@ button {
 
 .preview:hover{
   background: var(--main__color);
+  transition: .2s;
   color: #fff;
 }
 
@@ -360,7 +364,7 @@ p{
 
 /* Left-to-right animation */
 .card-slide-enter-active, .card-slide-leave-active {
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.2s, opacity 0.2s;
 }
 
 .card-slide-enter-from, .card-slide-leave-to {
@@ -370,7 +374,7 @@ p{
 
 /* Right-to-left animation */
 .card-slide-reverse-enter-active, .card-slide-reverse-leave-active {
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.2s, opacity 0.2s;
 }
 
 .card-slide-reverse-enter-from, .card-slide-reverse-leave-to {

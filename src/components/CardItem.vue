@@ -64,7 +64,7 @@ export default {
   padding: 0.5rem 1rem;
   position: relative;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .selected {
@@ -73,13 +73,14 @@ export default {
 }
 
 .card {
-  transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
 }
 
 /* Apply hover effect when not selected GREAT THING */
 .card:not(.selected):hover .right-part,
 .card:not(.selected):hover label {
   background: var(--hover__color);
+  transition: .2s;
 }
 
 .selected .right-part,
@@ -143,6 +144,6 @@ label{
 
 .tile button:hover{
     background-color: var(--hover__color);
-    transition: .3s;
+    transition: .2s;
 }
 </style>
