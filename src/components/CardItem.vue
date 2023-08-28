@@ -7,7 +7,7 @@
     <label>{{card.id}}</label>
     <div class="right-part">
         <div class="tile">
-            <span class="tile-title" :title="'Card ' + card.id">{{'Kartica ' + card.id}}</span>
+            <span class="tile-title" :title="'Card ' + card.id">{{'Korak ' + card.id}}</span>
             <hr>
             <div style="display:flex;justify-content:space-between;">
                 <span class="ctr">

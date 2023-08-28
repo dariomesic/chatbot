@@ -30,7 +30,7 @@
               </div>
             </div>
             <hr/>
-            <div class="button-container">
+            <!-- <div class="button-container">
                 <button @click="addRule(rules.length)" class="background-button" type="button" style="margin-right: 1rem;">
                   <span>Novi korak</span>
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" class="svg">
@@ -38,7 +38,7 @@
                   </svg>
                 </button>
                 <div/>
-              </div>
+              </div> -->
           </section>
         </transition>
       </div>
@@ -55,10 +55,25 @@
           </transition>
         </div>
         <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">Proširi panel</button>
-        <button class="preview" type="button">
+        <!-- <button class="preview" type="button">
           Pregled
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Preview" aria-hidden="true" width="24" height="24" viewBox="0 0 32 32" role="img" class="svg">
             <path d="M7,28a1,1,0,0,1-1-1V5a1,1,0,0,1,1.4819-.8763l20,11a1,1,0,0,1,0,1.7525l-20,11A1.0005,1.0005,0,0,1,7,28ZM8,6.6909V25.3088L24.9248,16Z"></path>
+          </svg>
+        </button> -->
+        <button class="chat">
+          <svg height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 58 58" xml:space="preserve" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier"> 
+              <g> 
+                <path style="fill:#3BA58B;" d="M25,9.586C11.193,9.586,0,19.621,0,32c0,4.562,1.524,8.803,4.135,12.343 C3.792,48.433,2.805,54.194,0,57c0,0,8.571-1.203,14.377-4.709c3.225,1.359,6.824,2.123,10.623,2.123c13.807,0,25-10.035,25-22.414 S38.807,9.586,25,9.586z"></path> 
+                <path style="fill:#226BAC;" d="M58,23.414C58,11.035,46.807,1,33,1c-9.97,0-18.575,5.234-22.589,12.804 C14.518,11.153,19.553,9.586,25,9.586c13.807,0,25,10.035,25,22.414c0,4.735-1.642,9.124-4.437,12.743 C51.162,47.448,58,48.414,58,48.414c-2.805-2.805-3.792-8.566-4.135-12.657C56.476,32.217,58,27.976,58,23.414z"></path> 
+                <circle style="fill:#FFFFFF;" cx="12" cy="32" r="3"></circle> 
+                <circle style="fill:#FFFFFF;" cx="25" cy="32" r="3"></circle> 
+                <circle style="fill:#FFFFFF;" cx="38" cy="32" r="3"></circle> 
+              </g> 
+            </g>
           </svg>
         </button>
       </div>
@@ -176,7 +191,8 @@ html, body {
   position: sticky;
   top: calc(3rem + 60px); /* Keep the left panel fixed at the top */
   overflow-y: auto;
-  max-height: calc(100vh - 72px - (3rem + 60px)); /* Adjust to fit the viewport height minus header height */
+  /*max-height: calc(100vh - 72px - (3rem + 60px));  Adjust to fit the viewport height minus header height */
+  max-height: calc(100vh - 60px - 3rem);
 }
 
 .left-panel.collapsed {
@@ -270,22 +286,12 @@ button:focus{
     transition: .2s;
 }
 
-.preview{
+.chat{
   z-index: 2;
   position: fixed;
   right:1rem;
+  color: #b4bcc1;
   bottom: 1rem;
-  border: 1px solid var(--main__color);
-  min-height: 2.5rem;
-  padding: calc(0.675rem - 3px) 60px calc(0.675rem - 3px) 12px;
-  color:var(--main__color);
-  background-color: #fff;
-}
-
-.preview:hover{
-  background: var(--main__color);
-  transition: .2s;
-  color: #fff;
 }
 
 .text-style{
