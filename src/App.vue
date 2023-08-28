@@ -6,24 +6,24 @@
     </div>
     <div class="content-container">
       <div :class="['left-panel', { 'collapsed': isLeftPanelCollapsed }]">
-        <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">Expand</button>
-        <button @click="toggleLeftPanel">Toggle Panel</button>
+        <button @click="toggleLeftPanel">Sažmi panel</button>
         <transition name="card-slide" mode="out-in">
           <section class="left-cards-container" v-show="!isLeftPanelCollapsed">
             <div class="left-cards">
               <div class="start-editor">
                   <div class="trigger">
-                      <label class="text-style">Customer starts with:</label>
+                      <label class="text-style">Korisnik počinje pitanjem:</label>
                       <p class="text-style">Kako da promijenim NS zapise</p>
                   </div>
               </div>
               <div class="conversation-steps">
-                  <p class="text-style" style="font-weight:600;margin-left: 2%;">Conversation steps</p>
+                  <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Koraci konverzacije</p>
                   <Card
                     v-for="(card, index) in rules"
                     :key="index"
                     :card="card"
                     @click="scrollToCard(index)"
+                    @remove="removeRule"
                     :isSelected="selectedCardIndex === index"
                     :style="{ backgroundColor: selectedCardIndex === index ? 'rgb(188, 218, 238)' : 'transparent' }"
                   />
@@ -31,8 +31,8 @@
             </div>
             <hr/>
             <div class="button-container">
-                <button class="background-button" type="button" style="margin-right: 1rem;">
-                  <span>New step</span>
+                <button @click="addRule(rules.length)" class="background-button" type="button" style="margin-right: 1rem;">
+                  <span>Novi korak</span>
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" class="svg">
                     <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
                   </svg>
@@ -54,8 +54,9 @@
             </div>
           </transition>
         </div>
+        <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">Proširi panel</button>
         <button class="preview" type="button">
-          Preview
+          Pregled
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Preview" aria-hidden="true" width="24" height="24" viewBox="0 0 32 32" role="img" class="svg">
             <path d="M7,28a1,1,0,0,1-1-1V5a1,1,0,0,1,1.4819-.8763l20,11a1,1,0,0,1,0,1.7525l-20,11A1.0005,1.0005,0,0,1,7,28ZM8,6.6909V25.3088L24.9248,16Z"></path>
           </svg>
@@ -66,7 +67,7 @@
 </template>
 <script>
 import Navbar from './components/AppNavbar.vue';
-import Card from './components/CardItem.vue'; // Assuming you have a Card component
+import Card from './components/CardItem.vue';
 import Rule from './components/RuleItem.vue';
 import ActionEditor from './components/ActionEditor.vue'
 import windowScrollPosition from './utils/window-scroll-position'
@@ -86,24 +87,23 @@ export default {
       isLeftPanelCollapsed: false, 
     };
   },
-  // Inside your component's watch handler
-watch: {
-  position: {
-    handler(val) {
-      this.$nextTick(() => {
-        for (let i = 0; i < this.rules.length; i++) {
-          const refName = 'scrollableCard_' + i;
-          if (this.$refs[refName]) {
-            const element = this.$refs[refName][0];
-            if (val[1] >= element.offsetTop - 450) {
-              this.selectedCardIndex = i;
+  watch: {
+    position: {
+      handler(val) {
+        this.$nextTick(() => {
+          for (let i = 0; i < this.rules.length; i++) {
+            const refName = 'scrollableCard_' + i;
+            if (this.$refs[refName]) {
+              const element = this.$refs[refName][0];
+              if (val[1] >= element.offsetTop - 450) {
+                this.selectedCardIndex = i;
+              }
             }
           }
-        }
-      });
+        });
+      },
     },
   },
-},
 
   methods: {
     scrollToCard(index) {
@@ -131,6 +131,7 @@ watch: {
             this.rules[i].id--;
         }
       }
+      console.log(this.rules)
     },
   },
 };
@@ -188,6 +189,7 @@ html, body {
 }
 
 .expand-button {
+  z-index: 3;
   position: fixed;
   bottom: 10px;
   left: 10px;
@@ -280,9 +282,14 @@ button {
 
 .text-style{
   font-size: .75rem;
+  font-style: italic;
   font-weight: 400;
   letter-spacing: .32px;
   line-height: 1.33333;
+  margin-top: .75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 p{
@@ -303,6 +310,7 @@ p{
 }
 
 .trigger label{
+    font-style: initial;
     cursor: pointer;
     display: block;
     font-weight: 600;
@@ -341,6 +349,13 @@ p{
   flex-direction: column;
   max-height: calc(100vh - 72px - (3rem + 60px)); /* Adjust to fit the viewport height minus header height */
   overflow-y: auto;
+}
+
+.divider{
+  display: initial;
+  align-self: stretch;
+  border-left: 1px solid #e0e0e0;
+  width: 0;
 }
 
 /* Left-to-right animation */

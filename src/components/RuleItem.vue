@@ -1,14 +1,14 @@
 <template>
   <div class="content">
-      <h4 style="margin-top:unset">Step {{rule.id}}</h4>
+      <h4 style="margin-top:unset">Korak {{rule.id}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
-        <div style="min-width: 4rem;">Is taken</div>
+        <div style="min-width: 7rem;">Ako je odabran</div>
         <CustomSelect :options="options" @selected="selectedOption = $event"/>
       </div>
-      <CustomCondition v-if="selectedOption == 'with conditions'" />
+      <CustomCondition v-if="selectedOption == 's uvjetom'" />
       <hr/>
       <section>
-        <h5>Assistant says</h5>
+        <h5>Odgovor asistenta</h5>
         <TextEditor/>
 
         <!--RESPONSE PART-->
@@ -18,7 +18,7 @@
               <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 2c1.4 0 2.5 1.1 2.5 2.5S9.4 7 8 7 5.5 5.9 5.5 4.5 6.6 2 8 2M8 1C6.1 1 4.5 2.6 4.5 4.5S6.1 8 8 8s3.5-1.6 3.5-3.5S9.9 1 8 1zM13 15h-1v-2.5c0-1.4-1.1-2.5-2.5-2.5h-3C5.1 10 4 11.1 4 12.5V15H3v-2.5C3 10.6 4.6 9 6.5 9h3c1.9 0 3.5 1.6 3.5 3.5V15z"></path>
               </svg>
-              Define customer response
+              Definirajte odgovor korisnika
             </span>
               <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
@@ -53,7 +53,7 @@
             <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"></path>
             </svg>
-            Continue to next step
+            Nastavite na idući korak
           </span>
             <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
@@ -86,7 +86,7 @@
             <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
             <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
           </svg>
-          REMOVE
+          UKLONI
         </button>
       </div>
     </div>
@@ -103,24 +103,24 @@ export default {
   },
   data() {
     return {
-      selectedOption: 'without conditions',
-      options: ['without conditions', 'with conditions'],
+      selectedOption: 'bez uvjeta',
+      options: ['bez uvjeta', 's uvjetom'],
       optionsVisible: false,
       activeIndex: null,
-      response_options: ['Options', 'Regex', 'Free text'],
+      response_options: ['Opcije', 'Regularni izraz', 'Slobodni tekst'],
       response_details: [
-        'Details for options',
-        'Details for regex',
-        'Details for free text',
+        'Detalji za opcije',
+        'Detalji za regularni izraz',
+        'Detalji za slobodni tekst',
       ],
-      step_options: ['Continue to next step', 'Re-ask previous steps', 'Go to a subaction', 'Connect to agent', 'End the action'],// 'Search for the answer',
+      step_options: ['Prelazak na novi korak', 'Ponovite prethodne korake', 'Odlazak na pod-akciju', 'Kontaktiranje agenta', 'Završetak radnje'],// 'Search for the answer',
       step_details: [
-        'Details for continuing to next step',
-        'Details for re-asking previous steps',
-        'Details for going to a subaction',
-        /*'Details for searching for the answer',*/
-        'Details for connecting to agent',
-        'Details for ending the action'
+        'Detalji za prelazak na novi korak',
+        'Detalji za ponavljanje prethodnih koraka',
+        'Detalji za odlazak na pod-akciju',
+        /*'Detalji za searching for the answer',*/
+        'Detalji za kontaktiranje agenta',
+        'Detalji za završetak radnje'
       ]
     };
   },
@@ -265,6 +265,7 @@ h2[class="plus-separator"]:after{
 }
 
 .option {
+  background: white;
   padding: 8px;
   border-bottom: 1px solid #ccc;
   transition: background-color 0.3s;

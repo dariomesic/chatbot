@@ -2,9 +2,9 @@
   <div class="condition-group">
     <div class="collapsible-section">
       <div class="section-header" @click="toggleSection">
-        <span>Conditions</span>
+        <span>Uvjeti</span>
         <div>
-          {{conditions.length}} conditions
+          {{conditions.length}} {{conditions.length == 1 ? 'uvjet' : 'uvjeta'}}
           <svg class="collapse-icon" viewBox="0 0 16 16">
             <path v-if="isCollapsed" d="M3 5l5 5 5-5" />
             <path v-else d="M3 11l5-5 5 5" />
@@ -16,9 +16,9 @@
         <ul>
           <li v-for="(item, index) in conditions" :key="index" style="margin-bottom: 1.5rem;">
             <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
-              If 
-              <CustomSelect :options="['All']" style="margin-left: 0.5rem;min-width:6rem;border-bottom-color:transparent"/>
-              of this is true:
+              Ako je
+              <CustomSelect :options="['Sve']" style="margin-left: 0.5rem;min-width:6rem;border-bottom-color:transparent"/>
+              od ovoga istina:
             </div>
             <div v-for="step in item.steps" :key="step" style="display:flex;margin:0 0 0.5rem">
               <div style="margin-right:0.25rem;max-width:1.5rem;min-width:1.5rem"/>
@@ -28,12 +28,12 @@
               <button>x</button>
             </div>
             <div style="margin:0 0.5rem 0">
-              and <button class="color-button" @click="addCondition(index)">Add condition +</button>
+              i <button class="color-button" @click="addCondition(index)">Dodaj uvjet +</button>
             </div>
           </li>
         </ul>
         <hr/>
-        <button class="color-button" @click="addConditionGroup">New condition group +</button>
+        <button class="color-button" @click="addConditionGroup">Nova grupa uvjeta +</button>
       </div>
     </div>
   </div>
