@@ -76,11 +76,9 @@
             </g>
           </svg>
         </button>
-        <transition name="fade" appear>
           <div v-if="showChatbot" class="chatbot-container">
             <Chatbot/>
           </div>
-        </transition>
       </div>
     </div>
  </div>
@@ -397,29 +395,6 @@ p{
 .card-slide-reverse-enter-from, .card-slide-reverse-leave-to {
   opacity: 0;
   transform: translateX(100%);
-}
-
-/* Transition classes appear */
-/* ---------------------------------- */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .4s linear;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.pop-enter-active,
-.pop-leave-active {
-  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
-}
-
-.pop-enter-from,
-.pop-leave-to {
-  opacity: 0;
-  transform: scale(0.3) translateY(-50%);
 }
 
 </style>

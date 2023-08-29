@@ -1,67 +1,69 @@
 <template>
-  <div class="container">
-        <div class="top">
-            <div class="AvatarBot">
-                <img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot">
-            </div>
-            <div class="InfoBot">
-                <p class="TitleBot">ChatBot</p>
-                <p class="status">Online</p>
-            </div>
-        </div>
-        <div class="ContentChat">
-          <div
-            v-for="(message, index) in messages"
-            :key="index"
-            :class="message.classes"
-            :data-user="message.dataUser"
-            v-html="message.text"
-          />
-        </div>
-        <div class="BoxSentMSG ">
-            <input
-              type="text"
-              placeholder="Type your message here"
-              class="InputMSG"
-              v-model="inputValue"
-              @keydown.enter="sendMessage"
-              required
-            >
-            <div class="send-icon" @click="sendMessage">
-                <svg id="send1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24 " xml:space="preserve ">
-                    <path fill="#d7d7d7 "
-                        d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z ">
-                    </path>
-                </svg>
-                <svg id="send2" class="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-                    <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                        <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                        <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                        <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                    </rect>
-                    <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                        <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s"
-                            dur="0.6s" repeatCount="indefinite"></animate>
-                        <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                        <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                    </rect>
-                    <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                        <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                        <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                        <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
-                            repeatCount="indefinite"></animate>
-                    </rect>
-                </svg>
-            </div>
-        </div>
-    </div>
+  <transition name="fade" appear>
+    <div class="container">
+          <div class="top">
+              <div class="AvatarBot">
+                  <img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot">
+              </div>
+              <div class="InfoBot">
+                  <p class="TitleBot">ChatBot</p>
+                  <p class="status">Online</p>
+              </div>
+          </div>
+          <div class="ContentChat">
+            <div
+              v-for="(message, index) in messages"
+              :key="index"
+              :class="message.classes"
+              :data-user="message.dataUser"
+              v-html="message.text"
+            />
+          </div>
+          <div class="BoxSentMSG ">
+              <input
+                type="text"
+                placeholder="Type your message here"
+                class="InputMSG"
+                v-model="inputValue"
+                @keydown.enter="sendMessage"
+                required
+              >
+              <div class="send-icon" @click="sendMessage">
+                  <svg id="send1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24 " xml:space="preserve ">
+                      <path fill="#d7d7d7 "
+                          d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z ">
+                      </path>
+                  </svg>
+                  <svg id="send2" class="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                      <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2">
+                          <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                          <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                          <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                      </rect>
+                      <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2">
+                          <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s"
+                              dur="0.6s" repeatCount="indefinite"></animate>
+                          <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                          <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                      </rect>
+                      <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2">
+                          <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                          <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                          <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
+                              repeatCount="indefinite"></animate>
+                      </rect>
+                  </svg>
+              </div>
+          </div>
+      </div>
+  </transition>
 </template>
 
 <script>
@@ -209,7 +211,7 @@ export default{
     word-wrap: break-word;
     max-width: fit-content;
     padding: 15px 17px;
-    background: antiquewhite;
+    background: var(--background);
     color: rgb(0, 0, 0);
     margin-top: 10px;
 }
@@ -421,5 +423,28 @@ a {
 
 .none {
   display: none;
+}
+
+/* Transition classes appear */
+/* ---------------------------------- */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .4s linear;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.3) translateY(-50%);
 }
 </style>
