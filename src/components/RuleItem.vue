@@ -205,7 +205,6 @@ export default {
 h2{
   text-align: center;
   position: relative;
-  z-index: 1;
 }
 
 h2[class="plus-separator"]:after{

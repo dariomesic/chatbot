@@ -61,7 +61,7 @@
             <path d="M7,28a1,1,0,0,1-1-1V5a1,1,0,0,1,1.4819-.8763l20,11a1,1,0,0,1,0,1.7525l-20,11A1.0005,1.0005,0,0,1,7,28ZM8,6.6909V25.3088L24.9248,16Z"></path>
           </svg>
         </button> -->
-        <button class="chat" @click="showChatbot = !showChatbot">
+        <div class="chat" @click="showChatbot = !showChatbot">
           <svg height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 58 58" xml:space="preserve" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -75,10 +75,12 @@
               </g> 
             </g>
           </svg>
-        </button>
+        </div>
+        <transition name="fade" appear>
           <div v-if="showChatbot" class="chatbot-container">
             <Chatbot/>
           </div>
+        </transition>
       </div>
     </div>
  </div>
@@ -297,6 +299,7 @@ button:focus{
   right:1rem;
   color: #b4bcc1;
   bottom: 1rem;
+  cursor: pointer;
 }
 
 .text-style{
@@ -396,5 +399,26 @@ p{
   opacity: 0;
   transform: translateX(100%);
 }
+/* Transition classes appear */
+/* ---------------------------------- */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .4s linear;
+}
 
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.3) translateY(-50%);
+}
 </style>
