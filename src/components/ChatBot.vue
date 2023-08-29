@@ -18,6 +18,10 @@
               :data-user="message.dataUser"
               v-html="message.text"
             />
+            <section v-if="status_func_SendMsgBot === 1">
+              <div class="captionBot msgCaption" data-user="false"><img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span></div>
+              <div class="message"> <div class="bot-response text" text-first="true"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"> <rect x="0" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="10" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.2s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="20" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.4s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> </svg></div> </div>
+            </section>
           </div>
           <div class="BoxSentMSG ">
               <input
@@ -28,39 +32,7 @@
                 @keydown.enter="sendMessage"
                 required
               >
-              <div class="send-icon" @click="sendMessage">
-                  <svg id="send1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24 " xml:space="preserve ">
-                      <path fill="#d7d7d7 "
-                          d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z ">
-                      </path>
-                  </svg>
-                  <svg id="send2" class="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve">
-                      <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                          <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                          <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                          <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                      </rect>
-                      <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                          <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s"
-                              dur="0.6s" repeatCount="indefinite"></animate>
-                          <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                          <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                      </rect>
-                      <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                          <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                          <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                          <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
-                              repeatCount="indefinite"></animate>
-                      </rect>
-                  </svg>
-              </div>
+              <div class="send-icon" @click="sendMessage"><svg id="send1" :class="{ 'none': status_func_SendMsgBot }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24 " xml:space="preserve"> <path fill="#d7d7d7 " d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z "> </path> </svg> <svg id="send2" :class="{ 'none': !status_func_SendMsgBot }" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"> <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2"> <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate> </rect> <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2"> <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate> </rect> <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2"> <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate> </rect> </svg> </div>
           </div>
       </div>
   </transition>
@@ -142,11 +114,10 @@ export default{
           'how about your self',
         ],
       };
-
+      this.status_func_SendMsgBot = 1; // Start the animation
       const result = await this.generateBotResponse(msg, listScan, listMSG);
       console.log(result)
       this.addBotMessage(result);
-
       this.status_func_SendMsgBot = 0;
     },
     generateBotResponse(msg, listScan, listMSG) {
@@ -181,7 +152,7 @@ export default{
             result = `<div class="bot-response text" text-first="true">😵‍💫 Oops! Sorry, I didn't understand your question</div>`;
           }
 
-          resolve(result); // Resolve the promise with the generated result
+          resolve(result); // SET TIMER FROM CONDITIONS
         }, 2000);
       });
     },
@@ -204,6 +175,10 @@ export default{
 </script>
 
 <style>
+.send-icon-animation .none {
+  display: block;
+}
+
 .bot-response {
     font-size: 17px;
     line-height: 24px;
