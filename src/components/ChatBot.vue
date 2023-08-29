@@ -209,7 +209,7 @@ export default{
     word-wrap: break-word;
     max-width: fit-content;
     padding: 15px 17px;
-    background: rgb(255, 255, 255);
+    background: antiquewhite;
     color: rgb(0, 0, 0);
     margin-top: 10px;
 }
@@ -240,7 +240,7 @@ export default{
 }
 
 .user-response {
-    background: rgb(0, 102, 255);
+    background: indianred;
     color: rgb(255, 255, 255);
     font-size: 17px;
     line-height: 24px;
@@ -307,8 +307,8 @@ a {
   outline: none;
   border: none;
   width: 100%;
-  height: 50px;
-  padding-left: 15px;
+  height: 45px;
+  margin-left: 15px;
   font-size: 1.1rem;
 }
 
@@ -334,10 +334,11 @@ a {
 }
 
 .ContentChat {
-  background: rgb(234, 238, 243);
+  border-bottom: 1px solid #e6ebea;
   width: 100%;
-  height: 400px;
+  height: 450px;
   overflow-y: scroll;
+  overflow-anchor: none; /* Add this line to disable auto-scroll behavior */
 }
 
 .ContentChat::before {
@@ -396,7 +397,7 @@ a {
 .top {
   display: flex;
   align-items: center;
-  height: 90px;
+  height: 65px;
   width: 100%;
   padding-left: 13px;
   -webkit-box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
@@ -406,7 +407,7 @@ a {
 .container {
   position: fixed;
   bottom: 80px;
-  right: 0;
+  right: 15px;
   width: 400px;
   background-color: white;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
