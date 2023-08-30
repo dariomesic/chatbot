@@ -5,6 +5,8 @@
       <ActionEditor/>
     </div>
     <div class="content-container">
+
+
       <div :class="['left-panel', { 'collapsed': isLeftPanelCollapsed }]">
         <button @click="toggleLeftPanel">Sažmi panel</button>
         <transition name="card-slide" mode="out-in">
@@ -18,33 +20,28 @@
               </div>
               <div class="conversation-steps">
                   <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Koraci konverzacije</p>
-                  <Card
-                    v-for="(card, index) in rules"
-                    :key="index"
-                    :card="card"
-                    @click="scrollToCard(index)"
-                    @remove="removeRule"
-                    :isSelected="selectedCardIndex === index"
-                    :style="{ backgroundColor: selectedCardIndex === index ? 'rgb(188, 218, 238)' : 'transparent' }"
-                  />
+                  <TransitionGroup name="list" tag="ul">
+                    <div v-for="(card, index) in rules" :key="index">
+                      <Card
+                        :card="card"
+                        @click="scrollToCard(index)"
+                        @remove="removeRule"
+                        :isSelected="selectedCardIndex === index"
+                        :style="{ backgroundColor: selectedCardIndex === index ? 'rgb(188, 218, 238)' : 'transparent' }"
+                      />
+                    </div>
+                  </TransitionGroup>
               </div>
             </div>
             <hr/>
-            <!-- <div class="button-container">
-                <button @click="addRule(rules.length)" class="background-button" type="button" style="margin-right: 1rem;">
-                  <span>Novi korak</span>
-                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" class="svg">
-                    <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
-                  </svg>
-                </button>
-                <div/>
-              </div> -->
           </section>
         </transition>
       </div>
+
+
       <div class="right-side" ref="rightSide">
-        <div v-for="(rule, index) in rules" :key="index">
-          <transition name="card-slide" mode="out-in">
+        <TransitionGroup name="list" tag="ul">
+          <div v-for="(rule, index) in rules" :key="index">
             <div :ref="'scrollableCard_' + index">
               <Rule
                 :rule="rule"
@@ -52,15 +49,9 @@
                 @remove="removeRule"
               />
             </div>
-          </transition>
-        </div>
+          </div>
+        </TransitionGroup>
         <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">Proširi panel</button>
-        <!-- <button class="preview" type="button">
-          Pregled
-          <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Preview" aria-hidden="true" width="24" height="24" viewBox="0 0 32 32" role="img" class="svg">
-            <path d="M7,28a1,1,0,0,1-1-1V5a1,1,0,0,1,1.4819-.8763l20,11a1,1,0,0,1,0,1.7525l-20,11A1.0005,1.0005,0,0,1,7,28ZM8,6.6909V25.3088L24.9248,16Z"></path>
-          </svg>
-        </button> -->
         <div class="chat" @click="showChatbot = !showChatbot">
           <svg height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 58 58" xml:space="preserve" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -76,11 +67,11 @@
             </g>
           </svg>
         </div>
-        <transition name="fade" appear>
+        <Transition name="fade" appear>
           <div v-if="showChatbot" class="chatbot-container">
             <Chatbot/>
           </div>
-        </transition>
+        </Transition>
       </div>
     </div>
  </div>
@@ -153,7 +144,6 @@ export default {
             this.rules[i].id--;
         }
       }
-      console.log(this.rules)
     },
   },
 };
@@ -420,5 +410,16 @@ p{
 .pop-leave-to {
   opacity: 0;
   transform: scale(0.3) translateY(-50%);
+}
+
+/*TRANSITION FOR CARDS*/
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
 }
 </style>
