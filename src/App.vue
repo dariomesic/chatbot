@@ -21,7 +21,7 @@
               <div class="conversation-steps">
                   <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Koraci konverzacije</p>
                   <TransitionGroup name="list" tag="ul">
-                    <div v-for="(card, index) in rules" :key="index">
+                    <div v-for="(card, index) in rules" :key="card">
                       <Card
                         :card="card"
                         @click="scrollToCard(index)"
@@ -41,7 +41,7 @@
 
       <div class="right-side" ref="rightSide">
         <TransitionGroup name="list" tag="ul">
-          <div v-for="(rule, index) in rules" :key="index">
+          <div v-for="(rule, index) in rules" :key="rule">
             <div :ref="'scrollableCard_' + index">
               <Rule
                 :rule="rule"
@@ -67,7 +67,7 @@
             </g>
           </svg>
         </div>
-        <Transition name="fade" appear>
+        <Transition name="fade">
           <div v-if="showChatbot" class="chatbot-container">
             <Chatbot/>
           </div>
