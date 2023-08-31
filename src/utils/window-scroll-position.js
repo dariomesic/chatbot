@@ -1,4 +1,4 @@
-export default function windowScrollPosition(propertyName) {
+export function windowScrollPosition(propertyName) {
     return {
       data() {
         return {
@@ -32,3 +32,15 @@ export default function windowScrollPosition(propertyName) {
     }
   }
   
+// Simple XOR-based encoding function
+export function encodeId(id) {
+  return Array.from(id)
+    .map(char => String.fromCharCode(char.charCodeAt(0) ^ 42))
+    .join('');
+}
+
+export function decodeId(encodedId) {
+  return Array.from(encodedId)
+    .map(char => String.fromCharCode(char.charCodeAt(0) ^ 42))
+    .join('');
+}

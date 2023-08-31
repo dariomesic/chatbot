@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div style="flex: 0 0 23%;margin:2px">
-            <input placeholder="Untitled action" type="text" title="Kako da promijenim NS zapise?" aria-describedby="" autocomplete="off" maxlength="64" value="Kako da promijenim NS zapise?">
+            <input placeholder="Untitled action" type="text" title="Kako da promijenim NS zapise?" aria-describedby="" autocomplete="off" maxlength="64" value="Kako da promijenim NS zapise?" style="border-bottom: 1px solid #8d8d8d;height: 2.5rem;">
         </div>
         <div style="flex: 1 1"/>
         <div style="display:flex">
@@ -26,22 +26,6 @@
     max-height: 3rem;
     border-bottom: 1px solid lightgray;
 }
-.header input{
-    background-color: #fff;
-    border: none;
-    border-bottom: 1px solid #8d8d8d;
-    color: #161616;
-    font-size: .875rem;
-    font-weight: 400;
-    height: 2.5rem;
-    letter-spacing: .16px;
-    line-height: 1.28572;
-    outline: 2px solid transparent;
-    outline-offset: -2px;
-    padding: 0 1rem;
-    transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
-    width: 100%;
-}
 
 .header button{
     padding-left: 0.9375rem;
@@ -51,9 +35,5 @@
 .header button:hover{
     background: var(--hover__color);
     transition: .2s;
-}
-
-input[type=text]:focus {
-  outline: 2px solid #0f62fe;
 }
 </style>
