@@ -6,7 +6,7 @@
             </div>
             <div class="InfoBot">
                 <p class="TitleBot">ChatBot</p>
-                <p class="status">Online</p>
+                <p class="status">Na vezi</p>
             </div>
         </div>
         <div class="ContentChat">
@@ -25,7 +25,7 @@
         <div class="BoxSentMSG ">
             <input
               type="text"
-              placeholder="Type your message here"
+              placeholder="Napišite poruku..."
               class="InputMSG"
               v-model="inputValue"
               @keydown.enter="sendMessage"
@@ -53,7 +53,7 @@ export default{
     initializeBot() {
       // Simulate a delayed bot response after initial greeting
       setTimeout(() => {
-        const responseMessage = `<div class="bot-response text" text-first="true">Hi 👋 ! It's good to see you!\nHow can I help you?</div>`
+        const responseMessage = `<div class="bot-response text" text-first="true">Pozdrav 👋 ! Ja sam chatbot sustava ePredmet. Postavite pitanje vezano uz sustav.</div>`
         this.addBotMessage(responseMessage);
       }, 2000);
     },

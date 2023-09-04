@@ -24,7 +24,7 @@
                 <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
               </svg>
           </div>
-          <div class="options-details-container" v-if="optionsVisible">
+          <div class="options-details-container" v-if="optionsVisible" @click.stop>
             <div class="options-container">
               <div
                 class="option"
@@ -33,6 +33,7 @@
                 :key="index"
                 @mouseenter="showDetails(index)"
                 @mouseleave="hideDetails"
+                @click="option === 'Opcije' ? show_modal = true : (step_selected = option)"
               >
                 {{ option }}
               </div>
@@ -48,19 +49,20 @@
       <hr/>
 
       <!--NEXT STEP-->
+      <h5 style="margin-bottom:unset">And then</h5>
       <div class="main-container" @click="toggleOptions">
         <div class="clickable-div" tabindex="1">
           <span style="align-items: center;display: flex;;color:#0f62fe">
             <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"></path>
             </svg>
-            Nastavite na idući korak
+            {{step_selected}}
           </span>
             <svg style="fill:#0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
             </svg>
         </div>
-        <div class="options-details-container" v-if="optionsVisible">
+        <div class="options-details-container" v-if="optionsVisible" @click.stop>
           <div class="options-container">
             <div
               class="option"
@@ -68,14 +70,15 @@
               v-for="(option, index) in step_options"
               :key="index"
               @mouseenter="showDetails(index)"
-              @mouseleave="hideDetails"
+              @click="step_selected = option"
             >
               {{ option }}
             </div>
           </div>
           <div class="details-container">
             <div class="details" v-if="activeIndex !== null">
-              {{ step_details[activeIndex] }}
+              <h5 style="margin:0.75rem"> {{step_options[activeIndex]}} </h5>
+              <div style="margin:0.75rem;font-size:0.875rem"> {{ step_details[activeIndex] }} </div>
             </div>
           </div>
         </div>
@@ -93,13 +96,17 @@
       </div>
     </div>
     <h2 class="plus-separator"><button @click="$emit('add', rule.id)" class="line-center">+</button></h2>
+    <Teleport to="body">
+        <Popup :show_modal="show_modal" @close="show_modal = false"/>
+    </Teleport>
 </template>
 <script>
 import TextEditor from './TextEditor.vue'
 import CustomCondition from './CustomCondition.vue'
 import CustomSelect from './CustomSelect.vue'
+import Popup from './PopupModal.vue'
 export default {
-  components:{TextEditor, CustomCondition, CustomSelect},
+  components:{TextEditor, CustomCondition, CustomSelect, Popup},
    props: {
     rule: Object,
   },
@@ -115,15 +122,17 @@ export default {
         'Detalji za regularni izraz',
         'Detalji za slobodni tekst',
       ],
-      step_options: ['Prelazak na novi korak', 'Ponovite prethodne korake', 'Odlazak na pod-akciju', 'Kontaktiranje agenta', 'Završetak radnje'],// 'Search for the answer',
+      step_options: ['Nastavite na idući korak', 'Ponovite prethodne korake', 'Odlazak na pod-akciju', 'Kontaktiranje agenta', 'Završetak radnje'],// 'Search for the answer',
       step_details: [
-        'Detalji za prelazak na novi korak',
-        'Detalji za ponavljanje prethodnih koraka',
-        'Detalji za odlazak na pod-akciju',
+        'Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.',
+        'Ponovite jedan ili više koraka koji su ranije navedeni u trenutnoj radnji.',
+        'Prebaci tijek razgovora na drugu radnju za obavljanje određenog zadatka.',
         /*'Detalji za searching for the answer',*/
-        'Detalji za kontaktiranje agenta',
-        'Detalji za završetak radnje'
-      ]
+        'Prenesi korisnika nekome iz svog tima za podršku.',
+        'Neka ovo bude posljednji korak koji dovršava radnju.'
+      ],
+      step_selected: 'Nastavite na idući korak',
+      show_modal: false,
     };
   },
   methods: {
@@ -249,7 +258,7 @@ h2[class="plus-separator"]:after{
   left: 0;
   display: none;
   width: 100%;
-  background-color: #fff;
+  background-color: #f5f5f5;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 2;
@@ -267,11 +276,10 @@ h2[class="plus-separator"]:after{
 
 .details-container {
   flex: 3;
-  padding: 10px;
 }
 
 .option {
-  background: white;
+  background: #f5f5f5;
   padding: 8px;
   border-bottom: 1px solid #ccc;
   transition: background-color 0.2s;
@@ -283,18 +291,12 @@ h2[class="plus-separator"]:after{
 }
 
 .option:hover {
-  background-color: #f5f5f5;
-  transition: .2s;
-}
-
-.option:focus {
-  outline:.135rem solid #0f62fe
+  outline:.135rem solid #0f62fe;
 }
 
 .details {
   background-color: #f5f5f5;
-  padding: 10px;
-  text-align: right;
+  text-align: left;
 }
 
 .option:hover + .details {

@@ -12,6 +12,7 @@
         <transition name="card-slide" mode="out-in">
           <section class="left-cards-container" v-show="!isLeftPanelCollapsed">
             <div class="left-cards">
+              <!--CUSTOMER CARD-->
               <div class="start-editor">
                   <div class="trigger">
                       <label class="text-style">Korisnik počinje pitanjem:</label>
