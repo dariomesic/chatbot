@@ -52,52 +52,36 @@
             <div>
               <ul>
                 <li>
-                  <label>
+                  <label style="display: flex;justify-content: space-between;margin-bottom: .25rem;align-items: flex-start;margin-bottom: .25rem;margin-right: 3rem;">
                     <span>Enter phrases your customer might use to start this action</span>
                     <span>Total: 2</span>
                   </label>
                 </li>
-                <li>
-                  <div>
-                    <label>New example message</label>
-                    <div>
-                      <div>
-                        <input placeholder="Enter a phrase" type="text" title="Enter a phrase" aria-describedby="" autocomplete="off" value="">
-                      </div>
+                <li style="border-bottom: 1px solid #e0e0e0;margin-bottom: 1rem;padding-bottom: 1rem;padding-right: 3rem;">
+                  <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
+                    <div style="display: flex;position: relative;width: 100%;">
+                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" placeholder="Enter a phrase" type="text" title="Enter a phrase" aria-describedby="" autocomplete="off">
                     </div>
                   </div>
                 </li>
-                <li>
-                  <div>
-                    <div>
-                      <div>
-                        <input id="example-1" placeholder="Enter a phrase" type="text" title="Enter a phrase" aria-describedby="" autocomplete="off" value="Pitanje"></div>
+                <TransitionGroup name="list" tag="ul">
+                  <li v-for="(question, index) in questions" :key="question" style="align-items: center;display: flex;margin-top: .5rem;">
+                    <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
+                      <div style="display: flex;position: relative;width: 100%;">
+                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" :value="questions[index]" aria-describedby="" autocomplete="off">
                       </div>
                     </div>
-                    <button id="example-Pitanje__delete-button" tabindex="0" type="button">
+                    <button @click="deletePhrase(index)" id="example-Pitanje__delete-button" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;">
                       <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
                         <path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
                       </svg>
                     </button>
                   </li>
-                  <li>
-                    <div>
-                      <div>
-                        <div>
-                          <input id="example-0" placeholder="Example: I want to pay my credit card bill." type="text" title="Example: I want to pay my credit card bill." aria-describedby="" autocomplete="off" value="example"></div>
-                        </div>
-                      </div>
-                      <button id="example-example__delete-button" tabindex="0" type="button">
-                        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
-                          <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
-                          <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
-                        </svg>
-                      </button>
-                  </li>
-                </ul>
-              </div>
-          </div>
+                </TransitionGroup>
+              </ul>
+            </div>
         </div>
+      </div>
         
         <TransitionGroup name="list" tag="ul">
           <div v-for="(rule, index) in rules" :key="rule">
@@ -140,7 +124,7 @@ import Navbar from '../components/AppNavbar.vue';
 import Card from '../components/CardItem.vue';
 import Rule from '../components/RuleItem.vue';
 import ActionEditor from '../components/ActionEditor.vue'
-import { windowScrollPosition } from '../utils/window-scroll-position'
+import { windowScrollPosition, decodeId } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
 export default {
   mixins: [windowScrollPosition('position')],
@@ -154,6 +138,8 @@ export default {
         { id: 2 },
         { id: 3 },
       ],
+      questions: [],
+      newPhrase: '',
       selectedCardIndex: 0,
       isLeftPanelCollapsed: false,
       showChatbot: false
@@ -178,7 +164,7 @@ export default {
   },
 
   mounted(){
-    //console.log(decodeId(this.$route.query.id))
+    console.log(decodeId(this.$route.query[0]))
   },
   methods: {
     scrollToCard(index) {
@@ -206,6 +192,18 @@ export default {
             this.rules[i].id--;
         }
       }
+    },
+    onInput() {
+      this.newPhrase = event.target.value;
+    },
+    addPhrase() {
+      if (this.newPhrase.trim() !== '') {
+        this.questions.push(this.newPhrase);
+        this.newPhrase = '';
+      }
+    },
+    deletePhrase(index) {
+      this.questions.splice(index, 1);
     },
   },
 };

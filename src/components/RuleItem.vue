@@ -3,7 +3,7 @@
       <h4 style="margin-top:unset">Korak {{rule.id}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
         <div style="min-width: 7rem;">Ako je odabran</div>
-        <CustomSelect :options="options" @selected="selectedOption = $event"/>
+        <CustomSelect :options="options" :value="'bez uvjeta'" @update:value="selectedOption = $event"/>
       </div>
       <CustomCondition v-if="selectedOption == 's uvjetom'" />
       <hr/>

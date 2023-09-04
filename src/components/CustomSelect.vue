@@ -1,35 +1,52 @@
 <template>
-    <div class="custom-select-wrapper" tabindex="1">
-        <div class="custom-select" @click="optionsVisible = !optionsVisible">
-            <div class="selected-option">
-            <span class="option-text">{{ title }}</span>
-            <svg class="arrow-icon" viewBox="0 0 16 16">
-                <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
-                <title>Open menu</title>
-            </svg>
-            </div>
-            <div v-if="optionsVisible" class="options">
-                <div class="option" v-for="option in options" :key="option" @click="$emit('selected', option); title = option" tabindex="1">
-                    {{ option }}
-                </div>
-            </div>
+  <div class="custom-select-wrapper" tabindex="1">
+    <div class="custom-select" @click="optionsVisible = !optionsVisible">
+      <div class="selected-option">
+        <span class="option-text">{{ selectedOption }}</span>
+        <svg class="arrow-icon" viewBox="0 0 16 16">
+          <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
+          <title>Open menu</title>
+        </svg>
+      </div>
+      <div v-show="optionsVisible" class="options">
+        <div class="option" v-for="option in options" :key="option" @click="selectOption(option)" tabindex="1">
+          {{ option }}
         </div>
+      </div>
     </div>
+  </div>
 </template>
+
 <script>
 export default {
-    props: {
-        options: Array
+  props: {
+    options: Array,
+    value: Number, // The value prop for v-model
+  },
+  emits: ['update:value'], // Event for v-model
+  data() {
+    return {
+      optionsVisible: false,
+    };
+  },
+  computed: {
+    selectedOption: {
+      get() {
+        return this.value; // Get the value from the prop
+      },
+      set(newValue) {
+        this.$emit('update:value', newValue); // Emit the event to update the prop
+      },
     },
-    emits:['selected'],
-    data(){
-        return{
-            optionsVisible: false,
-            title: this.options[0]
-        }
+  },
+  methods: {
+    selectOption(option) {
+      this.selectedOption = option; // Set the selected option
+      this.optionsVisible = false; // Close the options
+      event.stopPropagation();
     },
-    
-}
+  },
+};
 </script>
 <style scoped>
 .custom-select-wrapper {
@@ -79,6 +96,23 @@ export default {
   border: 1px solid #ccc;
   border-top: none;
   z-index: 2;
+}
+
+.option {
+  background: white;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.option:hover {
+  background-color: #f5f5f5;
+  transition: .2s;
 }
 
 .option:focus {

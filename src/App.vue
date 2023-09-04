@@ -18,11 +18,12 @@ export default {
   --border__color: #d2d2d2;
 
   --font__size: 15px;
-  --font__family: IBM Plex Sans,Helvetica Neue,Arial,sans-serif;
+  --font__family: "Gill Sans", sans-serif;;
 }
 
 html, body {
   margin:0;
+  font-family: var(--font__family);
 }
 
 ul, li{
@@ -159,7 +160,7 @@ input[type=text]:focus {
 .fade_main-enter-active, .fade_main-leave-active {
   transition: opacity 0.5s;
 }
-.fade_main-enter, .fade_main-leave-to {
+.fade_main-enter-from, .fade_main-leave-to {
   opacity: 0;
 }
 </style>

@@ -6,9 +6,9 @@
       <div style="display:flex;width:100%">
         <div class="search-container">
           <input v-model="searchQuery" type="text" style="width:100%" placeholder="Filter by name...">
-          <button class="search-button" type="submit" @click="onEnterScada()">Search</button>
+          <button class="search-button" type="submit" :disabled="true">Search</button>
         </div>
-        <button class="background-button" @click="showAddQuestionDialog = true" tabindex="0" type="button">New action
+        <button class="background-button" tabindex="0" type="button">New action
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
             <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
           </svg>
@@ -33,75 +33,128 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="question in filteredQuestions" :key="question.id" @click="navigateToDetail(question.id)">
-                <th scope="row">
-                  <label class="control control--checkbox">
-                    <input type="checkbox">
-                    <div class="control__indicator"></div>
-                  </label>
-                </th>
-                <td>{{ question.question }}</td>
-                <td>{{ question.lastEdited }}</td>
-                <td>{{ question.examplesCount }}</td>
-                <td>{{ question.stepsCount }}</td>
-                <td>{{ question.status }}</td>
-                <td>
-                    <button @click="deleteQuestion(question.id)">Delete</button>
-                </td>
+            <tr v-for="question in filteredQuestions" :key="question.id">
+              <td>
+                <label class="control control--checkbox">
+                  <input type="checkbox">
+                  <div class="control__indicator"></div>
+                </label>
+              </td>
+              <td>
+                <div>
+                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" style="float: left;margin-right: .25rem;position:relative;top: .125rem;">
+                    <path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"></path>
+                    <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
+                  </svg>
+                  <a @click="navigateToDetail(question.id)">{{question.question}}</a>
+                </div>
+              </td>
+              <td>{{question.lastEdited}}</td>
+              <td>
+                <span>{{question.examplesCount}}</span>
+              </td>
+              <td>
+                <span>{{question.stepsCount}}</span>
+              </td>
+              <td>
+                <span>
+                  <button style="cursor: default;" type="button" aria-describedby="icon-tooltip-41">
+                    <svg style="fill: #42be65;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" class="CollectionsDataTable__status-icon-no-error">
+                      <path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z"></path>
+                      <path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0"></path>
+                    </svg>
+                  </button>
+                </span>
+              </td>
+              <td>
+                <div data-floating-menu-container="true">
+                  <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" id="CollectionsDataTable__overflow-0">
+                    <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
+                      <circle cx="16" cy="8" r="2"></circle>
+                      <circle cx="16" cy="16" r="2"></circle>
+                      <circle cx="16" cy="24" r="2"></circle>
+                      <title>Options</title>
+                    </svg>
+                  </button>
+                </div>
+              </td>
             </tr>
         </tbody>
     </table>
-    <transition name="fade">
-      <div v-if="showAddQuestionDialog" class="add-question-dialog">
-        <h2>Add Question</h2>
-        <!-- Form to add a new question -->
-        <!-- ... Add form fields ... -->
-        <button @click="addQuestion">Add</button>
-        <button @click="showAddQuestionDialog = false">Cancel</button>
+    <!-- Pagination Controls -->
+    <div style="border: 1px solid #e0e0e0;display: flex;font-weight: 400;justify-content: space-between;letter-spacing: .16px;line-height: 1.28572;min-height: 2.5rem;align-items: center;">
+      <div style="padding: 0 1rem;align-items: center;display: flex;height: 100%;">
+        <div>
+          <div class="items-per-page" style="display:flex;align-items: center;">
+            <label for="itemsPerPage">Items per page:</label>
+            <CustomSelect :options="[2,5,10,25,100]" :value="itemsPerPage" @update:value="itemsPerPage = $event"/>
+          </div>
+        </div>
+        <span style="margin-left:1.235rem">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, questions.length) }} of {{ questions.length }} items</span>
       </div>
-    </transition>
+      <div style="align-items: center;display: flex;height: 100%;">
+        <span style="margin-left: .0625rem;margin-right: 1rem;">{{currentPage}} of {{totalPages}} pages</span>
+        <div style="display: flex;">
+          <button
+            @click="currentPage > 1 ? currentPage-- : null"
+            :disabled="currentPage === 1"
+            style="border-left: 1px solid #e0e0e0;height: 2.5rem;margin: 0; min-height: 2rem;  transition: outline .11s cubic-bezier(.2,0,.38,.9),background-color .11s cubic-bezier(.2,0,.38,.9); width: 2.5rem;"
+          >
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Previous page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
+              <path d="M20 24L10 16 20 8z"></path>
+            </svg>
+          </button>
+          <button
+            @click="currentPage < totalPages ? currentPage++ : null"
+            :disabled="currentPage === totalPages"
+            style="border-left: 1px solid #e0e0e0;height: 2.5rem;margin: 0; min-height: 2rem;  transition: outline .11s cubic-bezier(.2,0,.38,.9),background-color .11s cubic-bezier(.2,0,.38,.9); width: 2.5rem;"
+          >
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Next page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
+              <path d="M12 8L22 16 12 24z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Navbar from '../components/AppNavbar.vue';
 import { encodeId } from '../utils/window-scroll-position'
+import CustomSelect from '../components/CustomSelect.vue'
 export default {
-  components: {Navbar},
+  components: {Navbar, CustomSelect},
   data() {
     return {
       questions: [
         {
           id: 1,
-          question: "What is the capital of France?",
+          question: "Pitanja vezana uz promjenu korisnika domene",
           lastEdited: "2023-08-01",
           examplesCount: 10,
           stepsCount: 5,
-          status: "Active",
         },
         {
           id: 2,
-          question: "How does photosynthesis work?",
+          question: "Pitanja vezana uz registraciju domena",
           lastEdited: "2023-08-10",
           examplesCount: 8,
           stepsCount: 6,
-          status: "Active",
         },
         {
           id: 3,
-          question: "What are the main features of JavaScript ES6?",
+          question: "Kako da promijenim NS zapise?",
           lastEdited: "2023-08-15",
           examplesCount: 12,
           stepsCount: 7,
-          status: "Active",
         },
         {
           id: 4,
-          question: "Explain the concept of object-oriented programming.",
+          question: "Example",
           lastEdited: "2023-08-05",
           examplesCount: 6,
           stepsCount: 4,
-          status: "Inactive",
         },
         {
           id: 5,
@@ -109,59 +162,29 @@ export default {
           lastEdited: "2023-08-20",
           examplesCount: 9,
           stepsCount: 5,
-          status: "Active",
-        },
-        {
-          id: 6,
-          question: "Describe the differences between REST and GraphQL APIs.",
-          lastEdited: "2023-08-18",
-          examplesCount: 7,
-          stepsCount: 5,
-          status: "Active",
-        },
-        {
-          id: 7,
-          question: "What is the significance of the Turing Test in AI?",
-          lastEdited: "2023-08-12",
-          examplesCount: 5,
-          stepsCount: 3,
-          status: "Active",
-        },
-        {
-          id: 8,
-          question: "How can you secure a web application against common vulnerabilities?",
-          lastEdited: "2023-08-22",
-          examplesCount: 11,
-          stepsCount: 6,
-          status: "Active",
-        },
-        {
-          id: 9,
-          question: "Explain the concept of a linked list in data structures.",
-          lastEdited: "2023-08-08",
-          examplesCount: 7,
-          stepsCount: 4,
-          status: "Inactive",
-        },
-        {
-          id: 10,
-          question: "What are the benefits of using version control systems like Git?",
-          lastEdited: "2023-08-25",
-          examplesCount: 8,
-          stepsCount: 5,
-          status: "Active",
         },
       ],
       searchQuery: '',
-      showAddQuestionDialog: false,
+      currentPage: 1,
+      itemsPerPage: 5,
     };
   },
   computed: {
     filteredQuestions() {
       // Filter questions based on the search query
-      return this.questions.filter(question =>
+      const filtered = this.questions.filter((question) =>
         question.question.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
+
+      // Calculate the start and end indexes for the current page
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+
+      // Return a slice of the filtered questions for the current page
+      return filtered.slice(startIndex, endIndex);
+    },
+    totalPages() {
+      return Math.ceil(this.questions.length / this.itemsPerPage);
     },
   },
   methods: {
@@ -169,15 +192,10 @@ export default {
       // Navigate to QuestionDetail component with the selected question
       this.$router.push({ name: 'IntentRules', query: encodeId(questionId) });
     },
-    deleteQuestion(id) {
+    /*deleteQuestion(id) {
         id
       // Implement question deletion logic
-    },
-    addQuestion() {
-      // Implement adding a new question logic
-      // Clear form fields and hide the dialog
-      this.showAddQuestionDialog = false;
-    },
+    }*/
   }
 };
 </script>
@@ -234,6 +252,7 @@ tr, th{
 }
 th{
   vertical-align: bottom;
+  text-align: left;
 }
 
 th,td{
@@ -269,6 +288,7 @@ table input{
 
 
 table tbody tr th, table tbody tr td {
+  vertical-align: middle;
   position: relative;
   transition: .3s all ease;
 }
@@ -288,5 +308,22 @@ table tbody tr th::before, table tbody tr th::after, table tbody tr td::before, 
   width: 100%;
   opacity: 0;
   visibility: hidden;
+}
+
+a{
+  color: #0f62fe;
+  display: inline-flex;
+  font-size: .875rem;
+  font-weight: 400;
+  letter-spacing: .16px;
+  line-height: 1.28572;
+  outline: none;
+  text-decoration: none;
+  transition: color 70ms cubic-bezier(.2,0,.38,.9);
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 </style>

@@ -8,10 +8,9 @@ const routes = [
         component: IntentList,
     },
     { 
-      path: '/intent/:id', 
+      path: '/intent/', 
       name: 'IntentRules', 
       component: IntentRules, 
-      props: true 
     },
     {
       path: "/:catchAll(.*)",
