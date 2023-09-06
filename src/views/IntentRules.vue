@@ -55,7 +55,7 @@
                 <li>
                   <label style="display: flex;justify-content: space-between;margin-bottom: .25rem;align-items: flex-start;margin-bottom: .25rem;margin-right: 3rem;">
                     <span>Enter phrases your customer might use to start this action</span>
-                    <span>Total: 2</span>
+                    <span>Total: {{questions.length}}</span>
                   </label>
                 </li>
                 <li style="border-bottom: 1px solid #e0e0e0;margin-bottom: 1rem;padding-bottom: 1rem;padding-right: 3rem;">
@@ -69,10 +69,10 @@
                   <li v-for="(question, index) in questions" :key="question" style="align-items: center;display: flex;margin-top: .5rem;">
                     <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                       <div style="display: flex;position: relative;width: 100%;">
-                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" :value="questions[index]" aria-describedby="" autocomplete="off">
+                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" :value="questions[index].question" @blur="handleBlur(question, index)" aria-describedby="" autocomplete="off">
                       </div>
                     </div>
-                    <button @click="deletePhrase(index)" id="example-Pitanje__delete-button" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;">
+                    <button @click="deletePhrase(question, index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
                       <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
                         <path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
                       </svg>
@@ -127,6 +127,7 @@ import Rule from '../components/RuleItem.vue';
 import ActionEditor from '../components/ActionEditor.vue'
 import { windowScrollPosition, decodeId } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
+import DataService from '../services/data.services'
 export default {
   mixins: [windowScrollPosition('position')],
   components: {
@@ -163,9 +164,14 @@ export default {
       },
     },
   },
-
-  mounted(){
-    console.log(decodeId(this.$route.query[0]))
+  async mounted(){
+    //api for /getRules
+    try {
+      this.questions = await DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
+    } catch (error) {
+      console.error(error);
+    }
+    //tu ide api za taj id /getRules
   },
   methods: {
     scrollToCard(index) {
@@ -197,14 +203,32 @@ export default {
     onInput() {
       this.newPhrase = event.target.value;
     },
-    addPhrase() {
+    async addPhrase() {
       if (this.newPhrase.trim() !== '') {
-        this.questions.push(this.newPhrase);
-        this.newPhrase = '';
+        try {
+          let question_id = await DataService.postQuestion(this.newPhrase, decodeId(this.$route.query[0]));
+          this.questions.push({'question_id': question_id.question_id , 'question' : this.newPhrase});
+          this.newPhrase = '';
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
-    deletePhrase(index) {
-      this.questions.splice(index, 1);
+    async handleBlur(question) {
+      try {
+        await DataService.updateQuestion(question.question, question.question_id);
+      } catch (error) {
+        console.error(error);
+      }
+      // Make an API call here
+    },
+    async deletePhrase(question, index) {
+      try {
+          await DataService.deleteQuestion(question.question_id);
+          this.questions.splice(index, 1);
+        } catch (error) {
+          console.error(error);
+        }
     },
   },
 };

@@ -46,7 +46,7 @@
                     <path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"></path>
                     <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
                   </svg>
-                  <a @click="navigateToDetail(question.id)">{{question.question}}</a>
+                  <a @click="navigateToDetail(question.id)">{{question.name}}</a>
                 </div>
               </td>
               <td>{{question.lastEdited}}</td>
@@ -123,57 +123,30 @@
 import Navbar from '../components/AppNavbar.vue';
 import { encodeId } from '../utils/window-scroll-position'
 import CustomSelect from '../components/CustomSelect.vue'
+import DataService from '../services/data.services'
 export default {
   components: {Navbar, CustomSelect},
   data() {
     return {
-      questions: [
-        {
-          id: 1,
-          question: "Pitanja vezana uz promjenu korisnika domene",
-          lastEdited: "2023-08-01",
-          examplesCount: 10,
-          stepsCount: 5,
-        },
-        {
-          id: 2,
-          question: "Pitanja vezana uz registraciju domena",
-          lastEdited: "2023-08-10",
-          examplesCount: 8,
-          stepsCount: 6,
-        },
-        {
-          id: 3,
-          question: "Kako da promijenim NS zapise?",
-          lastEdited: "2023-08-15",
-          examplesCount: 12,
-          stepsCount: 7,
-        },
-        {
-          id: 4,
-          question: "Example",
-          lastEdited: "2023-08-05",
-          examplesCount: 6,
-          stepsCount: 4,
-        },
-        {
-          id: 5,
-          question: "How can you optimize website performance using caching?",
-          lastEdited: "2023-08-20",
-          examplesCount: 9,
-          stepsCount: 5,
-        },
-      ],
+      questions: [],
       searchQuery: '',
       currentPage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
     };
+  },
+  async created(){
+    try {
+      this.questions = await DataService.getIntents();
+      console.log(this.questions)
+    } catch (error) {
+      console.error(error);
+    }
   },
   computed: {
     filteredQuestions() {
       // Filter questions based on the search query
       const filtered = this.questions.filter((question) =>
-        question.question.toLowerCase().includes(this.searchQuery.toLowerCase())
+        question.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
 
       // Calculate the start and end indexes for the current page
@@ -257,7 +230,7 @@ th{
 
 th,td{
   padding: 0.75rem;
-  vertical-align: top;
+  vertical-align: middle;
   border-top: 1px solid #dee2e6;
 }
 
