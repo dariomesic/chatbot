@@ -1,6 +1,6 @@
 class DataService {
   getIntents(){
-    return fetch('http://18.194.27.183:8080/getIntents', {
+    return fetch('getIntents', {
       method : "GET",
     })
     .then((response) => {
@@ -12,7 +12,7 @@ class DataService {
   }
   
   getQuestionsForIntent(intent_id){
-    return fetch('http://18.194.27.183:8080/getQuestionsForIntent?intent_id=' + intent_id, {
+    return fetch('/getQuestionsForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -24,7 +24,7 @@ class DataService {
   }
 
   postQuestion(question, intent_id){
-    return fetch('http://18.194.27.183:8080/postQuestion', {
+    return fetch('/postQuestion', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -41,7 +41,7 @@ class DataService {
   }
 
   deleteQuestion(question_id){
-    return fetch('http://18.194.27.183:8080/deleteQuestion?question_id=' + question_id, {
+    return fetch('/deleteQuestion?question_id=' + question_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -53,7 +53,7 @@ class DataService {
   }
 
   updateQuestion(new_question, question_id){
-    return fetch('http://18.194.27.183:8080/updateQuestion', {
+    return fetch('/updateQuestion', {
       method : "PUT",
       headers: {
         'Accept': 'application/json',
