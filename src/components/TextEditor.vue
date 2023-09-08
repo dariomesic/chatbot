@@ -38,43 +38,38 @@
         </svg>
       </button>
     </div>
-    <textarea v-model="editorContent" ref="textareaRef" class="editor" placeholder="Odnosi li se Vaš upit na besplatnu ili naplatnu .hr domenu?"></textarea>
+    <div style="width: 100%;">
+      <div class="editor" :contenteditable="contentEditable" @input="handleInput" ref="editorDiv">
+        {{ editorContent }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-
 export default {
-  setup() {
-    const editorContent = ref('');
-    const textareaRef = ref(null);
-
-    const applyFormat = (format) => {
-      const textarea = textareaRef.value;
-      const selectionStart = textarea.selectionStart;
-      const selectionEnd = textarea.selectionEnd;
-      const selectedText = editorContent.value.substring(selectionStart, selectionEnd);
-
-      if (selectedText.length > 0) {
-        const formattedText = `<${format}>${selectedText}</${format}>`;
-        const newText =
-          editorContent.value.substring(0, selectionStart) +
-          formattedText +
-          editorContent.value.substring(selectionEnd);
-        editorContent.value = newText;
-        // Update the textarea's value and reselect the formatted text
-        textarea.value = newText;
-        textarea.setSelectionRange(selectionStart, selectionStart + formattedText.length);
-        textarea.focus();
-      }
-    };
-
+  props: {
+    text: String
+  },
+  data() {
     return {
-      editorContent,
-      textareaRef,
-      applyFormat,
+      editorContent: this.text,
+      contentEditable: false,
     };
+  },
+  methods: {
+    applyFormat(format) {
+      if (this.$refs.editorDiv) {
+        document.execCommand(format, false, null);
+        this.$refs.editorDiv.focus();
+      }
+    },
+    handleInput() {
+      this.editorContent = this.$refs.editorDiv.innerHTML;
+    },
+  },
+  mounted() {
+    this.contentEditable = true;
   },
 };
 </script>

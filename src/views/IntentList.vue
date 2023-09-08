@@ -33,7 +33,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="question in filteredQuestions" :key="question.id">
+            <tr v-for="intent in filteredIntents" :key="intent.id">
               <td>
                 <label class="control control--checkbox">
                   <input type="checkbox">
@@ -46,15 +46,15 @@
                     <path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"></path>
                     <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
                   </svg>
-                  <a @click="navigateToDetail(question.id)">{{question.name}}</a>
+                  <a @click="navigateToDetail(intent)">{{intent.name}}</a>
                 </div>
               </td>
-              <td>{{question.lastEdited}}</td>
+              <td>{{intent.last_edited}}</td>
               <td>
-                <span>{{question.examplesCount}}</span>
+                <span>{{intent.examples_count}}</span>
               </td>
               <td>
-                <span>{{question.stepsCount}}</span>
+                <span>{{intent.steps_count}}</span>
               </td>
               <td>
                 <span>
@@ -90,7 +90,7 @@
             <CustomSelect :options="[2,5,10,25,100]" :value="itemsPerPage" @update:value="itemsPerPage = $event"/>
           </div>
         </div>
-        <span style="margin-left:1.235rem">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, questions.length) }} of {{ questions.length }} items</span>
+        <span style="margin-left:1.235rem">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, intents.length) }} of {{ intents.length }} items</span>
       </div>
       <div style="align-items: center;display: flex;height: 100%;">
         <span style="margin-left: .0625rem;margin-right: 1rem;">{{currentPage}} of {{totalPages}} pages</span>
@@ -128,7 +128,7 @@ export default {
   components: {Navbar, CustomSelect},
   data() {
     return {
-      questions: [],
+      intents: [],
       searchQuery: '',
       currentPage: 1,
       itemsPerPage: 10,
@@ -136,38 +136,37 @@ export default {
   },
   async created(){
     try {
-      this.questions = await DataService.getIntents();
-      console.log(this.questions)
+      this.intents = await DataService.getIntents();
     } catch (error) {
       console.error(error);
     }
   },
   computed: {
-    filteredQuestions() {
-      // Filter questions based on the search query
-      const filtered = this.questions.filter((question) =>
-        question.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+    filteredIntents() {
+      // Filter intents based on the search query
+      const filtered = this.intents.filter((intent) =>
+        intent.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
 
       // Calculate the start and end indexes for the current page
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
 
-      // Return a slice of the filtered questions for the current page
+      // Return a slice of the filtered intents for the current page
       return filtered.slice(startIndex, endIndex);
     },
     totalPages() {
-      return Math.ceil(this.questions.length / this.itemsPerPage);
+      return Math.ceil(this.intents.length / this.itemsPerPage);
     },
   },
   methods: {
-    navigateToDetail(questionId) {
-      // Navigate to QuestionDetail component with the selected question
-      this.$router.push({ name: 'IntentRules', query: encodeId(questionId) });
+    navigateToDetail(intent) {
+      // Navigate to intentDetail component with the selected intent
+      this.$router.push({ name: 'IntentRules', query: encodeId(intent.id), params: { name: intent.name }, });
     },
-    /*deleteQuestion(id) {
+    /*deleteintent(id) {
         id
-      // Implement question deletion logic
+      // Implement intent deletion logic
     }*/
   }
 };

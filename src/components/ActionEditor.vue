@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div style="flex: 0 0 23%;margin:2px">
-            <input placeholder="Untitled action" type="text" title="Kako da promijenim NS zapise?" aria-describedby="" autocomplete="off" maxlength="64" value="Kako da promijenim NS zapise?" style="border-bottom: 1px solid #8d8d8d;height: 2.5rem;">
+            <input placeholder="Untitled action" type="text" aria-describedby="" autocomplete="off" maxlength="64" :value="text" style="border-bottom: 1px solid #8d8d8d;height: 2.5rem;">
         </div>
         <div style="flex: 1 1"/>
         <div style="display:flex">
@@ -19,6 +19,11 @@
         </div>
     </div>
 </template>
+<script>
+export default {
+    props: ['text']
+}
+</script>
 <style scoped>
 .header {
     display: flex;

@@ -8,7 +8,7 @@ const routes = [
         component: IntentList,
     },
     { 
-      path: '/intent/', 
+      path: '/intent/:name', 
       name: 'IntentRules', 
       component: IntentRules, 
     },

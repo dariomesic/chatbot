@@ -2,7 +2,7 @@
  <div class="app-container">
     <div class="fixed-container">
       <Navbar/>
-      <ActionEditor/>
+      <ActionEditor :text="this.$route.params.name"/>
     </div>
     <div class="content-container">
 
@@ -16,7 +16,7 @@
               <div class="start-editor">
                   <div class="trigger">
                       <label class="text-style">Korisnik počinje pitanjem:</label>
-                      <p class="text-style">Kako da promijenim NS zapise</p>
+                      <p class="text-style">{{this.$route.params.name}}</p>
                   </div>
               </div>
               <div class="conversation-steps">
@@ -135,11 +135,7 @@ export default {
   },
   data() {
     return {
-      rules: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-      ],
+      rules: [],
       questions: [],
       newPhrase: '',
       selectedCardIndex: 0,
@@ -165,13 +161,18 @@ export default {
     },
   },
   async mounted(){
-    //api for /getRules
+    console.log(this.$route.params.name)
     try {
       this.questions = await DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
     } catch (error) {
       console.error(error);
     }
     //tu ide api za taj id /getRules
+    try {
+      this.rules = JSON.parse(await DataService.getRulesForIntent(decodeId(this.$route.query[0])))
+    } catch (error) {
+      console.error(error);
+    }
   },
   methods: {
     scrollToCard(index) {

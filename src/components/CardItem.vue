@@ -4,10 +4,10 @@
     :class="{ 'selected': isSelected }"
     @click="$emit('click')"
   >
-    <label>{{card.id}}</label>
+    <label>{{card.name.split(" ")[1]}}</label>
     <div class="right-part">
         <div class="tile">
-            <span class="tile-title" :title="'Card ' + card.id">{{'Korak ' + card.id}}</span>
+            <span class="tile-title">{{card.assistant_answer}}</span>
             <hr>
             <div style="display:flex;justify-content:space-between;">
                 <span class="ctr">
@@ -15,7 +15,7 @@
                         <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style="margin-bottom: -0.25rem;margin-right: 0.5rem;">
                             <path d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"></path>
                         </svg>
-                        Nastavite na sljedeći korak
+                        {{card.continuation}}
                         <span></span>
                     </div>
                 </span>

@@ -9,7 +9,7 @@
       <hr/>
       <section>
         <h5>Odgovor asistenta</h5>
-        <TextEditor/>
+        <TextEditor :text="rule.assistant_answer"/>
 
         <!--RESPONSE PART-->
         <div class="main-container" @click="toggleOptions">
@@ -131,7 +131,7 @@ export default {
         'Prenesi korisnika nekome iz svog tima za podršku.',
         'Neka ovo bude posljednji korak koji dovršava radnju.'
       ],
-      step_selected: 'Nastavite na idući korak',
+      step_selected: this.rule.continuation,
       show_modal: false,
     };
   },
