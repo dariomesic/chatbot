@@ -1,11 +1,7 @@
 class DataService {
   getIntents(){
-    return fetch('http://18.194.27.183:8080/getIntents', {
+    return fetch('getIntents', {
       method : "GET",
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-type': 'application/json',
-     }
     })
     .then((response) => {
         if (!response.ok) {
