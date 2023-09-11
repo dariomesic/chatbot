@@ -1,14 +1,21 @@
 class DataService {
-  getIntents(){
-    return fetch('getIntents', {
-      method : "GET",
+  getIntents() {
+    const apiUrl = '/api/getIntents';
+    console.log('Fetching from:', apiUrl);
+    return fetch(apiUrl, {
+      method: "GET",
     })
     .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.error)
-        }
-        return response.json();
+      if (!response.ok) {
+        console.error('Request error:', response.statusText);
+        throw new Error(response.statusText);
+      }
+      return response.json();
     })
+    .catch((error) => {
+      console.error('Fetch error:', error);
+      throw error;
+    });
   }
   
   getQuestionsForIntent(intent_id){
