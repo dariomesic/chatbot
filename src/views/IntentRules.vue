@@ -2,7 +2,7 @@
  <div class="app-container">
     <div class="fixed-container">
       <Navbar/>
-      <ActionEditor :text="this.$route.params.name" @save="onSaveButtonClicked"/>
+      <ActionEditor :text="this.$route.params.name" @save="onSaveButtonClicked" :disableSaveButton="isSaveButtonDisabled"/>
     </div>
     <div class="content-container">
 
@@ -128,10 +128,11 @@ import ActionEditor from '../components/ActionEditor.vue'
 import { windowScrollPosition, decodeId } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
 import DataService from '../services/data.services'
+
 export default {
   mixins: [windowScrollPosition('position')],
   components: {
-    Card,Rule,Navbar,ActionEditor,Chatbot
+    Card, Rule, Navbar, ActionEditor, Chatbot
   },
   data() {
     return {
@@ -144,45 +145,54 @@ export default {
       showChatbot: false
     };
   },
-  watch: {
-    position: {
-      handler(val) {
-        this.$nextTick(() => {
-          for (let i = 0; i < this.rules.length; i++) {
-            const refName = 'scrollableCard_' + i;
-            if (this.$refs[refName]) {
-              const element = this.$refs[refName][0];
-              if (val[1] >= element.offsetTop - 450) {
-                this.selectedCardIndex = i;
-              }
-            }
-          }
-        });
-      },
+  computed: {
+    addedQuestions() {
+      return this.questions.filter(
+        (q) => !this.originalQuestions.some((oq) => oq.question_id === q.question_id)
+      );
     },
+    deletedQuestions() {
+      return this.originalQuestions.filter(
+        (oq) => !this.questions.some((q) => q.question_id === oq.question_id)
+      );
+    },
+    updatedQuestions() {
+      return this.questions.filter(
+        (q) =>
+          this.originalQuestions.some(
+            (oq) => oq.question_id === q.question_id && oq.question !== q.question
+          )
+      );
+    },
+    isSaveButtonDisabled() {
+      return (
+        this.addedQuestions.length > 0 ||
+        this.deletedQuestions.length > 0 ||
+        this.updatedQuestions.length > 0
+      );
+    }
   },
-  async mounted(){
-    try {
-      this.originalQuestions = await DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
-      // Clone the original questions to avoid reference issues
-      this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
-    } catch (error) {
-      console.error(error);
-    }
-    //tu ide api za taj id /getRules
-    try {
-      this.rules = JSON.parse(await DataService.getRulesForIntent(decodeId(this.$route.query[0])))
-    } catch (error) {
-      console.error(error);
-    }
+  async mounted() {
+    await this.loadQuestionsAndRules();
   },
   methods: {
+    async loadQuestionsAndRules() {
+      try {
+        const intentId = decodeId(this.$route.query[0]);
+        this.originalQuestions = await DataService.getQuestionsForIntent(intentId);
+        // Clone the original questions to avoid reference issues
+        this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
+        this.rules = JSON.parse(await DataService.getRulesForIntent(intentId));
+      } catch (error) {
+        console.error(error);
+      }
+    },
     scrollToCard(index) {
-      let element = this.$refs['scrollableCard_' + index][0];
-      let offsetTop = element.offsetTop;
+      const element = this.$refs[`scrollableCard_${index}`][0];
+      const offsetTop = element.offsetTop;
       window.scrollTo({
-          top: offsetTop,
-          behavior: 'smooth'
+        top: offsetTop,
+        behavior: 'smooth'
       });
     },
     toggleLeftPanel() {
@@ -195,11 +205,11 @@ export default {
       this.rules.push({ id: idToAdd + 1 });
       this.rules.sort((a, b) => a.id - b.id);
     },
-		removeRule(idToRemove) {
-      if(this.rules.length != 1){
+    removeRule(idToRemove) {
+      if (this.rules.length !== 1) {
         this.rules = this.rules.filter(rule => rule.id !== idToRemove);
         for (let i = idToRemove - 1; i < this.rules.length; i++) {
-            this.rules[i].id--;
+          this.rules[i].id--;
         }
       }
     },
@@ -208,7 +218,8 @@ export default {
     },
     async addPhrase() {
       if (this.newPhrase.trim() !== '') {
-        this.questions.push({'question_id':  Math.max(...this.questions.map((question) => question.question_id)) + 1, 'question' : this.newPhrase});
+        const maxQuestionId = Math.max(...this.questions.map((question) => question.question_id));
+        this.questions.push({ 'question_id': maxQuestionId + 1, 'question': this.newPhrase });
         this.newPhrase = '';
       }
     },
@@ -218,54 +229,24 @@ export default {
     async deletePhrase(index) {
       this.questions.splice(index, 1);
     },
-    onSaveButtonClicked() {
-      const addedQuestions = this.questions.filter(
-        (q) => !this.originalQuestions.some((oq) => oq.question_id === q.question_id)
-      );
-
-      const deletedQuestions = this.originalQuestions.filter(
-        (oq) => !this.questions.some((q) => q.question_id === oq.question_id)
-      );
-
-      const updatedQuestions = this.questions.filter(
-        (q) =>
-          this.originalQuestions.some(
-            (oq) => oq.question_id === q.question_id && oq.question !== q.question
-          )
-      );
-      addedQuestions.forEach(element => {
-        try {
-          DataService.postQuestion(element, decodeId(this.$route.query[0]));
-        } catch (error) {
-          console.error(error);
-        }
-      })
-
-      deletedQuestions.forEach(element => {
-        try {
-          DataService.deleteQuestion(element, decodeId(this.$route.query[0]));
-        } catch (error) {
-          console.error(error);
-        }
-      })
-
-      updatedQuestions.forEach(element => {
-        try {
-          DataService.updateQuestion(element, decodeId(this.$route.query[0]));
-        } catch (error) {
-          console.error(error);
-        }
-      })
-
+    async onSaveButtonClicked() {
       try {
-        this.originalQuestions = DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
-        // Clone the original questions to avoid reference issues
-        this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
+        const intentId = decodeId(this.$route.query[0]);
+        
+        // Perform batch operations for added, deleted, and updated questions
+        await Promise.all([
+          ...this.addedQuestions.map(question => DataService.postQuestion(question.question, intentId)),
+          ...this.deletedQuestions.map(question => DataService.deleteQuestion(question.question_id)),
+          ...this.updatedQuestions.map(question => DataService.updateQuestion(question.question, question.question_id))
+        ]);
+
+        // Reload questions and rules after the batch operations
+        await this.loadQuestionsAndRules();
       } catch (error) {
         console.error(error);
       }
     }
-  },
+  }
 };
 </script>
 <style>
