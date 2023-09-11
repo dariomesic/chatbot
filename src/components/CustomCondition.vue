@@ -9,36 +9,30 @@
         </svg>
         <div style="margin: 0 0 0 1rem;width: 100%;">
           <div style="align-items: center;display: flex;justify-content: space-between;padding-right: 1rem;">Uvjeti
-            <span style="font-size: .75rem">{{conditions.length}} {{conditions.length == 1 ? 'uvjet' : 'uvjeta'}}</span>
+            <span style="font-size: .75rem">{{steps.length}} {{steps.length == 1 ? 'uvjet' : 'uvjeta'}}</span>
           </div>
         </div>
       </button>
       <div v-if="!isCollapsed" class="section-content">
-        <ul>
-          <li v-for="(item, index) in conditions" :key="index" style="margin-bottom: 1.5rem;">
-            <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
-              Ako je
-              <CustomSelect :options="['Sve']" :value="'Sve'" style="margin-left: 0.5rem;margin-right:6px;border-bottom-color:transparent"/>
-              od ovoga istina:
-            </div>
-            <div v-for="(step, step_index) in item.steps" :key="step_index" style="display:flex;margin:0 0 0.5rem">
-              <div style="margin-right:0.25rem;max-width:1.5rem;min-width:1.5rem"/>
-              <CustomSelect :options="['5.Nakon']" :value="'5.Nakon'" style="margin-right:3px;color:var(--main__color)"/>
-              <CustomSelect :options="['is']" :value="'is'" style="margin-right:3px;;color:var(--main__color)"/>
-              <CustomSelect :options="['BESPLATNA']" :value="'BESPLATNA'" style="margin-right:3px;;color:var(--main__color)"/>
-              <button @click="deleteStep(index, step_index)">
-                <svg style="margin-top: 6px;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Close" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
-                    <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
-                </svg>
-              </button>
-            </div>
-            <div style="margin:0 0.5rem 0">
-              i <button class="color-button" @click="addCondition(index)">Dodaj uvjet +</button>
-            </div>
-          </li>
-        </ul>
-        <hr/>
-        <button style="margin-top:1%" class="color-button" @click="addConditionGroup">Nova grupa uvjeta +</button>
+        <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
+          Ako je
+          <CustomSelect :options="['Sve']" :value="'Sve'" style="margin-left: 0.5rem;margin-right:6px;border-bottom-color:transparent"/>
+          od ovoga istina:
+        </div>
+        <div v-for="(step, step_index) in steps" :key="step_index" style="display:flex;margin:0 0 0.5rem">
+          <div style="margin-right:0.25rem;max-width:1.5rem;min-width:1.5rem"/>
+          <CustomSelect :options="['5.Nakon']" :value="'5.Nakon'" style="margin-right:3px;color:var(--main__color)"/>
+          <CustomSelect :options="['is']" :value="'is'" style="margin-right:3px;;color:var(--main__color)"/>
+          <CustomSelect :options="['BESPLATNA']" :value="'BESPLATNA'" style="margin-right:3px;;color:var(--main__color)"/>
+          <button @click="deleteStep(index, step_index)">
+            <svg style="margin-top: 6px;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Close" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
+                <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+            </svg>
+          </button>
+        </div>
+        <div style="margin:0 0.5rem 0">
+          i <button class="color-button" @click="addCondition(index)">Dodaj uvjet +</button>
+        </div>
       </div>
     </div>
   </div>
@@ -50,22 +44,17 @@ export default {
   components: {CustomSelect},
   data() {
     return {
-      conditions: [{ steps: [{}] }],
+      steps: [{}],
       isCollapsed: false
     };
   },
   methods: {
-    addCondition(conditionIndex) {
-      this.conditions[conditionIndex].steps.push({});
+    addCondition() {
+      this.steps.push({});
     },
-    addConditionGroup() {
-      this.conditions.push({ steps: [{}] })
-    },
-    deleteStep(conditionIndex, stepIndex){
-      if (this.conditions[conditionIndex].steps.length > 1) {
-        this.conditions[conditionIndex].steps.splice(stepIndex, 1);
-      } else if (this.conditions.length > 1) {
-        this.conditions.splice(conditionIndex, 1);
+    deleteStep(stepIndex){
+      if (this.steps.length > 1) {
+        this.steps.splice(stepIndex, 1);
       }
     },
     toggleSection() {
