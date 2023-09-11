@@ -3,9 +3,9 @@
       <h4 style="margin-top:unset">Korak {{rule.name.split(" ")[1]}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
         <div style="min-width: 7rem;">Ako je odabran</div>
-        <CustomSelect :options="options" :value="'bez uvjeta'" @update:value="selectedOption = $event"/>
+        <CustomSelect :options="options" :value="Object.keys(rule.conditions).length === 0 ? 'bez uvjeta' : 's uvjetom'"/>
       </div>
-      <CustomCondition v-if="selectedOption == 's uvjetom'" />
+      <CustomCondition v-if="Object.keys(rule.conditions).length !== 0" :conditions="rule.conditions"/>
       <hr/>
       <section>
         <h5>Odgovor asistenta</h5>
@@ -112,7 +112,6 @@ export default {
   },
   data() {
     return {
-      selectedOption: 'bez uvjeta',
       options: ['bez uvjeta', 's uvjetom'],
       optionsVisible: false,
       activeIndex: null,

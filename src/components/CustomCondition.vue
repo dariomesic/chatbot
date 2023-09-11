@@ -1,37 +1,38 @@
 <template>
   <div class="condition-group">
     <div class="collapsible-section">
-      <hr/>
+      <hr />
       <button class="condition-button" type="button" @click="toggleSection">
         <svg class="collapse-icon" viewBox="0 0 16 16">
           <path v-if="isCollapsed" d="M3 5l5 5 5-5" />
           <path v-else d="M3 11l5-5 5 5" />
         </svg>
-        <div style="margin: 0 0 0 1rem;width: 100%;">
-          <div style="align-items: center;display: flex;justify-content: space-between;padding-right: 1rem;">Uvjeti
-            <span style="font-size: .75rem">{{steps.length}} {{steps.length == 1 ? 'uvjet' : 'uvjeta'}}</span>
+        <div style="margin: 0 0 0 1rem; width: 100%;">
+          <div style="align-items: center; display: flex; justify-content: space-between; padding-right: 1rem;">
+            Uvjeti
+            <span style="font-size: .75rem">{{ conditions.conditionsList.length }} {{ conditions.conditionsList.length == 1 ? 'uvjet' : 'uvjeta' }}</span>
           </div>
         </div>
       </button>
       <div v-if="!isCollapsed" class="section-content">
-        <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
+        <div style="align-items: center; display: flex; margin-bottom: 1.5rem;">
           Ako je
-          <CustomSelect :options="['Sve']" :value="'Sve'" style="margin-left: 0.5rem;margin-right:6px;border-bottom-color:transparent"/>
+          <CustomSelect :options="['Sve']" :value="'Sve'" style="margin-left: 0.5rem; margin-right: 6px; border-bottom-color: transparent" />
           od ovoga istina:
         </div>
-        <div v-for="(step, step_index) in steps" :key="step_index" style="display:flex;margin:0 0 0.5rem">
-          <div style="margin-right:0.25rem;max-width:1.5rem;min-width:1.5rem"/>
-          <CustomSelect :options="['5.Nakon']" :value="'5.Nakon'" style="margin-right:3px;color:var(--main__color)"/>
-          <CustomSelect :options="['is']" :value="'is'" style="margin-right:3px;;color:var(--main__color)"/>
-          <CustomSelect :options="['BESPLATNA']" :value="'BESPLATNA'" style="margin-right:3px;;color:var(--main__color)"/>
-          <button @click="deleteStep(index, step_index)">
+        <div v-for="(step, step_index) in conditions.conditionsList" :key="step_index" style="display: flex; margin: 0 0 0.5rem">
+          <div style="margin-right: 0.25rem; max-width: 1.5rem; min-width: 1.5rem"></div>
+          <CustomSelect :options="['5.Nakon']" :value="step.subject" @update:value="localConditions.conditionsList[step_index]['subject'] = $event" style="margin-right: 3px; color: var(--main__color)" />
+          <CustomSelect :options="['je', 'nije']" :value="step.predicate" @update:value="localConditions.conditionsList[step_index]['predicate'] = $event" style="margin-right: 3px; color: var(--main__color)" />
+          <CustomSelect :options="['BESPLATNA']" :value="step.object" @update:value="localConditions.conditionsList[step_index]['object'] = $event" style="margin-right: 3px; color: var(--main__color)" />
+          <button @click="deleteStep(step_index)">
             <svg style="margin-top: 6px;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Close" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
-                <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+              <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
             </svg>
           </button>
         </div>
-        <div style="margin:0 0.5rem 0">
-          i <button class="color-button" @click="addCondition(index)">Dodaj uvjet +</button>
+        <div style="margin: 0 0.5rem 0">
+          i <button class="color-button" @click="addCondition">Dodaj uvjet +</button>
         </div>
       </div>
     </div>
@@ -41,26 +42,27 @@
 <script>
 import CustomSelect from './CustomSelect.vue'
 export default {
-  components: {CustomSelect},
+  components: { CustomSelect },
+  props: ['conditions'],
   data() {
     return {
-      steps: [{}],
-      isCollapsed: false
+      isCollapsed: false,
+      localConditions: { ...this.conditions }, /* ODLICNA STVAR JER RADI DUBOKU KOPIJU KOJA SE ODMAH SPREMA BEZ EMITANJA, MOZE JOJ SE DIRETKNO PRISTUPIT */
     };
   },
   methods: {
     addCondition() {
-      this.steps.push({});
+      this.localConditions.conditionsList.push({});
     },
-    deleteStep(stepIndex){
-      if (this.steps.length > 1) {
-        this.steps.splice(stepIndex, 1);
+    deleteStep(stepIndex) {
+      if (this.localConditions.conditionsList.length > 1) {
+        this.localConditions.conditionsList.splice(stepIndex, 1);
       }
     },
     toggleSection() {
       this.isCollapsed = !this.isCollapsed;
-    }
-  }
+    },
+  },
 };
 </script>
 

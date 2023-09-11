@@ -231,13 +231,14 @@ export default {
     },
     async onSaveButtonClicked() {
       try {
-        const intentId = decodeId(this.$route.query[0]);
-        
+        const intentId = decodeId(this.$route.query[0]);  
+        /*TU TREBA IC NEKI LOADER*/
         // Perform batch operations for added, deleted, and updated questions
         await Promise.all([
           ...this.addedQuestions.map(question => DataService.postQuestion(question.question, intentId)),
           ...this.deletedQuestions.map(question => DataService.deleteQuestion(question.question_id)),
-          ...this.updatedQuestions.map(question => DataService.updateQuestion(question.question, question.question_id))
+          ...this.updatedQuestions.map(question => DataService.updateQuestion(question.question, question.question_id)),
+          DataService.sendQuestions()
         ]);
 
         // Reload questions and rules after the batch operations
