@@ -2,7 +2,7 @@
  <div class="app-container">
     <div class="fixed-container">
       <Navbar/>
-      <ActionEditor :text="this.$route.params.name"/>
+      <ActionEditor :text="this.$route.params.name" @save="onSaveButtonClicked"/>
     </div>
     <div class="content-container">
 
@@ -69,10 +69,10 @@
                   <li v-for="(question, index) in questions" :key="question" style="align-items: center;display: flex;margin-top: .5rem;">
                     <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                       <div style="display: flex;position: relative;width: 100%;">
-                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" :value="questions[index].question" @blur="handleBlur(question, index)" aria-describedby="" autocomplete="off">
+                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" :value="questions[index].question" aria-describedby="" autocomplete="off">
                       </div>
                     </div>
-                    <button @click="deletePhrase(question, index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
+                    <button @click="deletePhrase(index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
                       <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
                         <path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
                       </svg>
@@ -137,6 +137,7 @@ export default {
     return {
       rules: [],
       questions: [],
+      originalQuestions: [],
       newPhrase: '',
       selectedCardIndex: 0,
       isLeftPanelCollapsed: false,
@@ -161,9 +162,10 @@ export default {
     },
   },
   async mounted(){
-    console.log(this.$route.params.name)
     try {
-      this.questions = await DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
+      this.originalQuestions = await DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
+      // Clone the original questions to avoid reference issues
+      this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
     } catch (error) {
       console.error(error);
     }
@@ -206,31 +208,34 @@ export default {
     },
     async addPhrase() {
       if (this.newPhrase.trim() !== '') {
-        try {
-          let question_id = await DataService.postQuestion(this.newPhrase, decodeId(this.$route.query[0]));
-          this.questions.push({'question_id': question_id.question_id , 'question' : this.newPhrase});
-          this.newPhrase = '';
-        } catch (error) {
-          console.error(error);
-        }
+        this.questions.push({'question_id':  Math.max(...this.questions.map((question) => question.question_id)) + 1, 'question' : this.newPhrase});
+        this.newPhrase = '';
       }
     },
-    async handleBlur(question) {
-      try {
-        await DataService.updateQuestion(question.question, question.question_id);
-      } catch (error) {
-        console.error(error);
-      }
-      // Make an API call here
+    async handleBlur(question, index) {
+      this.originalQuestions[index].question = question;
     },
-    async deletePhrase(question, index) {
-      try {
-          await DataService.deleteQuestion(question.question_id);
-          this.questions.splice(index, 1);
-        } catch (error) {
-          console.error(error);
-        }
+    async deletePhrase(index) {
+      this.questions.splice(index, 1);
     },
+    async onSaveButtonClicked() {
+      console.log("HALOOO")
+      const addedQuestions = this.questions.filter(
+        (q) => !this.originalQuestions.some((oq) => oq.question_id === q.question_id)
+      );
+
+      const deletedQuestions = this.originalQuestions.filter(
+        (oq) => !this.questions.some((q) => q.question_id === oq.question_id)
+      );
+
+      const updatedQuestions = this.questions.filter(
+        (q) =>
+          this.originalQuestions.some(
+            (oq) => oq.question_id === q.question_id && oq.question !== q.question
+          )
+      );
+      console.log(addedQuestions, deletedQuestions, updatedQuestions)
+    }
   },
 };
 </script>

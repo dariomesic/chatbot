@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-      <h4 style="margin-top:unset">Korak {{rule.id}}</h4>
+      <h4 style="margin-top:unset">Korak {{rule.name.split(" ")[1]}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
         <div style="min-width: 7rem;">Ako je odabran</div>
         <CustomSelect :options="options" :value="'bez uvjeta'" @update:value="selectedOption = $event"/>

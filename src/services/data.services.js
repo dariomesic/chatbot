@@ -1,25 +1,18 @@
 class DataService {
   getIntents() {
-    const apiUrl = '/api/getIntents';
-    console.log('Fetching from:', apiUrl);
-    return fetch(apiUrl, {
+    return fetch('/api/getIntents', {
       method: "GET",
     })
     .then((response) => {
       if (!response.ok) {
-        console.error('Request error:', response.statusText);
-        throw new Error(response.statusText);
+        throw new Error(response.error);
       }
       return response.json();
-    })
-    .catch((error) => {
-      console.error('Fetch error:', error);
-      throw error;
     });
   }
   
   getQuestionsForIntent(intent_id){
-    return fetch('/getQuestionsForIntent?intent_id=' + intent_id, {
+    return fetch('/api/getQuestionsForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -31,7 +24,7 @@ class DataService {
   }
 
   postQuestion(question, intent_id){
-    return fetch('/postQuestion', {
+    return fetch('/api/postQuestion', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -48,7 +41,7 @@ class DataService {
   }
 
   deleteQuestion(question_id){
-    return fetch('/deleteQuestion?question_id=' + question_id, {
+    return fetch('/api/deleteQuestion?question_id=' + question_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -60,7 +53,7 @@ class DataService {
   }
 
   updateQuestion(new_question, question_id){
-    return fetch('/updateQuestion', {
+    return fetch('/api/updateQuestion', {
       method : "PUT",
       headers: {
         'Accept': 'application/json',
@@ -77,7 +70,7 @@ class DataService {
   }
 
   getRulesForIntent(intent_id){
-    return fetch('/getRulesForIntent?intent_id=' + intent_id, {
+    return fetch('/api/getRulesForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {

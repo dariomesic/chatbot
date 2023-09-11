@@ -94,12 +94,11 @@ export default {
 .editor {
   padding: 10px 0 13px 0px;
   box-sizing: border-box;
-  text-indent: 10px;
-  width: 100%;
-  height: 100px;
+  min-height: 100px;
   resize: vertical;
   background: var(--background);
   border: none;
   border-top: 1px solid #e0e0e0;
+  margin-left: 10px;
 }
 </style>
