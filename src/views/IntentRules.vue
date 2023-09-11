@@ -69,7 +69,7 @@
                   <li v-for="(question, index) in questions" :key="question" style="align-items: center;display: flex;margin-top: .5rem;">
                     <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                       <div style="display: flex;position: relative;width: 100%;">
-                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" :value="questions[index].question" aria-describedby="" autocomplete="off">
+                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" @blur="handleBlur($event, index)" :value="questions[index].question" aria-describedby="" autocomplete="off">
                       </div>
                     </div>
                     <button @click="deletePhrase(index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
@@ -212,14 +212,13 @@ export default {
         this.newPhrase = '';
       }
     },
-    async handleBlur(question, index) {
-      this.originalQuestions[index].question = question;
+    async handleBlur(event, index) {
+      this.questions[index].question = event.target.value;
     },
     async deletePhrase(index) {
       this.questions.splice(index, 1);
     },
-    async onSaveButtonClicked() {
-      console.log("HALOOO")
+    onSaveButtonClicked() {
       const addedQuestions = this.questions.filter(
         (q) => !this.originalQuestions.some((oq) => oq.question_id === q.question_id)
       );
@@ -234,7 +233,37 @@ export default {
             (oq) => oq.question_id === q.question_id && oq.question !== q.question
           )
       );
-      console.log(addedQuestions, deletedQuestions, updatedQuestions)
+      addedQuestions.forEach(element => {
+        try {
+          DataService.postQuestion(element, decodeId(this.$route.query[0]));
+        } catch (error) {
+          console.error(error);
+        }
+      })
+
+      deletedQuestions.forEach(element => {
+        try {
+          DataService.deleteQuestion(element, decodeId(this.$route.query[0]));
+        } catch (error) {
+          console.error(error);
+        }
+      })
+
+      updatedQuestions.forEach(element => {
+        try {
+          DataService.updateQuestion(element, decodeId(this.$route.query[0]));
+        } catch (error) {
+          console.error(error);
+        }
+      })
+
+      try {
+        this.originalQuestions = DataService.getQuestionsForIntent(decodeId(this.$route.query[0]));
+        // Clone the original questions to avoid reference issues
+        this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
+      } catch (error) {
+        console.error(error);
+      }
     }
   },
 };
