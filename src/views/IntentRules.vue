@@ -145,6 +145,23 @@ export default {
       showChatbot: false
     };
   },
+  watch: {
+    position: {
+      handler(val) {
+        this.$nextTick(() => {
+          for (let i = 0; i < this.rules.length; i++) {
+            const refName = 'scrollableCard_' + i;
+            if (this.$refs[refName]) {
+              const element = this.$refs[refName][0];
+              if (val[1] >= element.offsetTop - 450) {
+                this.selectedCardIndex = i;
+              }
+            }
+          }
+        });
+      }
+    }
+  },
   computed: {
     addedQuestions() {
       return this.questions.filter(
