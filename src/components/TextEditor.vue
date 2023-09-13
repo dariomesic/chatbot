@@ -39,38 +39,14 @@
       </button>
     </div>
     <div style="width: 100%;">
-      <div class="editor" :contenteditable="contentEditable" @input="handleInput" ref="editorDiv">
-        {{ editorContent }}
-      </div>
+      <textarea :value="text" class="editor tile-title"/>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    text: String
-  },
-  data() {
-    return {
-      editorContent: this.text,
-      contentEditable: false,
-    };
-  },
-  methods: {
-    applyFormat(format) {
-      if (this.$refs.editorDiv) {
-        document.execCommand(format, false, null);
-        this.$refs.editorDiv.focus();
-      }
-    },
-    handleInput() {
-      this.editorContent = this.$refs.editorDiv.innerHTML;
-    },
-  },
-  mounted() {
-    this.contentEditable = true;
-  },
+  props: ["text"],
 };
 </script>
 
@@ -92,13 +68,17 @@ export default {
 }
 
 .editor {
-  padding: 10px 0 13px 0px;
+  padding: 10px;
   box-sizing: border-box;
   min-height: 100px;
   resize: vertical;
   background: var(--background);
   border: none;
   border-top: 1px solid #e0e0e0;
-  margin-left: 10px;
+  width: 100%;
+  font-size: .8rem;
+  font-weight: 400;
+  letter-spacing: .32px;
+  font-family: "Gill Sans", sans-serif;
 }
 </style>

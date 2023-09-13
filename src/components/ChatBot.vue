@@ -9,7 +9,7 @@
                 <p class="status">Na vezi</p>
             </div>
         </div>
-        <div class="ContentChat">
+        <div class="ContentChat" ref="chatContainer">
           <div
             v-for="(message, index) in messages"
             :key="index"
@@ -37,35 +37,62 @@
 </template>
 
 <script>
+import DataService from '../services/data.services'
 export default{
   data(){
     return{
       inputValue: '',
       messages: [],
       status_func_SendMsgBot: 0,
+      conditionLogs: [],
     }
   },
   mounted() {
     // Automatically send an initial message from the bot
     this.initializeBot();
+
+    //Event for button click
+    const chatContainer = this.$refs.chatContainer;
+
+    chatContainer.addEventListener('click', (event) => {
+      if (event.target.classList.contains('bot-option')) {
+        const intentId = event.target.getAttribute('data-intent-id');
+        const optionText = event.target.innerText;
+        const options = event.target.getAttribute('data-options').split(',');
+        const text = event.target.getAttribute('data-text');
+        this.handleUserResponse(optionText, intentId, options, text);
+      }
+    });
   },
   methods: {
     initializeBot() {
       // Simulate a delayed bot response after initial greeting
       setTimeout(() => {
-        const responseMessage = `<div class="bot-response text" text-first="true">Pozdrav 👋 ! Ja sam chatbot sustava ePredmet. Postavite pitanje vezano uz sustav.</div>`
+        const responseMessage = {
+          assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ePredmet. Postavite pitanje vezano uz sustav`
+        }
         this.addBotMessage(responseMessage);
-      }, 2000);
+      }, 1000);
     },
-    sendMessage() {
+    
+    async sendMessage() {
       if (this.inputValue !== '' && this.status_func_SendMsgBot === 0) {
         this.addUserMessage(this.inputValue);
+        try {
+          // Make an API call to the backend to send the user's message.
+          const response = await DataService.sendMessage(this.inputValue)
 
-        this.sendMsgBot(this.inputValue);
+          // Update the chat interface with the bot's response.
+          this.addBotMessage(response, 1);
+        } catch (error) {
+          console.error('Error sending message:', error);
+        }
 
+        // Clear the input field after sending the message.
         this.inputValue = '';
       }
     },
+
     addUserMessage(message) {
       this.messages.push({
         text: `<div class="captionUser">You</div>`,
@@ -77,95 +104,98 @@ export default{
         classes: ['message'],
         dataUser: true,
       });
+      this.scrollChatToBottom()
     },
-    async sendMsgBot(msg) {
-      msg = msg.toLowerCase();
-      msg = msg.replace(/<\s*br[^>]?>/, '\n');
-      msg = msg.replace(/(<([^>]+)>)/g, '');
 
-      this.status_func_SendMsgBot = 1;
-
-      const listMSG = {
-        hello: ['Hello!', "Hi 👋 ! It's good to see you!", 'Great to see you here!'],
-        hwa: ['I\'m fine!', 'I am fine', 'I feel good seeing you 😊', 'I feel great 🤪'],
-        about: [
-          "I'm happy you asked about that!",
-          "My name is RayBot, I'm a simple and fun bot and I can answer your questions to some extent and do the things you want 😉",
-        ],
-      };
-
-      const listScan = {
-        hello: ['hi', 'hello', 'hey'],
-        hwa: [
-          'how are you',
-          'hwa',
-          'you are good',
-          'you are fine',
-          'are you well',
-          'are you alright',
-        ],
-        about: [
-          'information',
-          'tell me about yourself',
-          'introduce yourself',
-          'who are you',
-          'how about your self',
-        ],
-      };
-      this.status_func_SendMsgBot = 1; // Start the animation
-      const result = await this.generateBotResponse(msg, listScan, listMSG);
-      console.log(result)
-      this.addBotMessage(result);
-      this.status_func_SendMsgBot = 0;
-    },
-    generateBotResponse(msg, listScan, listMSG) {
-      return new Promise((resolve) => { // Return a promise
-        setTimeout(() => {
-        let result = '';
-          for (const i of listScan['hello']) {
-            if (i == msg || i + '?' == msg || i + '!' == msg) {
-              result = `<div class="bot-response text" text-first="true">${
-                listMSG['hello'][Math.floor(Math.random() * 3)]
-              }</div>`;
-            }
-          }
-          if (result === '' || result === undefined) {
-            for (const i of listScan['hwa']) {
-              if (i == msg || i + '?' == msg || i + '!' == msg) {
-                result = `<div class="bot-response text" text-first="true">${
-                  listMSG['hwa'][Math.floor(Math.random() * 3)]
-                }</div>`;
-              }
-            }
-          }
-          if (result === '' || result === undefined) {
-            for (const i of listScan['about']) {
-              if (i == msg || i + '?' == msg || i + '!' == msg) {
-                result = `<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/GvYEn0QMm8_xLFjS.png" alt="about raybot"></img><div class="bot-response text" text-first="true">${listMSG['about'][0]}</div><div class="bot-response text" text-last="true">${listMSG['about'][1]}</div>`;
-              }
-            }
-          }
-
-          if (result === '' || result === undefined) {
-            result = `<div class="bot-response text" text-first="true">😵‍💫 Oops! Sorry, I didn't understand your question</div>`;
-          }
-
-          resolve(result); // SET TIMER FROM CONDITIONS
-        }, 2000);
-      });
-    },
-    addBotMessage(message) {
+    addBotMessage(message, rule_id) {
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
         dataUser: false,
       });
+
+      let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer
+      let tmp = rule_id + '.' + message.assistant_answer
+      message.assistant_answer = tmp
+      if (message.response_type === 'OPCIJE') {
+        // Display the options as buttons.
+        messageText += '<br>' + this.renderOptions(message);
+      } else if (message.response_type === 'INPUT') {
+        // Display a message with a text input field.
+        messageText += '<br>' + this.renderInput(message.inputPlaceholder);
+      }
+
+      messageText += '</div>'
+
       this.messages.push({
-        text: message,
+        text: messageText,
         classes: ['message'],
         dataUser: false,
       });
-      console.log(this.messages)
+      this.scrollChatToBottom()
+
+    },
+
+    renderOptions(message) {
+      let optionsHtml = '';
+      message.customer_response.forEach((option) => {
+        optionsHtml += `<button class="bot-option" data-intent-id="${message.intent_id}" data-options="${message.customer_response}" data-text="${message.assistant_answer}">${option}</button>`;
+      });
+      return optionsHtml;
+    },
+
+    renderInput(inputPlaceholder) {
+      return `<input type="text" placeholder="${inputPlaceholder}" @keydown.enter="handleUserResponse($event.target.value)">`;
+    },
+
+    handleUserInput() {
+      // Handle the user's input when they press Enter.
+      const userInput = this.inputValue; // Get the user's input value
+      userInput
+      // Make an API call with the user's input, similar to the handleUserResponse method
+      // ...
+    },
+
+    async handleUserResponse(selectedOption, intent_id, options, text) {
+      try {
+        // Update the condition logs based on the user's selection
+        if (!this.conditionLogs[intent_id]) {
+          this.conditionLogs[intent_id] = []; // Initialize the array if it doesn't exist
+        }
+
+        // Iterate through all options to build conditions
+        options.forEach((option) => {
+          const conditionLog = {
+            subject: text,
+            predicate: option === selectedOption ? 'je' : 'nije', // Condition based on selection
+            object: option,
+          };
+
+          // Add the condition log to the array
+          this.conditionLogs[intent_id].push(conditionLog);
+        });
+
+        console.log(this.conditionLogs[intent_id])
+
+        // Make an API call to send the user's selected option.
+        const response = await DataService.userResponse(this.conditionLogs[intent_id], intent_id);
+
+        // Update the chat interface with the bot's response.
+        this.addBotMessage(response, response.name.split(' ')[1]);
+      } catch (error) {
+        console.error('Error handling user response:', error);
+      }
+    },
+
+    scrollChatToBottom() {
+      this.$nextTick(() => {
+      // Use this.$refs to access the chat container element
+      const chatContainer = this.$refs.chatContainer;
+    
+      // Scroll to the bottom with smooth behavior
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatContainer.lastElementChild.scrollIntoView({ behavior: 'smooth' });
+    });
     },
 
   },
@@ -396,5 +426,21 @@ a {
 
 .none {
   display: none;
+}
+
+.bot-option{
+  font-size: .75rem;
+  font-weight: 400;
+  justify-content: center;
+  letter-spacing: .32px;
+  line-height: 1.33333;
+  margin: .25rem;
+  max-width: 100%;
+  min-height: 1.5rem;
+  min-width: 2rem;
+  border-radius: .9375rem;
+  background: #e0e0e0;
+  color: #161616;
+  padding: .375rem .5rem;
 }
 </style>
