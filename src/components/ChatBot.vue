@@ -82,6 +82,8 @@ export default{
           // Make an API call to the backend to send the user's message.
           const response = await DataService.sendMessage(this.inputValue)
 
+          this.conditionLogs[response.intent_id] = []; // Initialize the array
+
           // Update the chat interface with the bot's response.
           this.addBotMessage(response, 1);
         } catch (error) {
@@ -158,11 +160,6 @@ export default{
 
     async handleUserResponse(selectedOption, intent_id, options, text) {
       try {
-        // Update the condition logs based on the user's selection
-        if (!this.conditionLogs[intent_id]) {
-          this.conditionLogs[intent_id] = []; // Initialize the array if it doesn't exist
-        }
-
         // Iterate through all options to build conditions
         options.forEach((option) => {
           const conditionLog = {
@@ -175,7 +172,19 @@ export default{
           this.conditionLogs[intent_id].push(conditionLog);
         });
 
-        console.log(this.conditionLogs[intent_id])
+        console.log(this.conditionLogs[intent_id]);
+
+        // Disable all options after the user makes a selection and change the style of the selected button
+        const allOptions = document.querySelectorAll(`.bot-option[data-intent-id="${intent_id}"]`);
+        allOptions.forEach((optionElement) => {
+          optionElement.setAttribute('disabled', '');
+          if (optionElement.innerText === selectedOption) {
+            optionElement.classList.add('selected');
+          }
+          else{
+            optionElement.classList.add('disabled');
+          }
+        });
 
         // Make an API call to send the user's selected option.
         const response = await DataService.userResponse(this.conditionLogs[intent_id], intent_id);
@@ -442,5 +451,18 @@ a {
   background: #e0e0e0;
   color: #161616;
   padding: .375rem .5rem;
+  margin-top: 8px;
+}
+
+.bot-option.selected {
+  background-color: #333; /* Change to your desired color for the selected button */
+  color: #fff; /* Change to your desired text color for the selected button */
+  cursor: not-allowed; /* Change to the desired cursor style */
+}
+
+.bot-option.disabled {
+  background-color: #ccc; /* Change to your desired color for disabled buttons */
+  color: #888; /* Change to your desired text color for disabled buttons */
+  cursor: not-allowed; /* Change to the desired cursor style */
 }
 </style>
