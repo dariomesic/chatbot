@@ -61,7 +61,7 @@
                 </span>
               </td>
               <td>
-                <div data-floating-menu-container="true">
+                <div style="position:relative">
                   <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(intent)">
                     <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
                       <circle cx="16" cy="8" r="2"></circle>
@@ -72,8 +72,9 @@
                   </button>
                   <!-- Popup menu -->
                 <div v-if="showOptionsForIntent === intent" class="options-popup">
-                  <button @click="navigateToDetail(intent)">Edit</button>
-                  <button @click="deleteIntent(intent.id)">Delete</button>
+                  <button @click="navigateToDetail(intent)">Uredi</button>
+                  <hr/>
+                  <button @click="deleteIntent(intent.id)">Izbriši</button>
                 </div>
                 </div>
               </td>
@@ -327,17 +328,30 @@ a:hover {
 }
 
 .options-popup {
+  background: #fff;
+  border: 1px solid #c5c5c5;
+  border-radius: 6px;
+  box-shadow: 0 1px 14px rgba(0,0,0,.2);
+  color: #616161;
+  width: max-content;
+  display: inline-grid;
   position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 1;
   margin-top: 4px;
-  right: 0;
-  display: none; /* Hide by default */
+  left: 0;
+  margin-left: 25px;
 }
 
-.options-popup.show {
-  display: block; /* Show when active */
+hr{
+  margin: unset;
+}
+
+.options-popup button{
+    cursor: pointer;
+    padding: 10px 30px 10px 30px;
+}
+
+.options-popup button:hover{
+    background: var(--hover__color);
 }
 </style>
