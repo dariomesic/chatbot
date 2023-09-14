@@ -52,6 +52,35 @@ class DataService {
     })
   }
 
+    deleteIntent(intent_id){
+    return fetch('/api/deleteIntent?intent_id=' + intent_id, {
+      method : "DELETE",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateIntent(new_intent, intent_id){
+    return fetch('/api/updateIntent', {
+      method : "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({new_intent: new_intent, intent_id : intent_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   updateQuestion(new_question, question_id){
     return fetch('/api/updateQuestion', {
       method : "PUT",
@@ -60,6 +89,23 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({new_question: new_question, question_id : question_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateRule(new_step, step_id){
+    return fetch('/api/updateStep', {
+      method : "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({new_step: new_step, step_id : step_id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -129,6 +175,7 @@ class DataService {
 }
 export default new DataService();
 
+
 /*
 class DataService {
   getIntents() {
@@ -184,6 +231,35 @@ class DataService {
     })
   }
 
+  deleteIntent(intent_id){
+    return fetch('/deleteIntent?intent_id=' + intent_id, {
+      method : "DELETE",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateIntent(new_intent, intent_id){
+    return fetch('/updateIntent', {
+      method : "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({new_intent: new_intent, intent_id : intent_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   updateQuestion(new_question, question_id){
     return fetch('/updateQuestion', {
       method : "PUT",
@@ -192,6 +268,23 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({new_question: new_question, question_id : question_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateRule(new_step, intent_id){
+    return fetch('/updateStep', {
+      method : "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({new_step: new_step, intent_id : intent_id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -259,5 +352,4 @@ class DataService {
     })
   }
 }
-export default new DataService();
-*/
+export default new DataService();*/

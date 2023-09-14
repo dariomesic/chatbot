@@ -47,7 +47,7 @@ export default {
   methods:{
     handleRemoveClick(event) {
       event.stopPropagation();
-      this.$emit('remove', this.card.id)
+      this.$emit('remove', this.card.name)
     },
   }
 };

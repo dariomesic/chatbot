@@ -39,7 +39,7 @@
       </button>
     </div>
     <div style="width: 100%;">
-      <textarea :value="text" class="editor tile-title"/>
+      <textarea :value="text" @input="$emit('updateText', $event.target.value)" class="editor tile-title"/>
     </div>
   </div>
 </template>
@@ -47,6 +47,7 @@
 <script>
 export default {
   props: ["text"],
+  emits: ['updateText']
 };
 </script>
 
@@ -70,13 +71,13 @@ export default {
 .editor {
   padding: 10px;
   box-sizing: border-box;
-  min-height: 100px;
+  min-height: 150px;
   resize: vertical;
   background: var(--background);
   border: none;
   border-top: 1px solid #e0e0e0;
   width: 100%;
-  font-size: .8rem;
+  font-size: .9rem;
   font-weight: 400;
   letter-spacing: .32px;
   font-family: "Gill Sans", sans-serif;

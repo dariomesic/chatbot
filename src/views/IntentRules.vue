@@ -2,7 +2,7 @@
  <div class="app-container">
     <div class="fixed-container">
       <Navbar/>
-      <ActionEditor :text="this.$route.params.name" @save="onSaveButtonClicked" :disableSaveButton="isSaveButtonDisabled"/>
+      <ActionEditor :text="intentTextCopy" @updateText="intentTextCopy = $event" @save="onSaveButtonClicked" :disableSaveButton="isSaveButtonDisabled"/>
     </div>
     <div class="content-container">
 
@@ -16,7 +16,7 @@
               <div class="start-editor">
                   <div class="trigger">
                       <label class="text-style">Korisnik počinje pitanjem:</label>
-                      <p class="text-style">{{this.$route.params.name}}</p>
+                      <p class="text-style">{{intentTextCopy}}</p>
                   </div>
               </div>
               <div class="conversation-steps">
@@ -46,10 +46,10 @@
         <div class="content">
           <div style="background-color: #f4f4f4;display: flex;flex-direction: column;flex-wrap: nowrap;margin-bottom: 2rem;max-height: 100%;padding: 1.5rem 2rem;">
             <h4 class="TriggerEditor__title">
-              <span class="TriggerEditor__title-text">Customer starts with:</span>
+              <span class="TriggerEditor__title-text">Korisnik počinje pitanjima:</span>
             </h4>
-            <p>Enter phrases that a customer types or says to start the conversation about a specific topic. These phrases determine the task, problem, or question your customer has.</p>
-            <p>The more phrases you enter, the better your assistant can recognize what the customer wants.</p>
+            <p>Unesite fraze koje korisnik upisuje ili izgovara kako bi započeo razgovor o određenoj temi. Ovi izrazi određuju zadatak, problem ili pitanje koje vaš klijent ima.</p>
+            <p>Što više fraza unesete, to će vaš pomoćnik bolje prepoznati što klijent želi.</p>
             <div>
               <ul>
                 <li>
@@ -61,7 +61,7 @@
                 <li style="border-bottom: 1px solid #e0e0e0;margin-bottom: 1rem;padding-bottom: 1rem;padding-right: 3rem;">
                   <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                     <div style="display: flex;position: relative;width: 100%;">
-                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" placeholder="Enter a phrase" type="text" title="Enter a phrase" aria-describedby="" autocomplete="off">
+                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" placeholder="Unesite frazu" type="text" title="Unesite frazu" aria-describedby="" autocomplete="off">
                     </div>
                   </div>
                 </li>
@@ -89,8 +89,11 @@
             <div :ref="'scrollableCard_' + index">
               <Rule
                 :rule="rule"
+                :rules_options="distinctCustomerResponses"
+                :rules_answers="distinctAnswers"
                 @add="addRule"
                 @remove="removeRule"
+                @updateRule="updateRule(index, $event)"
               />
             </div>
           </div>
@@ -137,12 +140,15 @@ export default {
   data() {
     return {
       rules: [],
+      rules_copy: [],
       questions: [],
       originalQuestions: [],
       newPhrase: '',
       selectedCardIndex: 0,
       isLeftPanelCollapsed: false,
-      showChatbot: false
+      showChatbot: false,
+      intentTextCopy: '',
+      intentText: '',
     };
   },
   watch: {
@@ -185,21 +191,48 @@ export default {
       return (
         this.addedQuestions.length > 0 ||
         this.deletedQuestions.length > 0 ||
-        this.updatedQuestions.length > 0
+        this.updatedQuestions.length > 0 ||
+        this.intentTextCopy !== this.intentText ||
+        !(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))
       );
+    },
+    distinctAnswers() {
+      const distinctAnswersSet = new Set();
+
+      this.rules_copy.forEach((rule,index) => {
+        if (rule.customer_response && rule.customer_response.length > 0) {
+            distinctAnswersSet.add(index + 1 + '.' + rule.assistant_answer);
+        }
+      });
+      return [...distinctAnswersSet];
+    },
+
+    distinctCustomerResponses() {
+      const distinctCustomerResponsesSet = new Set();
+
+      this.rules_copy.forEach(rule => {
+        if (rule.customer_response && rule.customer_response.length > 0) {
+          rule.customer_response.forEach(response => {
+            distinctCustomerResponsesSet.add(response);
+          });
+        }
+      });
+      return [...distinctCustomerResponsesSet];
     }
   },
   async mounted() {
-    await this.loadQuestionsAndRules();
+    await this.loadQuestionsAndRules(this.$route.params.name);
   },
   methods: {
-    async loadQuestionsAndRules() {
+    async loadQuestionsAndRules(text) {
       try {
+        this.intentText = text;
+        this.intentTextCopy = JSON.parse(JSON.stringify(this.intentText));
         const intentId = decodeId(this.$route.query[0]);
         this.originalQuestions = await DataService.getQuestionsForIntent(intentId);
-        // Clone the original questions to avoid reference issues
         this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
         this.rules = JSON.parse(await DataService.getRulesForIntent(intentId));
+        this.rules_copy = JSON.parse(JSON.stringify(this.rules));
       } catch (error) {
         console.error(error);
       }
@@ -215,20 +248,35 @@ export default {
     toggleLeftPanel() {
       this.isLeftPanelCollapsed = !this.isLeftPanelCollapsed;
     },
-    addRule(idToAdd) {
+    addRule(name) {
+      let idToAdd = name.split(" ")[1]
       for (let i = idToAdd; i < this.rules.length; i++) {
-        this.rules[i].id++;
+        this.rules[i].name = 'Step' + i++;
       }
-      this.rules.push({ id: idToAdd + 1 });
-      this.rules.sort((a, b) => a.id - b.id);
+      this.rules.push(
+        { 
+          name: 'Step ' + (Number(idToAdd) + 1),
+          conditions: {},
+          assistant_answer: '',
+          response_type: '',
+          customer_response: [],
+          continuation: 'Nastavite na idući korak'
+
+        }
+      );
+      this.rules.sort((a, b) => a.name.split(' ')[1] - b.name.split(' ')[1]);
     },
-    removeRule(idToRemove) {
+    removeRule(name) {
+      let idToRemove = Number(name.split(" ")[1])
       if (this.rules.length !== 1) {
-        this.rules = this.rules.filter(rule => rule.id !== idToRemove);
+        this.rules = this.rules.filter(rule => rule.name.split(' ')[1] != idToRemove);
         for (let i = idToRemove - 1; i < this.rules.length; i++) {
-          this.rules[i].id--;
+          this.rules[i].name = 'Step ' + (i+1);
         }
       }
+    },
+    updateRule(index, updatedRule) {
+      this.rules_copy[index] = updatedRule;
     },
     onInput() {
       this.newPhrase = event.target.value;
@@ -246,24 +294,69 @@ export default {
     async deletePhrase(index) {
       this.questions.splice(index, 1);
     },
-    async onSaveButtonClicked() {
+    onSaveButtonClicked() {
+      /* TU TREBA IC NEKI LOADER */
+      const intentId = decodeId(this.$route.query[0]);
+      if (this.intentTextCopy !== this.intentText) {
+        DataService.updateIntent(this.intentTextCopy, intentId)
+          .then(() => {
+            this.intentText = this.intentTextCopy;
+          })
+          .catch((error) => {
+            console.error("Failed to update intent in the database:", error);
+          });
+      }
+      this.performAPIRequests(intentId);
+    },
+    performAPIRequests(intentId) {
       try {
-        const intentId = decodeId(this.$route.query[0]);  
-        /*TU TREBA IC NEKI LOADER*/
         // Perform batch operations for added, deleted, and updated questions
-        await Promise.all([
-          ...this.addedQuestions.map(question => DataService.postQuestion(question.question, intentId)),
-          ...this.deletedQuestions.map(question => DataService.deleteQuestion(question.question_id)),
-          ...this.updatedQuestions.map(question => DataService.updateQuestion(question.question, question.question_id)),
-          DataService.sendQuestions()
-        ]);
+        const apiRequests = [];
 
-        // Reload questions and rules after the batch operations
-        await this.loadQuestionsAndRules();
+        if (this.addedQuestions.length > 0) {
+          apiRequests.push(
+            ...this.addedQuestions.map((question) =>
+              DataService.postQuestion(question.question, intentId)
+            )
+          );
+        }
+
+        if (this.deletedQuestions.length > 0) {
+          apiRequests.push(
+            ...this.deletedQuestions.map((question) =>
+              DataService.deleteQuestion(question.question_id)
+            )
+          );
+        }
+
+        if (this.updatedQuestions.length > 0) {
+          apiRequests.push(
+            ...this.updatedQuestions.map((question) =>
+              DataService.updateQuestion(question.question, question.question_id)
+            )
+          );
+        }
+        if(apiRequests.length){
+          apiRequests.push(DataService.sendQuestions());
+        }
+
+        if (!(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))) {
+          apiRequests.push(DataService.updateRule(this.rules_copy, intentId));
+        }
+
+        // Execute all API requests in parallel
+        Promise.all(apiRequests)
+          .then(() => {
+            // Reload questions and rules after the batch operations
+            this.loadQuestionsAndRules(this.intentTextCopy);
+          })
+          .catch((error) => {
+            console.error("API request failed:", error);
+          });
       } catch (error) {
         console.error(error);
       }
-    }
+    },
   }
 };
 </script>

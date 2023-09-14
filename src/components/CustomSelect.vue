@@ -64,6 +64,8 @@ export default {
 }
 
 .custom-select {
+  width: -webkit-fill-available;
+  width: -moz-available;
   position: relative;
   display: flex;
   align-items: center;

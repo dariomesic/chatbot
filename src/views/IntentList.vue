@@ -8,7 +8,7 @@
           <input v-model="searchQuery" type="text" style="width:100%" placeholder="Filter by name...">
           <button class="search-button" type="submit" :disabled="true">Search</button>
         </div>
-        <button class="background-button" tabindex="0" type="button">New action
+        <button @click="deleteSelectedIntents" class="background-button" tabindex="0" type="button">New action
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
             <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
           </svg>
@@ -19,10 +19,7 @@
         <thead>
             <tr>
               <th scope="col">
-                <label>
-                  <input type="checkbox" class="js-check-all">
-                  <div class="control__indicator"></div>
-              </label>
+                <input type="checkbox" v-model="selectAll">
               </th>
               <th>Name</th>
               <th>Last Edited</th>
@@ -35,10 +32,7 @@
         <tbody>
             <tr v-for="intent in filteredIntents" :key="intent.id">
               <td>
-                <label class="control control--checkbox">
-                  <input type="checkbox">
-                  <div class="control__indicator"></div>
-                </label>
+                  <input type="checkbox" v-model="selectedIntents" :value="intent.id" number>
               </td>
               <td>
                 <div>
@@ -68,7 +62,7 @@
               </td>
               <td>
                 <div data-floating-menu-container="true">
-                  <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" id="CollectionsDataTable__overflow-0">
+                  <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(intent)">
                     <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
                       <circle cx="16" cy="8" r="2"></circle>
                       <circle cx="16" cy="16" r="2"></circle>
@@ -76,6 +70,11 @@
                       <title>Options</title>
                     </svg>
                   </button>
+                  <!-- Popup menu -->
+                <div v-if="showOptionsForIntent === intent" class="options-popup">
+                  <button @click="navigateToDetail(intent)">Edit</button>
+                  <button @click="deleteIntent(intent.id)">Delete</button>
+                </div>
                 </div>
               </td>
             </tr>
@@ -100,7 +99,7 @@
             :disabled="currentPage === 1"
             style="border-left: 1px solid #e0e0e0;height: 2.5rem;margin: 0; min-height: 2rem;  transition: outline .11s cubic-bezier(.2,0,.38,.9),background-color .11s cubic-bezier(.2,0,.38,.9); width: 2.5rem;"
           >
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Previous page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Previous page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" style="margin-top:5px">
               <path d="M20 24L10 16 20 8z"></path>
             </svg>
           </button>
@@ -109,7 +108,7 @@
             :disabled="currentPage === totalPages"
             style="border-left: 1px solid #e0e0e0;height: 2.5rem;margin: 0; min-height: 2rem;  transition: outline .11s cubic-bezier(.2,0,.38,.9),background-color .11s cubic-bezier(.2,0,.38,.9); width: 2.5rem;"
           >
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Next page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Next page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" style="margin-top:5px">
               <path d="M12 8L22 16 12 24z"></path>
             </svg>
           </button>
@@ -132,6 +131,8 @@ export default {
       searchQuery: '',
       currentPage: 1,
       itemsPerPage: 10,
+      selectedIntents: [],
+      showOptionsForIntent: null,
     };
   },
   async created(){
@@ -158,16 +159,51 @@ export default {
     totalPages() {
       return Math.ceil(this.intents.length / this.itemsPerPage);
     },
+    selectAll: {
+        get: function () {
+            return this.intents ? this.selectedIntents.length == this.intents.length : false;
+        },
+        set: function (value) {
+            var selectedIntents = [];
+
+            if (value) {
+                this.intents.forEach(function (intent) {
+                    selectedIntents.push(intent.id.toString());
+                });
+            }
+
+            this.selectedIntents = selectedIntents;
+        }
+    }
   },
   methods: {
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
       this.$router.push({ name: 'IntentRules', query: encodeId(intent.id), params: { name: intent.name }, });
     },
-    /*deleteintent(id) {
-        id
-      // Implement intent deletion logic
-    }*/
+    async deleteintent(id) {
+        try {
+          await DataService.deleteIntent(id);
+        } catch (error) {
+          console.error(error);
+        }
+    },
+    showOptionsFor(intent) {
+      // Toggle the popup menu for the clicked intent
+      if (this.showOptionsForIntent === intent) {
+        this.showOptionsForIntent = null; // Hide the popup menu if it's already shown
+      } else {
+        this.showOptionsForIntent = intent; // Show the popup menu for the clicked intent
+      }
+    },
+    deleteSelectedIntents() {
+      // Loop through selectedIntents and call deleteIntent for each
+      for (const intent of this.selectedIntents) {
+        this.deleteIntent(intent);
+      }
+      // Clear the selectedIntents array after deleting
+      this.selectedIntents = [];
+    },
   }
 };
 </script>
@@ -233,20 +269,6 @@ th,td{
   border-top: 1px solid #dee2e6;
 }
 
-table label{
-  display: block;
-  position: relative;
-  margin-bottom: 25px;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-table input{
-  position: absolute;
-  z-index: -1;
-  opacity: 0;
-}
-
 .control__indicator {
   position: absolute;
   top: 2px;
@@ -282,6 +304,11 @@ table tbody tr th::before, table tbody tr th::after, table tbody tr td::before, 
   visibility: hidden;
 }
 
+table input{
+  height: 20px;
+  width: 20px;
+}
+
 a{
   color: #0f62fe;
   display: inline-flex;
@@ -297,5 +324,20 @@ a{
 
 a:hover {
   text-decoration: underline;
+}
+
+.options-popup {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  margin-top: 4px;
+  right: 0;
+  display: none; /* Hide by default */
+}
+
+.options-popup.show {
+  display: block; /* Show when active */
 }
 </style>
