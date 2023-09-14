@@ -58,6 +58,11 @@ button:focus{
   outline:.125rem solid #0f62fe
 }
 
+button:disabled{
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
 .color-button{
   color: var(--main__color);
   padding: calc(0.375rem - 3px) 16px;

@@ -47,8 +47,16 @@ export default {
   data() {
     return {
       isCollapsed: false,
-      localConditions: { ...this.conditions }, /* ODLICNA STVAR JER RADI DUBOKU KOPIJU KOJA SE ODMAH SPREMA BEZ EMITANJA, MOZE JOJ SE DIRETKNO PRISTUPIT */
+      localConditions: JSON.parse(JSON.stringify(this.conditions)),
     };
+  },
+  watch: {
+    localConditions: {
+      deep: true,
+      handler(newVal) {
+        this.$emit('update:conditions', newVal);
+      },
+    },
   },
   methods: {
     addCondition() {

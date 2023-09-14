@@ -22,7 +22,7 @@
             <div class="message"> <div class="bot-response text" text-first="true"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"> <rect x="0" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="10" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.2s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="20" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.4s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> </svg></div> </div>
           </section>
         </div>
-        <div class="BoxSentMSG ">
+        <div class="BoxSentMSG " ref="messageBox">
             <input
               type="text"
               placeholder="Napišite poruku..."
@@ -30,7 +30,12 @@
               v-model="inputValue"
               @keydown.enter="sendMessage"
               required
+              v-if="!showOptions"
             >
+            <div v-else>
+              <!-- Render chatbot options here when showOptions is true -->
+              <div v-html="chatbotOptions"></div>
+            </div>
             <div class="send-icon" @click="sendMessage"><svg id="send1" :class="{ 'none': status_func_SendMsgBot }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24 " xml:space="preserve"> <path fill="#d7d7d7 " d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z "> </path> </svg> <svg id="send2" :class="{ 'none': !status_func_SendMsgBot }" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"> <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2"> <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate> </rect> <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2"> <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate> </rect> <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2"> <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate> <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate> </rect> </svg> </div>
         </div>
     </div>
@@ -45,6 +50,9 @@ export default{
       messages: [],
       status_func_SendMsgBot: 0,
       conditionLogs: [],
+      displayOptions: false,
+      showOptions: false, // Add this property to control input/option visibility
+      chatbotOptions: '',
     }
   },
   mounted() {
@@ -52,9 +60,9 @@ export default{
     this.initializeBot();
 
     //Event for button click
-    const chatContainer = this.$refs.chatContainer;
+    const responseContainer = this.$refs.messageBox;
 
-    chatContainer.addEventListener('click', (event) => {
+    responseContainer.addEventListener('click', (event) => {
       if (event.target.classList.contains('bot-option')) {
         const intentId = event.target.getAttribute('data-intent-id');
         const optionText = event.target.innerText;
@@ -116,32 +124,32 @@ export default{
         dataUser: false,
       });
 
-      let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer
+      let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
       let tmp = rule_id + '.' + message.assistant_answer
       message.assistant_answer = tmp
+
       if (message.response_type === 'OPCIJE') {
-        // Display the options as buttons.
-        messageText += '<br>' + this.renderOptions(message);
-      } else if (message.response_type === 'INPUT') {
-        // Display a message with a text input field.
-        messageText += '<br>' + this.renderInput(message.inputPlaceholder);
-      }
+      // Display the options as buttons.
+      this.showOptions = true; // Show chatbot options
+      this.chatbotOptions = this.renderOptions(message);
+    } /*else if (message.response_type === 'INPUT') {
+      // Display a message with a text input field.
+      messageText += '<br>' + this.renderInput(message.inputPlaceholder);
+      this.showOptions = false; // Hide chatbot options
+    }*/
 
-      messageText += '</div>'
-
-      this.messages.push({
-        text: messageText,
-        classes: ['message'],
-        dataUser: false,
-      });
-      this.scrollChatToBottom()
-
+    this.messages.push({
+      text: messageText,
+      classes: ['message'],
+      dataUser: false,
+    });
+    this.scrollChatToBottom();
     },
 
     renderOptions(message) {
       let optionsHtml = '';
       message.customer_response.forEach((option) => {
-        optionsHtml += `<button class="bot-option" data-intent-id="${message.intent_id}" data-options="${message.customer_response}" data-text="${message.assistant_answer}">${option}</button>`;
+        optionsHtml += `<button class="bot-option" data-intent-id="${message.intent_id}" data-options="${message.customer_response}" data-text="${message.assistant_answer}")">${option}</button>`;
       });
       return optionsHtml;
     },
@@ -159,6 +167,7 @@ export default{
     },
 
     async handleUserResponse(selectedOption, intent_id, options, text) {
+      this.addUserMessage(selectedOption)
       try {
         // Iterate through all options to build conditions
         options.forEach((option) => {
@@ -188,7 +197,8 @@ export default{
 
         // Make an API call to send the user's selected option.
         const response = await DataService.userResponse(this.conditionLogs[intent_id], intent_id);
-
+        this.showOptions = false
+        this.chatbotOptions = ''
         // Update the chat interface with the bot's response.
         this.addBotMessage(response, response.name.split(' ')[1]);
       } catch (error) {
@@ -452,6 +462,10 @@ a {
   color: #161616;
   padding: .375rem .5rem;
   margin-top: 8px;
+}
+
+.bot-option:hover{
+  background: var(--hover__color);
 }
 
 .bot-option.selected {
