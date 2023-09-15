@@ -6,12 +6,33 @@
   </transition>
   <transition name="pop" appear>
     <div class="modal" 
-         role="dialog" 
-         v-if="showModal"
-         >
-      <h1>Vue Transitions</h1>
-      <p>The <code>&lt;transition&gt;</code> component in Vue can create wonderful animated entrances and exits.</p>
-      <button @click="$emit('close')" class="button">Hide Modal</button>
+      role="dialog" 
+      v-if="showModal"
+    >
+       <div>
+        <h3>Uredi opcije</h3>
+        <p>Unesite popis opcija</p>
+        <button class="color-button" style="text-align: right;width: 100%;" @click="addNewOption()">Add New +</button>
+        <hr/>
+        <TransitionGroup name="list" tag="ul">
+          <li v-for="(option, index) in response_options" :key="option" style="align-items: center;display: flex;margin-top: .5rem;">
+            <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
+              <div style="display: flex;position: relative;width: 100%;">
+                <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" @blur="handleBlur($event, index)" :value="response_options[index]" aria-describedby="" autocomplete="off">
+              </div>
+            </div>
+            <button @click="removeOption(index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
+              <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
+                <path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
+              </svg>
+            </button>
+          </li>
+        </TransitionGroup>
+        <div class="footer">
+          <button style="background-color: #393939;" @click="applyOptions()">Apply</button>
+          <button style="background: #c6c6c6;" @click="$emit('close')">Cancel</button>
+        </div>
+      </div>
 
     </div>
   </transition>
@@ -19,22 +40,37 @@
 
 <script>
 export default {
-    props:['show_modal'],
+    props:['show_modal', 'options'],
     emits: ['close'],
     data(){
         return{
             showModal: false,
+            response_options: [...this.options],
         }
     },
     watch:{
         show_modal: {
             handler(val){
-              console.log(val)
                 this.showModal = val
             },
             deep: true  //provides initial (not changed yet) state
         },
     },
+    methods:{
+      addNewOption() {
+          this.response_options.push('');
+      },
+      removeOption(index) {
+        this.response_options.splice(index, 1);
+      },
+      handleBlur(event, index) {
+        this.response_options[index] = event.target.value;
+      },
+      applyOptions() {
+        this.$emit('addOptions', this.response_options); // Emit options to parent component
+        this.$emit('close')
+      },
+    }
 }
 </script>
 
@@ -46,11 +82,10 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  margin: auto;
-  text-align: center;
-  width: fit-content;
   height: fit-content;
-  max-width: 22em;
+  max-height: 90%;
+  margin: auto;
+  width: 30%;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
@@ -74,6 +109,42 @@ export default {
   background: #2c3e50;
   opacity: 0.6;
   cursor: pointer;
+}
+
+.footer{
+  justify-content: flex-end;
+  display: flex;
+  grid-column: 1/-1;
+  grid-row: -1/-1;
+  height: 4rem;
+  margin-top: auto;
+}
+
+.footer button{
+  flex: 0 1 50%;
+  height: 4rem;
+  margin: 0;
+  max-width: none;
+  padding-bottom: 2rem;
+  padding-top: 1rem;
+  padding: calc(.875rem - 3px) 63px calc(.875rem - 3px) 15px;
+}
+
+input{
+  background-color: #f4f4f4;
+  border: none;
+  border-bottom: 1px solid #8d8d8d;
+  color: #161616;
+  font-size: .875rem;
+  font-weight: 400;
+  height: 2.5rem;
+  letter-spacing: .16px;
+  line-height: 1.28572;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  padding: 0 1rem;
+  transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
+  width: 100%;
 }
 
 /* ---------------------------------- */

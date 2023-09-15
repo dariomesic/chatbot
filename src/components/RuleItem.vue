@@ -13,7 +13,7 @@
 
         <!--RESPONSE PART-->
         <div class="main-container">
-          <div v-if="!(ruleCopy.response_type === 'OPCIJE')" class="clickable-div" tabindex="1" @click="toggleOptions">
+          <div v-if="!(ruleCopy.response_type === 'OPCIJE')" class="clickable-div" tabindex="1" @click="optionsResponseVisible = !optionsResponseVisible">
             <span style="align-items: center;display: flex;color:#0f62fe">
               <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 2c1.4 0 2.5 1.1 2.5 2.5S9.4 7 8 7 5.5 5.9 5.5 4.5 6.6 2 8 2M8 1C6.1 1 4.5 2.6 4.5 4.5S6.1 8 8 8s3.5-1.6 3.5-3.5S9.9 1 8 1zM13 15h-1v-2.5c0-1.4-1.1-2.5-2.5-2.5h-3C5.1 10 4 11.1 4 12.5V15H3v-2.5C3 10.6 4.6 9 6.5 9h3c1.9 0 3.5 1.6 3.5 3.5V15z"></path>
@@ -29,7 +29,7 @@
               <div v-for="response in ruleCopy.customer_response" :key="response" class="response-option"><span>{{response}}</span></div>
             </div>
             <div style="border-top: 1px solid #e0e0e0;display: flex;flex-wrap: wrap;">
-              <button class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Edit response</button><button class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Edit validation</button>
+              <button @click="show_modal = true" class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Edit response</button>
               <div style="flex: 1 1;"></div>
               <button disabled class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -37,7 +37,7 @@
                     <path d="M8,11c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3C11,9.6,9.7,11,8,11C8,11,8,11,8,11z M8,6C6.9,6,6,6.8,6,7.9C6,7.9,6,8,6,8	c0,1.1,0.8,2,1.9,2c0,0,0.1,0,0.1,0c1.1,0,2-0.8,2-1.9c0,0,0-0.1,0-0.1C10,6.9,9.2,6,8,6C8.1,6,8,6,8,6z"></path>
                   </svg>
               </button>
-              <button @click="toggleOptions" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
+              <button @click="optionsResponseVisible = !optionsResponseVisible" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
                     <path d="M6 6H26.1719l-3.586-3.5859L24 1l6 6-6 6-1.4141-1.4141L26.1719 8H6v7H4V8A2.0024 2.0024 0 016 6zM9.4141 20.4141L5.8281 24H26V17h2v7a2.0024 2.0024 0 01-2 2H5.8281L9.414 29.5859 8 31 2 25l6-6z"></path>
                   </svg>
@@ -50,7 +50,7 @@
               </button>
             </div>
           </div>
-          <div class="options-details-container" v-if="optionsVisible" @click.stop>
+          <div class="options-details-container" v-if="optionsResponseVisible" @click.stop>
             <div class="options-container">
               <div
                 class="option"
@@ -66,7 +66,8 @@
             </div>
             <div class="details-container">
               <div class="details" v-if="activeIndex !== null">
-                {{ response_details[activeIndex] }}
+                <h5 style="margin:0.75rem"> {{response_options[activeIndex]}} </h5>
+                <div style="margin:0.75rem;font-size:0.875rem"> {{ response_details[activeIndex] }} </div>
               </div>
             </div>
           </div>
@@ -78,19 +79,19 @@
 
       <!--NEXT STEP-->
       <h5 style="margin-bottom:unset">And then</h5>
-      <div class="main-container" @click="toggleOptions">
+      <div class="main-container" @click="optionsContinuationVisible = !optionsContinuationVisible">
         <div class="clickable-div" tabindex="1">
-          <span style="align-items: center;display: flex;;color:#0f62fe">
+          <span style="align-items: center;display: flex;color:#0f62fe">
             <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
               <path d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"></path>
             </svg>
-            {{step_selected}}
+            {{ step_selected }}
           </span>
-            <svg style="fill:#0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
-            </svg>
+          <svg style="fill:#0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
+          </svg>
         </div>
-        <div class="options-details-container" v-if="optionsVisible" @click.stop>
+        <div class="options-details-container" v-if="optionsContinuationVisible">
           <div class="options-container">
             <div
               class="option"
@@ -125,7 +126,7 @@
     </div>
     <h2 class="plus-separator"><button @click="$emit('add', rule.name)" class="line-center">+</button></h2>
     <Teleport to="body">
-        <Popup :show_modal="show_modal" @close="show_modal = false"/>
+        <Popup :show_modal="show_modal" @addOptions="updateOptions" @close="show_modal = false" :options="ruleCopy.customer_response"/>
     </Teleport>
 </template>
 <script>
@@ -144,11 +145,12 @@ export default {
     return {
       options: ['bez uvjeta', 's uvjetom'],
       selected_option: Object.keys(this.rule.conditions).length === 0 ? 'bez uvjeta' : 's uvjetom',
-      optionsVisible: false,
+      optionsResponseVisible: false,
+      optionsContinuationVisible: false,
       activeIndex: null,
       response_options: ['Opcije', 'Regularni izraz', 'Slobodni tekst'],
       response_details: [
-        'Detalji za opcije',
+        'Omogućite korisnicima odabir iz skupa izbora.',
         'Detalji za regularni izraz',
         'Detalji za slobodni tekst',
       ],
@@ -188,9 +190,6 @@ export default {
     updateAssistantAnswer(text) {
       this.ruleCopy.assistant_answer = text;
       this.$emit("updateRule", this.ruleCopy);
-    },
-    toggleOptions() {
-      this.optionsVisible = !this.optionsVisible;
     },
     showDetails(index) {
       this.activeIndex = index;
@@ -309,7 +308,6 @@ h2[class="plus-separator"]:after{
   position: absolute;
   top: 100%;
   left: 0;
-  display: none;
   width: 100%;
   background-color: #f5f5f5;
   border: 1px solid #ccc;

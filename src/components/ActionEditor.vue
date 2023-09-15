@@ -1,7 +1,8 @@
 <template>
     <div class="header">
-        <div style="flex: 0 0 23%;margin:2px">
-            <input @input="$emit('updateText', $event.target.value)" placeholder="Untitled action" type="text" aria-describedby="" autocomplete="off" maxlength="64" :value="text" style="border-bottom: 1px solid #8d8d8d;height: 2.5rem;">
+        <div class="input-container">
+            <input @input="$emit('updateText', $event.target.value)" placeholder="Untitled action" type="text" aria-describedby="" autocomplete="off" maxlength="128" :value="text" class="custom-input"/>
+            <div class="icon-container"><svg class="bi-pencil" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="m104.175 90.97-4.252 38.384 38.383-4.252L247.923 15.427V2.497L226.78-18.646h-12.93zm98.164-96.96 31.671 31.67" class="cls-1" style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" transform="translate(-77.923 40.646)"></path><path d="m195.656 33.271-52.882 52.882" style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1" transform="translate(-77.923 40.646)"></path></g></svg></div>
         </div>
         <div style="flex: 1 1"/>
         <div style="display:flex">
@@ -46,5 +47,41 @@ export default {
 button:disabled{
     color: lightgray;
     cursor: not-allowed;
+}
+
+.input-container {
+  display: flex;
+  flex: 0 0 23%;
+  margin: 2px;
+  align-items: center;
+  border-bottom: 1px solid #8d8d8d;
+  position: relative;
+}
+
+.custom-input {
+  height: 2.5rem;
+  flex-grow: 1;
+  padding-right: 2rem; /* Space for the icon */
+  padding-left: 2.5rem; /* Space for the icon */
+}
+
+.icon-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.5rem; /* Width of the icon container */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style the SVG icon as needed */
+.bi-pencil {
+  width: 16px; /* Icon width */
+  height: 16px; /* Icon height */
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer; /* Add a cursor pointer for interaction */
 }
 </style>

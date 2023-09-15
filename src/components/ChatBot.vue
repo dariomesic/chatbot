@@ -469,14 +469,14 @@ a {
 }
 
 .bot-option.selected {
-  background-color: #333; /* Change to your desired color for the selected button */
-  color: #fff; /* Change to your desired text color for the selected button */
-  cursor: not-allowed; /* Change to the desired cursor style */
+  background-color: #333;
+  color: #fff;
+  cursor: not-allowed;
 }
 
 .bot-option.disabled {
-  background-color: #ccc; /* Change to your desired color for disabled buttons */
-  color: #888; /* Change to your desired text color for disabled buttons */
-  cursor: not-allowed; /* Change to the desired cursor style */
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
 }
 </style>

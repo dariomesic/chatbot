@@ -54,7 +54,7 @@
               <ul>
                 <li>
                   <label style="display: flex;justify-content: space-between;margin-bottom: .25rem;align-items: flex-start;margin-bottom: .25rem;margin-right: 3rem;">
-                    <span>Enter phrases your customer might use to start this action</span>
+                    <span>Upišite fraze koje bi Vaš korisnik mogao iskoristiti da započne ovu akciju.</span>
                     <span>Total: {{questions.length}}</span>
                   </label>
                 </li>
@@ -221,17 +221,17 @@ export default {
     }
   },
   async mounted() {
-    await this.loadQuestionsAndRules(this.$route.params.name);
+    let intentId = decodeId(this.$route.query[0]);
+    await this.loadQuestionsAndRules(await DataService.getNameForIntent(intentId), intentId);
   },
   methods: {
-    async loadQuestionsAndRules(text) {
+    async loadQuestionsAndRules(text, intentID) {
       try {
         this.intentText = text;
         this.intentTextCopy = JSON.parse(JSON.stringify(this.intentText));
-        const intentId = decodeId(this.$route.query[0]);
-        this.originalQuestions = await DataService.getQuestionsForIntent(intentId);
+        this.originalQuestions = await DataService.getQuestionsForIntent(intentID);
         this.questions = JSON.parse(JSON.stringify(this.originalQuestions));
-        this.rules = JSON.parse(await DataService.getRulesForIntent(intentId));
+        this.rules = JSON.parse(await DataService.getRulesForIntent(intentID));
         this.rules_copy = JSON.parse(JSON.stringify(this.rules));
       } catch (error) {
         console.error(error);
@@ -348,7 +348,7 @@ export default {
         Promise.all(apiRequests)
           .then(() => {
             // Reload questions and rules after the batch operations
-            this.loadQuestionsAndRules(this.intentTextCopy);
+            this.loadQuestionsAndRules(this.intentTextCopy, intentId);
           })
           .catch((error) => {
             console.error("API request failed:", error);

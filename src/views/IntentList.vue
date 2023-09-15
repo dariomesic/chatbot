@@ -1,14 +1,14 @@
 <template>
   <Navbar/>
   <div class="actions">
-    <h3>Actions</h3>
+    <h3>Akcije</h3>
     <section>
       <div style="display:flex;width:100%">
         <div class="search-container">
-          <input v-model="searchQuery" type="text" style="width:100%" placeholder="Filter by name...">
-          <button class="search-button" type="submit" :disabled="true">Search</button>
+          <input v-model="searchQuery" type="text" style="width:100%" placeholder="Filtriraj po imenu...">
+          <button class="search-button" type="submit" :disabled="true">Pretraži</button>
         </div>
-        <button @click="deleteSelectedIntents" class="background-button" tabindex="0" type="button">New action
+        <button @click="deleteSelectedIntents" class="background-button" tabindex="0" type="button">Nova akcija
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
             <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
           </svg>
@@ -21,12 +21,12 @@
               <th scope="col">
                 <input type="checkbox" v-model="selectAll">
               </th>
-              <th>Name</th>
-              <th>Last Edited</th>
-              <th>Examples Count</th>
-              <th>Steps Count</th>
+              <th>Naziv</th>
+              <th>Zadnje uređivanje</th>
+              <th>Broj pitanja</th>
+              <th>Broj pravila</th>
               <th>Status</th>
-              <th>Options</th>
+              <th>Opcije</th>
             </tr>
         </thead>
         <tbody>
@@ -86,14 +86,14 @@
       <div style="padding: 0 1rem;align-items: center;display: flex;height: 100%;">
         <div>
           <div class="items-per-page" style="display:flex;align-items: center;">
-            <label for="itemsPerPage">Items per page:</label>
+            <label for="itemsPerPage">Stavki po stranici:</label>
             <CustomSelect :options="[2,5,10,25,100]" :value="itemsPerPage" @update:value="itemsPerPage = $event"/>
           </div>
         </div>
-        <span style="margin-left:1.235rem">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, intents.length) }} of {{ intents.length }} items</span>
+        <span style="margin-left:1.235rem">Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, intents.length) }} od {{ intents.length }} stavki</span>
       </div>
       <div style="align-items: center;display: flex;height: 100%;">
-        <span style="margin-left: .0625rem;margin-right: 1rem;">{{currentPage}} of {{totalPages}} pages</span>
+        <span style="margin-left: .0625rem;margin-right: 1rem;">{{currentPage}} od {{totalPages}} stranica</span>
         <div style="display: flex;">
           <button
             @click="currentPage > 1 ? currentPage-- : null"
@@ -180,7 +180,7 @@ export default {
   methods: {
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
-      this.$router.push({ name: 'IntentRules', query: encodeId(intent.id), params: { name: intent.name }, });
+      this.$router.push({ name: 'IntentRules', query: encodeId(intent.id) });
     },
     async deleteintent(id) {
         try {
