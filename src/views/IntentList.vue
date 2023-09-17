@@ -8,11 +8,19 @@
           <input v-model="searchQuery" type="text" style="width:100%" placeholder="Filtriraj po imenu...">
           <button class="search-button" type="submit" :disabled="true">Pretraži</button>
         </div>
-        <button @click="deleteSelectedIntents" class="background-button" tabindex="0" type="button">Nova akcija
-          <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
-            <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
-          </svg>
-        </button>
+        <transition name="fade_main" mode="out-in">
+          <button v-if="!selectedIntents.length" @click="newAction" class="background-button" tabindex="0" type="button">Nova akcija
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
+              <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
+            </svg>
+          </button>
+          <button v-else @click="deleteSelectedIntents" class="background-button" style="background:red">Izbriši sve
+            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
+              <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
+              <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
+            </svg>
+          </button>
+        </transition>
       </div>
     </section>
     <table>
@@ -182,12 +190,23 @@ export default {
       // Navigate to intentDetail component with the selected intent
       this.$router.push({ name: 'IntentRules', query: encodeId(intent.id) });
     },
-    async deleteintent(id) {
+    async newAction(){
+      let id = JSON.parse(JSON.stringify(await DataService.addIntent())).intent_id
+      console.log(id)
+      await DataService.addRuleForIntent(id)
+      this.$router.push({ name: 'IntentRules', query: encodeId(id) });
+    },
+    async deleteIntent(id) {
         try {
           await DataService.deleteIntent(id);
         } catch (error) {
           console.error(error);
         }
+        try {
+      this.intents = await DataService.getIntents();//POPRAVITI
+      } catch (error) {
+        console.error(error);
+      }
     },
     showOptionsFor(intent) {
       // Toggle the popup menu for the clicked intent

@@ -64,6 +64,18 @@
     })
   }
 
+  addIntent(){
+    return fetch('/addIntent', {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   deleteIntent(intent_id){
     return fetch('/deleteIntent?intent_id=' + intent_id, {
       method : "DELETE",
@@ -101,6 +113,18 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({new_question: new_question, question_id : question_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  addRuleForIntent(intent_id){
+    return fetch('/addRuleForIntent?intent_id=' + intent_id, {
+      method : "GET",
     })
     .then((response) => {
         if (!response.ok) {
@@ -252,6 +276,17 @@ class DataService {
         return response.json();
     })
   }
+  addIntent(){
+    return fetch('/api/addIntent', {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
 
   deleteIntent(intent_id){
     return fetch('/api/deleteIntent?intent_id=' + intent_id, {
@@ -290,6 +325,18 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({new_question: new_question, question_id : question_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  addRuleForIntent(intent_id){
+    return fetch('/api/addRuleForIntent?intent_id=' + intent_id, {
+      method : "GET",
     })
     .then((response) => {
         if (!response.ok) {
