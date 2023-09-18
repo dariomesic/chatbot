@@ -122,6 +122,18 @@
     })
   }
 
+  deleteQuestionsById(intent_id){
+    return fetch('/deleteQuestionsById?intent_id=' + intent_id, {
+      method : "DELETE",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   addRuleForIntent(intent_id){
     return fetch('/addRuleForIntent?intent_id=' + intent_id, {
       method : "GET",
@@ -337,6 +349,18 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({new_question: new_question, question_id : question_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  deleteQuestionsById(intent_id){
+    return fetch('/api/deleteQuestionsById?intent_id=' + intent_id, {
+      method : "DELETE",
     })
     .then((response) => {
         if (!response.ok) {

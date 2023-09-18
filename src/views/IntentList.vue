@@ -198,6 +198,7 @@ export default {
     async deleteIntent(id) {
         try {
           await DataService.deleteStep(id)
+          await DataService.deleteQuestionsById(id)
           await DataService.deleteIntent(id);
           this.intents = await DataService.getIntents();
         } catch (error) {
