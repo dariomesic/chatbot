@@ -59,7 +59,7 @@
                 :key="index"
                 @mouseenter="showDetails(index)"
                 @mouseleave="hideDetails"
-                @click="option === 'Opcije' ? show_modal = true : (step_selected = option)"
+                @click="option === 'Opcije' ? (show_modal = true,ruleCopy.response_type = 'OPCIJE') : (step_selected = option, ruleCopy.response_type = '');optionsResponseVisible = false"
               >
                 {{ option }}
               </div>
@@ -99,7 +99,7 @@
               v-for="(option, index) in step_options"
               :key="index"
               @mouseenter="showDetails(index)"
-              @click="step_selected = option"
+              @click="step_selected = option;updateContinuation(option)"
             >
               {{ option }}
             </div>
@@ -183,12 +183,20 @@ export default {
       } : this.ruleCopy.conditions = {}
       this.$emit("updateRule", this.ruleCopy);
     },
+    updateOptions(options) {
+      this.ruleCopy.customer_response = options;
+      this.$emit("updateRule", this.ruleCopy);
+    },
     updateConditions(conditions) {
       this.ruleCopy.conditions = conditions;
       this.$emit("updateRule", this.ruleCopy);
     },
     updateAssistantAnswer(text) {
       this.ruleCopy.assistant_answer = text;
+      this.$emit("updateRule", this.ruleCopy);
+    },
+    updateContinuation(option){
+      this.ruleCopy.continuation = option;
       this.$emit("updateRule", this.ruleCopy);
     },
     showDetails(index) {
