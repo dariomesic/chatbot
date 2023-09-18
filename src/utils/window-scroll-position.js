@@ -32,24 +32,12 @@ export function windowScrollPosition(propertyName) {
     }
   }
   
-// Simple XOR-based encoding function
-export function encodeId(id) {
-  // Repeat the input string to make it longer
-  const repeatedId = id.toString().repeat(10); // Adjust the number of repetitions as needed
-
-  // Encode the repeated string
-  const encoded = Array.from(repeatedId)
-    .map(char => String.fromCharCode(char.charCodeAt(0) ^ 42))
-    .join('');
-
-  return encoded;
-}
-
-export function decodeId(encodedId) {
-  // Decode the encoded string
-  const decoded = Array.from(encodedId)
-    .map(char => String.fromCharCode(char.charCodeAt(0) ^ 42))
-    .join('');
-
-  return decoded;
-}
+  // export function encodeId(id) {
+  //   const encoded = btoa(String(id));
+  //   return encoded;
+  // }
+  
+  // export function decodeId(encodedId) {
+  //   const decoded = parseInt(atob(encodedId), 10);
+  //   return decoded;
+  // }

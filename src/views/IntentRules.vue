@@ -128,7 +128,7 @@ import Navbar from '../components/AppNavbar.vue';
 import Card from '../components/CardItem.vue';
 import Rule from '../components/RuleItem.vue';
 import ActionEditor from '../components/ActionEditor.vue'
-import { windowScrollPosition, decodeId } from '../utils/window-scroll-position'
+import { windowScrollPosition } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
 import DataService from '../services/data.services'
 
@@ -221,7 +221,7 @@ export default {
     }
   },
   async mounted() {
-    let intentId = decodeId(this.$route.query[0]);
+    let intentId = this.$route.query.id;
     await this.loadQuestionsAndRules(await DataService.getNameForIntent(intentId), intentId);
   },
   methods: {
@@ -296,7 +296,7 @@ export default {
     },
     onSaveButtonClicked() {
       /* TU TREBA IC NEKI LOADER */
-      const intentId = decodeId(this.$route.query[0]);
+      const intentId = this.$route.query.id;
       if (this.intentTextCopy !== this.intentText) {
         DataService.updateIntent(this.intentTextCopy, intentId)
           .then(() => {

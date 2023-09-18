@@ -151,6 +151,18 @@
     })
   }
 
+  deleteStep(intent_id){
+    return fetch('/deleteStep?intent_id=' + intent_id, {
+      method : "DELETE",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   getRulesForIntent(intent_id){
     return fetch('/getRulesForIntent?intent_id=' + intent_id, {
       method : "GET",
@@ -366,6 +378,18 @@ class DataService {
   getRulesForIntent(intent_id){
     return fetch('/api/getRulesForIntent?intent_id=' + intent_id, {
       method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  deleteStep(intent_id){
+    return fetch('/api/deleteStep?intent_id=' + intent_id, {
+      method : "DELETE",
     })
     .then((response) => {
         if (!response.ok) {

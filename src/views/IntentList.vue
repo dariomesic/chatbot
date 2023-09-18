@@ -129,7 +129,6 @@
 
 <script>
 import Navbar from '../components/AppNavbar.vue';
-import { encodeId } from '../utils/window-scroll-position'
 import CustomSelect from '../components/CustomSelect.vue'
 import DataService from '../services/data.services'
 export default {
@@ -188,25 +187,22 @@ export default {
   methods: {
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
-      this.$router.push({ name: 'IntentRules', query: encodeId(intent.id) });
+      this.$router.push({ name: 'IntentRules', query: { id: intent.id } });
     },
     async newAction(){
       let id = JSON.parse(JSON.stringify(await DataService.addIntent())).intent_id
       console.log(id)
       await DataService.addRuleForIntent(id)
-      this.$router.push({ name: 'IntentRules', query: encodeId(id) });
-    },
+      this.$router.push({ name: 'IntentRules', query: { id: id } });
+  },
     async deleteIntent(id) {
         try {
+          await DataService.deleteStep(id)
           await DataService.deleteIntent(id);
+          this.intents = await DataService.getIntents();
         } catch (error) {
           console.error(error);
         }
-        try {
-      this.intents = await DataService.getIntents();//POPRAVITI
-      } catch (error) {
-        console.error(error);
-      }
     },
     showOptionsFor(intent) {
       // Toggle the popup menu for the clicked intent
