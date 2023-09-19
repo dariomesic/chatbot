@@ -14,7 +14,7 @@ export default {
 :root {
   --hover__color: #E5E5E5;
   --background: #f4f4f4;
-  --main__color: #0f62fe;
+  --main__color: #003366;
   --border__color: #d2d2d2;
 
   --font__size: 15px;
@@ -54,10 +54,6 @@ button {
   position: relative;
 }
 
-button:focus{
-  outline:.125rem solid #0f62fe
-}
-
 button:disabled{
   cursor: not-allowed;
   opacity: 0.3;
@@ -94,7 +90,7 @@ button:disabled{
 }
 
 .background-button{
-    background-color: #0f62fe;
+    background-color: var(--main__color);
     border: 1px solid transparent;
     color: #fff;
     min-width: 10rem;
@@ -102,7 +98,7 @@ button:disabled{
 }
 
 .background-button:hover{
-    background-color: #0b4ecd;
+    background-color: #003d7b;
     transition: .2s;
 }
 

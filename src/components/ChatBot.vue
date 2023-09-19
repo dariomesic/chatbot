@@ -21,6 +21,15 @@
             <div class="captionBot msgCaption" data-user="false"><img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span></div>
             <div class="message"> <div class="bot-response text" text-first="true"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"> <rect x="0" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="10" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.2s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="20" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.4s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> </svg></div> </div>
           </section>
+          <!-- SVG icons for thumbs up and thumbs down -->
+          <div v-if="showFeedbackButtons" style="padding: 0 25px 0px;">
+            <button :disabled="selectedFeedbackButton" :style="selectedFeedbackButton === 'up' ? { transform: 'scale(1)', opacity: '1' } : {}" @click="handleFeedback(true)">
+              <svg style="padding:15px 5px;height:25px;width:25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 10C3 9.44772 3.44772 9 4 9H7V21H4C3.44772 21 3 20.5523 3 20V10Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M7 11V19L8.9923 20.3282C9.64937 20.7662 10.4214 21 11.2111 21H16.4586C17.9251 21 19.1767 19.9398 19.4178 18.4932L20.6119 11.3288C20.815 10.1097 19.875 9 18.6391 9H14" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14 9L14.6872 5.56415C14.8659 4.67057 14.3512 3.78375 13.4867 3.49558V3.49558C12.6336 3.21122 11.7013 3.59741 11.2992 4.4017L8 11H7" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            </button>
+            <button :disabled="selectedFeedbackButton" :style="selectedFeedbackButton === 'down' ? { transform: 'scale(1)', opacity: '1' } : {}" @click="handleFeedback(false)">
+              <svg style="padding:15px 5px;height:25px;width:25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21 14C21 14.5523 20.5523 15 20 15H17V3H20C20.5523 3 21 3.44772 21 4V14Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M17 13V5L15.0077 3.6718C14.3506 3.23375 13.5786 3 12.7889 3H7.54138C6.07486 3 4.82329 4.06024 4.5822 5.5068L3.38813 12.6712C3.18496 13.8903 4.12504 15 5.36092 15H10" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M10 15L9.31283 18.4358C9.13411 19.3294 9.64876 20.2163 10.5133 20.5044V20.5044C11.3664 20.7888 12.2987 20.4026 12.7008 19.5983L16 13H17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            </button>
+          </div>
         </div>
         <div class="BoxSentMSG " ref="messageBox">
             <input
@@ -53,6 +62,9 @@ export default{
       displayOptions: false,
       showOptions: false, // Add this property to control input/option visibility
       chatbotOptions: '',
+      showFeedbackButtons: false,
+      selectedFeedbackButton: false,
+      intent_id: ''
     }
   },
   mounted() {
@@ -89,9 +101,10 @@ export default{
         try {
           // Make an API call to the backend to send the user's message.
           const response = await DataService.sendMessage(this.inputValue)
-
+          this.intent_id = response.intent_id
           this.conditionLogs[response.intent_id] = []; // Initialize the array
-
+          this.selectedFeedbackButton = false;
+          this.showFeedbackButtons = true; // Show thumbs up/down only for intent
           // Update the chat interface with the bot's response.
           this.addBotMessage(response, 1);
         } catch (error) {
@@ -167,6 +180,7 @@ export default{
     },
 
     async handleUserResponse(selectedOption, intent_id, options, text) {
+      this.showFeedbackButtons = false
       this.addUserMessage(selectedOption)
       try {
         // Iterate through all options to build conditions
@@ -180,8 +194,6 @@ export default{
           // Add the condition log to the array
           this.conditionLogs[intent_id].push(conditionLog);
         });
-
-        console.log(this.conditionLogs[intent_id]);
 
         // Disable all options after the user makes a selection and change the style of the selected button
         const allOptions = document.querySelectorAll(`.bot-option[data-intent-id="${intent_id}"]`);
@@ -208,14 +220,22 @@ export default{
 
     scrollChatToBottom() {
       this.$nextTick(() => {
-      // Use this.$refs to access the chat container element
-      const chatContainer = this.$refs.chatContainer;
-    
-      // Scroll to the bottom with smooth behavior
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-      chatContainer.lastElementChild.scrollIntoView({ behavior: 'smooth' });
-    });
+        // Use this.$refs to access the chat container element
+        const chatContainer = this.$refs.chatContainer;
+      
+        // Scroll to the bottom with smooth behavior
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatContainer.lastElementChild.scrollIntoView({ behavior: 'smooth' });
+      })
     },
+
+    async handleFeedback(value){
+      try {
+        value ? (await DataService.thumbsUp(this.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.intent_id),this.selectedFeedbackButton = 'down')
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
   },
 }
@@ -377,6 +397,18 @@ a {
   display: block;
   height: 20px;
   width: 100%;
+}
+
+.ContentChat button{
+    transform: scale(0.85);
+    transition: all .2s ease-in-out;
+    opacity: 0.6;
+}
+ 
+.ContentChat button:hover {
+    z-index: 2;
+    transform: scale(1);
+    opacity: 1;
 }
 
 .AvatarBot {

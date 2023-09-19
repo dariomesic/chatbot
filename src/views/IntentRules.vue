@@ -8,19 +8,19 @@
 
 
       <div :class="['left-panel', { 'collapsed': isLeftPanelCollapsed }]">
-        <button @click="toggleLeftPanel">Sažmi panel</button>
+        <button style="position: absolute;bottom: 10px;left: 10px;" @click="toggleLeftPanel">{{'<< Sakrij slijed konverzacije'}}</button>
         <transition name="card-slide" mode="out-in">
           <section class="left-cards-container" v-show="!isLeftPanelCollapsed">
             <div class="left-cards">
               <!--CUSTOMER CARD-->
               <div class="start-editor">
                   <div class="trigger">
-                      <label class="text-style">Korisnik počinje pitanjem:</label>
-                      <p class="text-style">{{intentTextCopy}}</p>
+                      <label class="text-style">Korisnik bi mogao postaviti sljedeće pitanje:</label>
+                      <p class="text-style">{{questions[0] !== undefined ? questions[0].question : ''}}</p>
                   </div>
               </div>
               <div class="conversation-steps">
-                  <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Koraci konverzacije</p>
+                  <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Slijed konverzacije</p>
                   <TransitionGroup name="list" tag="ul">
                     <div v-for="(card, index) in rules" :key="card">
                       <Card
@@ -46,16 +46,16 @@
         <div class="content">
           <div style="background-color: #f4f4f4;display: flex;flex-direction: column;flex-wrap: nowrap;margin-bottom: 2rem;max-height: 100%;padding: 1.5rem 2rem;">
             <h4 class="TriggerEditor__title">
-              <span class="TriggerEditor__title-text">Korisnik počinje pitanjima:</span>
+              <span class="TriggerEditor__title-text">Korisnik bi mogao postaviti sljedeća pitanja:</span>
             </h4>
-            <p>Unesite fraze koje korisnik upisuje ili izgovara kako bi započeo razgovor o određenoj temi. Ovi izrazi određuju zadatak, problem ili pitanje koje vaš klijent ima.</p>
-            <p>Što više fraza unesete, to će vaš pomoćnik bolje prepoznati što klijent želi.</p>
+            <p>U ovom dijelu se unose pitanja kakva korisnici obično postavljaju, a vezani su uz odabrano područje (intent).</p>
+            <p>Što se više pitanja unese, to će chatbot moći bolje prepoznavati s čim korisnik treba pomoć.</p>
             <div>
               <ul>
                 <li>
                   <label style="display: flex;justify-content: space-between;margin-bottom: .25rem;align-items: flex-start;margin-bottom: .25rem;margin-right: 3rem;">
-                    <span>Upišite fraze koje bi Vaš korisnik mogao iskoristiti da započne ovu akciju.</span>
-                    <span>Total: {{questions.length}}</span>
+                    <span>Unesite pitanje u obliku u kojem bi ga unio korisnik:</span>
+                    <span>Ukupno: {{questions.length}}</span>
                   </label>
                 </li>
                 <li style="border-bottom: 1px solid #e0e0e0;margin-bottom: 1rem;padding-bottom: 1rem;padding-right: 3rem;">
@@ -98,7 +98,7 @@
             </div>
           </div>
         </TransitionGroup>
-        <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">Proširi panel</button>
+        <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">{{'>> Prikaži slijed konverzacije'}}</button>
         <div class="chat" @click="showChatbot = !showChatbot">
           <svg height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 58 58" xml:space="preserve" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

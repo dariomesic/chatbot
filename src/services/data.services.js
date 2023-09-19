@@ -232,6 +232,30 @@
         return response.json();
     })
   }
+
+  thumbsUp(intent_id){
+    return fetch('/thumbsUp?intent_id=' + intent_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  thumbsDown(intent_id){
+    return fetch('/thumbsDown?intent_id=' + intent_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
 }
 export default new DataService()
 */
@@ -460,6 +484,30 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({conditions: conditions, intent_id: intent_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  thumbsUp(intent_id){
+    return fetch('/api/thumbsUp?intent_id=' + intent_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  thumbsDown(intent_id){
+    return fetch('/api/thumbsDown?intent_id=' + intent_id, {
+      method : "GET",
     })
     .then((response) => {
         if (!response.ok) {

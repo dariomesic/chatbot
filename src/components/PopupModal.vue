@@ -1,20 +1,15 @@
 <template>
   <transition name="fade" appear>
-    <div class="modal-overlay" 
-         v-if="showModal" 
-         @click="$emit('close')"></div>
+    <div class="modal-overlay" v-if="showModal" @click="$emit('close')"></div>
   </transition>
   <transition name="pop" appear>
-    <div class="modal" 
-      role="dialog" 
-      v-if="showModal"
-    >
-       <div>
+    <div class="modal" role="dialog" v-if="showModal">
+      <div>
         <h3>Uredi opcije</h3>
         <p>Unesite popis opcija</p>
         <button class="color-button" style="text-align: right;width: 100%;" @click="addNewOption()">Add New +</button>
         <hr/>
-        <TransitionGroup name="list" tag="ul">
+        <transition-group name="list" tag="ul">
           <li v-for="(option, index) in response_options" :key="option" style="align-items: center;display: flex;margin-top: .5rem;">
             <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
               <div style="display: flex;position: relative;width: 100%;">
@@ -27,52 +22,52 @@
               </svg>
             </button>
           </li>
-        </TransitionGroup>
+        </transition-group>
         <div class="footer">
           <button style="background-color: #393939;" @click="applyOptions()">Apply</button>
           <button style="background: #c6c6c6;" @click="$emit('close')">Cancel</button>
         </div>
       </div>
-
     </div>
   </transition>
 </template>
 
 <script>
 export default {
-    props:['show_modal', 'options'],
-    emits: ['close'],
-    data(){
-        return{
-            showModal: false,
-            response_options: [...this.options],
-        }
+  props: ['show_modal', 'options'],
+  emits: ['close'],
+  data() {
+    return {
+      showModal: false,
+      response_options: [...this.options],
+    };
+  },
+  watch: {
+    show_modal: {
+      handler(val) {
+        this.showModal = val;
+      },
+      deep: true, // provides initial (not changed yet) state
     },
-    watch:{
-        show_modal: {
-            handler(val){
-                this.showModal = val
-            },
-            deep: true  //provides initial (not changed yet) state
-        },
+  },
+  methods: {
+    addNewOption() {
+      this.response_options.push('');
     },
-    methods:{
-      addNewOption() {
-          this.response_options.push('');
-      },
-      removeOption(index) {
-        this.response_options.splice(index, 1);
-      },
-      handleBlur(event, index) {
-        this.response_options[index] = event.target.value;
-      },
-      applyOptions() {
-        this.$emit('addOptions', this.response_options); // Emit options to parent component
-        this.$emit('close')
-      },
-    }
-}
+    removeOption(index) {
+      this.response_options.splice(index, 1);
+    },
+    handleBlur(event, index) {
+      this.response_options[index] = event.target.value;
+    },
+    applyOptions() {
+      this.$emit('addOptions', this.response_options); // Emit options to parent component
+      this.$emit('close');
+    },
+  },
+};
 </script>
+
 
 <style scoped>
 .modal {
