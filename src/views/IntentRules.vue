@@ -122,6 +122,9 @@
       </div>
     </div>
  </div>
+ <Teleport to="body">
+    <loading v-if="loading"/>
+  </Teleport>
 </template>
 <script>
 import Navbar from '../components/AppNavbar.vue';
@@ -131,11 +134,11 @@ import ActionEditor from '../components/ActionEditor.vue'
 import { windowScrollPosition } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
 import DataService from '../services/data.services'
-
+import Loading from '../components/LoadingModal.vue'
 export default {
   mixins: [windowScrollPosition('position')],
   components: {
-    Card, Rule, Navbar, ActionEditor, Chatbot
+    Card, Rule, Navbar, ActionEditor, Chatbot, Loading
   },
   data() {
     return {
@@ -149,6 +152,7 @@ export default {
       showChatbot: false,
       intentTextCopy: '',
       intentText: '',
+      loading: false,
     };
   },
   watch: {
@@ -226,6 +230,7 @@ export default {
   },
   methods: {
     async loadQuestionsAndRules(text, intentID) {
+      this.loading = false
       try {
         this.intentText = text;
         this.intentTextCopy = JSON.parse(JSON.stringify(this.intentText));
@@ -295,7 +300,7 @@ export default {
       this.questions.splice(index, 1);
     },
     onSaveButtonClicked() {
-      /* TU TREBA IC NEKI LOADER */
+      this.loading = true
       const intentId = this.$route.query.id;
       if (this.intentTextCopy !== this.intentText) {
         DataService.updateIntent(this.intentTextCopy, intentId)
@@ -337,7 +342,7 @@ export default {
           );
         }
         if(apiRequests.length){
-          apiRequests.push(DataService.sendQuestions());
+          apiRequests.push(DataService.sendQuestions(this.questions.length, intentId));
         }
 
         if (!(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))) {

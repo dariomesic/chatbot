@@ -187,8 +187,8 @@
     })
   }
 
-  sendQuestions(){
-    return fetch('/sendQuestions', {
+  sendQuestions(questions, intent_id){
+    return fetch('/sendQuestions?questions=' + questions + '&intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -448,7 +448,7 @@ class DataService {
   }
 
   sendQuestions(){
-    return fetch('/api/sendQuestions', {
+    return fetch('/api/sendQuestions?questions=' + questions + '&intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
