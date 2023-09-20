@@ -22,7 +22,7 @@
               <div class="conversation-steps">
                   <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Slijed konverzacije</p>
                   <TransitionGroup name="list" tag="ul">
-                    <div v-for="(card, index) in rules" :key="card">
+                    <div v-for="(card, index) in rules_copy" :key="card.continuation">
                       <Card
                         :card="card"
                         @click="scrollToCard(index)"
@@ -84,8 +84,8 @@
         </div>
       </div>
         
-        <TransitionGroup name="list" tag="ul">
-          <div v-for="(rule, index) in rules" :key="rule">
+         <TransitionGroup name="list" tag="ul">
+          <div v-for="(rule, index) in rules_copy" :key="rule.continuation">
             <div :ref="'scrollableCard_' + index">
               <Rule
                 :rule="rule"
@@ -159,7 +159,7 @@ export default {
     position: {
       handler(val) {
         this.$nextTick(() => {
-          for (let i = 0; i < this.rules.length; i++) {
+          for (let i = 0; i < this.rules_copy.length; i++) {
             const refName = 'scrollableCard_' + i;
             if (this.$refs[refName]) {
               const element = this.$refs[refName][0];
@@ -253,30 +253,24 @@ export default {
     toggleLeftPanel() {
       this.isLeftPanelCollapsed = !this.isLeftPanelCollapsed;
     },
-    addRule(name) {
-      let idToAdd = name.split(" ")[1]
-      for (let i = idToAdd; i < this.rules.length; i++) {
-        this.rules[i].name = 'Step' + i++;
+    addRule(id) {
+      this.rules_copy.splice(id, 0, {
+        id: this.rules_copy.length + 1,
+        conditions: {},
+        assistant_answer: '',
+        response_type: '',
+        customer_response: [],
+        continuation: 'Nastavite na idući korak'
+      });
+      for (let i = id; i < this.rules_copy.length; i++) {
+        this.rules_copy[i].id = i + 1;
       }
-      this.rules.push(
-        { 
-          name: 'Step ' + (Number(idToAdd) + 1),
-          conditions: {},
-          assistant_answer: '',
-          response_type: '',
-          customer_response: [],
-          continuation: 'Nastavite na idući korak'
-
-        }
-      );
-      this.rules.sort((a, b) => a.name.split(' ')[1] - b.name.split(' ')[1]);
     },
-    removeRule(name) {
-      let idToRemove = Number(name.split(" ")[1])
-      if (this.rules.length !== 1) {
-        this.rules = this.rules.filter(rule => rule.name.split(' ')[1] != idToRemove);
-        for (let i = idToRemove - 1; i < this.rules.length; i++) {
-          this.rules[i].name = 'Step ' + (i+1);
+    removeRule(id) {
+      if (this.rules_copy.length !== 1) {
+        this.rules_copy = this.rules_copy.filter(rule => rule.id != id);
+        for (let i = id - 1; i < this.rules_copy.length; i++) {
+          this.rules_copy[i].id = (i+1);
         }
       }
     },

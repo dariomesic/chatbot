@@ -4,7 +4,7 @@
     :class="{ 'selected': isSelected }"
     @click="$emit('click')"
   >
-    <label>{{card.name.split(" ")[1]}}</label>
+    <label>{{card.id}}</label>
     <div class="right-part">
         <div class="tile">
             <span class="tile-title">{{card.assistant_answer}}</span>
@@ -47,7 +47,7 @@ export default {
   methods:{
     handleRemoveClick(event) {
       event.stopPropagation();
-      this.$emit('remove', this.card.name)
+      this.$emit('remove', this.card.id)
     },
   }
 };

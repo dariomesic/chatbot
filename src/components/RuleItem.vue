@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-      <h4 style="margin-top:unset">Korak {{rule.name.split(" ")[1]}}</h4>
+      <h4 style="margin-top:unset">Korak {{rule.id}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
         <div style="min-width: 7rem;">Ako je odabran</div>
         <CustomSelect :options="options" :value="selected_option" @update:value="conditionTypeChanged"/>
@@ -115,7 +115,7 @@
 
 
       <div class="topright">
-        <button @click="$emit('remove', rule.name)" class="main-button" style="align-items: center;display: flex;">
+        <button @click="$emit('remove', rule.id)" class="main-button" style="align-items: center;display: flex;">
           <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
             <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
             <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
@@ -124,7 +124,7 @@
         </button>
       </div>
     </div>
-    <h2 class="plus-separator"><button @click="$emit('add', rule.name)" class="line-center">+</button></h2>
+    <h2 class="plus-separator"><button @click="$emit('add', rule.id)" class="line-center">+</button></h2>
     <Teleport to="body">
         <Popup :show_modal="show_modal" @addOptions="updateOptions" @close="show_modal = false" :options="ruleCopy.customer_response"/>
     </Teleport>

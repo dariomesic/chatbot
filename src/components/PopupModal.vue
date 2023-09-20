@@ -10,7 +10,7 @@
         <button class="color-button" style="text-align: right;width: 100%;" @click="addNewOption()">Add New +</button>
         <hr/>
         <transition-group name="list" tag="ul">
-          <li v-for="(option, index) in response_options" :key="option" style="align-items: center;display: flex;margin-top: .5rem;">
+          <li v-for="(option, index) in response_options" :key="option.name" style="align-items: center;display: flex;margin-top: .5rem;">
             <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
               <div style="display: flex;position: relative;width: 100%;">
                 <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" @blur="handleBlur($event, index)" :value="response_options[index]" aria-describedby="" autocomplete="off">
