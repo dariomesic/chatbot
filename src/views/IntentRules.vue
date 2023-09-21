@@ -201,14 +201,15 @@ export default {
       );
     },
     distinctAnswers() {
-      const distinctAnswersSet = new Set();
+      const distinctAnswersWithIndices = [];
 
-      this.rules_copy.forEach((rule,index) => {
+      this.rules_copy.forEach((rule, index) => {
         if (rule.customer_response && rule.customer_response.length > 0) {
-            distinctAnswersSet.add(index + 1 + '.' + rule.assistant_answer);
+          distinctAnswersWithIndices.push({ index: index + 1, answer: index + 1 + ". " + rule.assistant_answer });
         }
       });
-      return [...distinctAnswersSet];
+      console.log(distinctAnswersWithIndices)
+      return distinctAnswersWithIndices;
     },
 
     distinctCustomerResponses() {

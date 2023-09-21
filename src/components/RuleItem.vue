@@ -165,7 +165,7 @@ export default {
       ],
       step_selected: this.rule.continuation,
       show_modal: false,
-      ruleCopy: { ...this.rule },
+      ruleCopy: { ... this.rule},
     };
   },
   methods: {

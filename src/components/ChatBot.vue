@@ -106,7 +106,7 @@ export default{
           this.selectedFeedbackButton = false;
           this.showFeedbackButtons = true; // Show thumbs up/down only for intent
           // Update the chat interface with the bot's response.
-          this.addBotMessage(response, 1);
+          this.addBotMessage(response);
         } catch (error) {
           console.error('Error sending message:', error);
         }
@@ -130,7 +130,7 @@ export default{
       this.scrollChatToBottom()
     },
 
-    addBotMessage(message, rule_id) {
+    addBotMessage(message) {
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
@@ -138,7 +138,7 @@ export default{
       });
 
       let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
-      let tmp = rule_id + '.' + message.assistant_answer
+      let tmp = message.assistant_answer
       message.assistant_answer = tmp
 
       if (message.response_type === 'OPCIJE') {
@@ -212,7 +212,7 @@ export default{
         this.showOptions = false
         this.chatbotOptions = ''
         // Update the chat interface with the bot's response.
-        this.addBotMessage(response, response.name.split(' ')[1]);
+        this.addBotMessage(response);
       } catch (error) {
         console.error('Error handling user response:', error);
       }
