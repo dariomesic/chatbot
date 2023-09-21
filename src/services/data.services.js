@@ -447,7 +447,7 @@ class DataService {
     })
   }
 
-  sendQuestions(){
+  sendQuestions(questions, intent_id){
     return fetch('/api/sendQuestions?questions=' + questions + '&intent_id=' + intent_id, {
       method : "GET",
     })
