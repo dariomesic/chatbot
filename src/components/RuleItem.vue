@@ -42,7 +42,7 @@
                     <path d="M6 6H26.1719l-3.586-3.5859L24 1l6 6-6 6-1.4141-1.4141L26.1719 8H6v7H4V8A2.0024 2.0024 0 016 6zM9.4141 20.4141L5.8281 24H26V17h2v7a2.0024 2.0024 0 01-2 2H5.8281L9.414 29.5859 8 31 2 25l6-6z"></path>
                   </svg>
               </button>
-              <button class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
+              <button @click="deleteOptions" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
                     <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
                     <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
@@ -185,6 +185,11 @@ export default {
     },
     updateOptions(options) {
       this.ruleCopy.customer_response = options;
+      this.$emit("updateRule", this.ruleCopy);
+    },
+    deleteOptions(){
+      this.ruleCopy.customer_response = []
+      this.ruleCopy.response_type = ''
       this.$emit("updateRule", this.ruleCopy);
     },
     updateConditions(conditions) {
