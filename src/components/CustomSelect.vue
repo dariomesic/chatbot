@@ -75,6 +75,8 @@ export default {
   height: 2rem;
   max-height: 2rem;
   cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .selected-option {

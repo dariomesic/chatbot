@@ -17,7 +17,7 @@
       <div v-if="!isCollapsed" class="section-content">
         <div style="align-items: center; display: flex; margin-bottom: 1.5rem;">
           Ako je
-          <CustomSelect :options="['Sve']" :value="'Sve'" style="margin-left: 0.5rem; margin-right: 6px; border-bottom-color: transparent" />
+          <CustomSelect :options="['Sve', 'Bilo što']" :value="conditions.allConditionsMustBeTrue ? 'Sve' : 'Bilo što'" @update:value="$event == 'Bilo što' ? localConditions.allConditionsMustBeTrue = false : localConditions.allConditionsMustBeTrue = true" style="margin-left: 0.5rem; margin-right: 6px; border-bottom-color: transparent" />
           od ovoga istina:
         </div>
         <div v-for="(step, step_index) in conditions.conditionsList" :key="step_index" style="display: flex; margin: 0 0 0.5rem">
