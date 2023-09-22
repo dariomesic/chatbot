@@ -190,7 +190,7 @@ export default{
             predicate: option === selectedOption ? 'je' : 'nije', // Condition based on selection
             object: option,
           };
-
+          console.log(intent_id)
           // Add the condition log to the array
           this.conditionLogs[intent_id].push(conditionLog);
         });
@@ -209,6 +209,7 @@ export default{
 
         // Make an API call to send the user's selected option.
         const response = await DataService.userResponse(this.conditionLogs[intent_id], intent_id);
+        response.intent_id = intent_id
         this.showOptions = false
         this.chatbotOptions = ''
         // Update the chat interface with the bot's response.
