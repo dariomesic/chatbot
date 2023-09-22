@@ -48,6 +48,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .custom-select-wrapper {
   display: flex;
@@ -75,13 +76,13 @@ export default {
   height: 2rem;
   max-height: 2rem;
   cursor: pointer;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .selected-option {
   display: flex;
   align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .arrow-icon {
@@ -99,7 +100,8 @@ export default {
   background-color: #fff;
   border: 1px solid #ccc;
   border-top: none;
-  z-index: 2;
+  z-index: 3;
+  overflow: hidden;
 }
 
 .option {
@@ -108,6 +110,12 @@ export default {
   border-bottom: 1px solid #ccc;
   transition: background-color 0.2s;
   cursor: pointer;
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.option-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .option:last-child {
@@ -120,6 +128,6 @@ export default {
 }
 
 .option:focus {
-  border: 1px solid #0f62fe
+  border: 1px solid #0f62fe;
 }
 </style>

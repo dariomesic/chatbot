@@ -48,12 +48,14 @@
             <h4 class="TriggerEditor__title">
               <span class="TriggerEditor__title-text">Korisnik bi mogao postaviti sljedeća pitanja:</span>
             </h4>
-            <p>U ovom dijelu se unose pitanja kakva korisnici obično postavljaju, a vezani su uz odabrano područje (intent).</p>
-            <p>Što se više pitanja unese, to će chatbot moći bolje prepoznavati s čim korisnik treba pomoć.</p>
+            <div style="letter-spacing: .20px;line-height: 1.28572;margin: .25rem 0 .5rem;">
+              <p>U ovom dijelu se unose pitanja kakva korisnici obično postavljaju, a vezani su uz odabrano područje (intent).</p>
+              <p>Što se više pitanja unese, to će chatbot moći bolje prepoznavati s čim korisnik treba pomoć.</p>
+            </div>
             <div>
               <ul>
                 <li>
-                  <label style="display: flex;justify-content: space-between;margin-bottom: .25rem;align-items: flex-start;margin-bottom: .25rem;margin-right: 3rem;">
+                  <label style="display: flex;justify-content: space-between;margin-bottom: .25rem;align-items: flex-start;margin-bottom: .25rem;margin-right: 3rem;letter-spacing: .20px;line-height: 1.28572;margin: .25rem 0 .5rem;">
                     <span>Unesite pitanje u obliku u kojem bi ga unio korisnik:</span>
                     <span>Ukupno: {{questions.length}}</span>
                   </label>
@@ -61,7 +63,7 @@
                 <li style="border-bottom: 1px solid #e0e0e0;margin-bottom: 1rem;padding-bottom: 1rem;padding-right: 3rem;">
                   <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                     <div style="display: flex;position: relative;width: 100%;">
-                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" placeholder="Unesite frazu" type="text" title="Unesite frazu" aria-describedby="" autocomplete="off">
+                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" placeholder="Unesite pitanje" type="text" title="Unesite frazu" aria-describedby="" autocomplete="off">
                     </div>
                   </div>
                 </li>

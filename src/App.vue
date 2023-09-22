@@ -93,7 +93,7 @@ button:disabled{
     background-color: var(--main__color);
     border: 1px solid transparent;
     color: #fff;
-    min-width: 10rem;
+    min-width: 11rem;
     padding: calc(0.675rem - 3px) 60px calc(0.675rem - 3px) 12px;
 }
 

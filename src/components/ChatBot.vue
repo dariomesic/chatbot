@@ -91,11 +91,12 @@ export default{
         const responseMessage = {
           assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ePredmet. Postavite pitanje vezano uz sustav`
         }
-        this.addBotMessage(responseMessage);
+        this.addBotMessage(responseMessage, true);
       }, 1000);
     },
     
     async sendMessage() {
+      this.showFeedbackButtons = false
       if (this.inputValue !== '' && this.status_func_SendMsgBot === 0) {
         this.addUserMessage(this.inputValue);
         try {
@@ -104,7 +105,6 @@ export default{
           this.intent_id = response.intent_id
           this.conditionLogs[response.intent_id] = []; // Initialize the array
           this.selectedFeedbackButton = false;
-          this.showFeedbackButtons = true; // Show thumbs up/down only for intent
           // Update the chat interface with the bot's response.
           this.addBotMessage(response);
         } catch (error) {
@@ -130,7 +130,7 @@ export default{
       this.scrollChatToBottom()
     },
 
-    addBotMessage(message) {
+    addBotMessage(message, first) {
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
@@ -142,20 +142,21 @@ export default{
       message.assistant_answer = tmp
 
       if (message.response_type === 'OPCIJE') {
-      // Display the options as buttons.
-      this.showOptions = true; // Show chatbot options
-      this.chatbotOptions = this.renderOptions(message);
-    } /*else if (message.response_type === 'INPUT') {
-      // Display a message with a text input field.
-      messageText += '<br>' + this.renderInput(message.inputPlaceholder);
-      this.showOptions = false; // Hide chatbot options
-    }*/
+        // Display the options as buttons.
+        this.showOptions = true; // Show chatbot options
+        this.chatbotOptions = this.renderOptions(message);
+      } /*else if (message.response_type === 'INPUT') {
+        // Display a message with a text input field.
+        messageText += '<br>' + this.renderInput(message.inputPlaceholder);
+        this.showOptions = false; // Hide chatbot options
+      }*/
 
     this.messages.push({
       text: messageText,
       classes: ['message'],
       dataUser: false,
     });
+    (message.response_type !== 'OPCIJE' && !first) ? this.showFeedbackButtons = true : this.showFeedbackButtons = false
     this.scrollChatToBottom();
     },
 
@@ -180,7 +181,6 @@ export default{
     },
 
     async handleUserResponse(selectedOption, intent_id, options, text) {
-      this.showFeedbackButtons = false
       this.addUserMessage(selectedOption)
       try {
         // Iterate through all options to build conditions

@@ -1,7 +1,7 @@
 <template>
   <Navbar/>
   <div class="actions">
-    <h3>Akcije</h3>
+    <h3>Namjera korisnika u komunikaciji s virtualnim asistentom</h3>
     <section>
       <div style="display:flex;width:100%">
         <div class="search-container">
@@ -9,7 +9,7 @@
           <button class="search-button" type="submit" :disabled="true">Pretraži</button>
         </div>
         <transition name="fade_main" mode="out-in">
-          <button v-if="!selectedIntents.length" @click="newAction" class="background-button" tabindex="0" type="button">Nova akcija
+          <button v-if="!selectedIntents.length" @click="newAction" class="background-button" tabindex="0" type="button">Nova namjera
             <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
               <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
             </svg>
@@ -38,7 +38,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="intent in filteredIntents" :key="intent.id">
+            <tr v-for="(intent,index) in filteredIntents" :key="intent.id">
               <td>
                   <input type="checkbox" v-model="selectedIntents" :value="intent.id" number>
               </td>
@@ -70,7 +70,7 @@
               </td>
               <td>
                 <div style="position:relative">
-                  <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(intent)">
+                  <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(index)">
                     <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
                       <circle cx="16" cy="8" r="2"></circle>
                       <circle cx="16" cy="16" r="2"></circle>
@@ -79,7 +79,7 @@
                     </svg>
                   </button>
                   <!-- Popup menu -->
-                <div v-if="showOptionsForIntent === intent" class="options-popup">
+                <div v-if="showOptionsForIntent[index]" class="options-popup" :id="index" tabindex="0" @focusout="focusOut($event, index)">
                   <button @click="navigateToDetail(intent)">Uredi</button>
                   <hr/>
                   <button @click="deleteIntent(intent.id)">Izbriši</button>
@@ -140,15 +140,11 @@ export default {
       currentPage: 1,
       itemsPerPage: 10,
       selectedIntents: [],
-      showOptionsForIntent: null,
+      showOptionsForIntent: [],
     };
   },
-  async created(){
-    try {
-      this.intents = await DataService.getIntents();
-    } catch (error) {
-      console.error(error);
-    }
+  created(){
+    this.getIntents()
   },
   computed: {
     filteredIntents() {
@@ -200,27 +196,44 @@ export default {
           await DataService.deleteStep(id)
           await DataService.deleteQuestionsById(id)
           await DataService.deleteIntent(id);
-          this.intents = await DataService.getIntents();
         } catch (error) {
           console.error(error);
         }
     },
-    showOptionsFor(intent) {
-      // Toggle the popup menu for the clicked intent
-      if (this.showOptionsForIntent === intent) {
-        this.showOptionsForIntent = null; // Hide the popup menu if it's already shown
-      } else {
-        this.showOptionsForIntent = intent; // Show the popup menu for the clicked intent
-      }
+    showOptionsFor(index) {
+      this.showOptionsForIntent[index] = true
+      this.$nextTick(() => {
+        document.getElementById(index).focus();
+      });
     },
-    deleteSelectedIntents() {
+    async deleteSelectedIntents() {
       // Loop through selectedIntents and call deleteIntent for each
       for (const intent of this.selectedIntents) {
-        this.deleteIntent(intent);
+        await this.deleteIntent(intent);
       }
+      this.getIntents()
       // Clear the selectedIntents array after deleting
       this.selectedIntents = [];
     },
+    focusOut(event, index) {
+      !event.relatedTarget ? this.showOptionsForIntent[index] = false : ''
+    },
+    async getIntents(){
+      try {
+       let tmp = await DataService.getIntents()
+       tmp = tmp.map(obj => {
+        const lastEditedDate = new Date(obj.last_edited);
+        const isoString = lastEditedDate.toISOString(); // Convert to ISO string
+        return { ...obj, last_edited: isoString };
+      });
+
+      this.intents = tmp.sort(
+        (objA, objB) => objB.last_edited.localeCompare(objA.last_edited)
+      );
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 };
 </script>
