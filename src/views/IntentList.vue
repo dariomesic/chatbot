@@ -37,57 +37,57 @@
               <th>Opcije</th>
             </tr>
         </thead>
-        <tbody>
-            <tr v-for="(intent,index) in filteredIntents" :key="intent.id">
-              <td>
-                  <input type="checkbox" v-model="selectedIntents" :value="intent.id" number>
-              </td>
-              <td>
-                <div>
-                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" style="float: left;margin-right: .25rem;position:relative;top: .125rem;">
-                    <path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"></path>
-                    <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
+        <TransitionGroup name="list" tag="tbody">
+          <tr v-for="(intent,index) in filteredIntents" :key="intent.id">
+            <td>
+                <input type="checkbox" v-model="selectedIntents" :value="intent.id" number>
+            </td>
+            <td>
+              <div>
+                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" style="float: left;margin-right: .25rem;position:relative;top: .125rem;">
+                  <path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"></path>
+                  <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
+                </svg>
+                <a @click="navigateToDetail(intent)">{{intent.name ? intent.name : 'Bez naslova'}}</a>
+              </div>
+            </td>
+            <td>{{intent.last_edited}}</td>
+            <td>
+              <span>{{intent.examples_count}}</span>
+            </td>
+            <td>
+              <span>{{intent.steps_count}}</span>
+            </td>
+            <td>
+              <span>
+                <button style="cursor: default;" type="button" aria-describedby="icon-tooltip-41">
+                  <svg style="fill: #42be65;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" class="CollectionsDataTable__status-icon-no-error">
+                    <path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z"></path>
+                    <path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0"></path>
                   </svg>
-                  <a @click="navigateToDetail(intent)">{{intent.name ? intent.name : 'Bez naslova'}}</a>
-                </div>
-              </td>
-              <td>{{intent.last_edited}}</td>
-              <td>
-                <span>{{intent.examples_count}}</span>
-              </td>
-              <td>
-                <span>{{intent.steps_count}}</span>
-              </td>
-              <td>
-                <span>
-                  <button style="cursor: default;" type="button" aria-describedby="icon-tooltip-41">
-                    <svg style="fill: #42be65;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" class="CollectionsDataTable__status-icon-no-error">
-                      <path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z"></path>
-                      <path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0"></path>
-                    </svg>
-                  </button>
-                </span>
-              </td>
-              <td>
-                <div style="position:relative">
-                  <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(index)">
-                    <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
-                      <circle cx="16" cy="8" r="2"></circle>
-                      <circle cx="16" cy="16" r="2"></circle>
-                      <circle cx="16" cy="24" r="2"></circle>
-                      <title>Options</title>
-                    </svg>
-                  </button>
-                  <!-- Popup menu -->
-                <div v-if="showOptionsForIntent[index]" class="options-popup" :id="index" tabindex="0" @focusout="focusOut($event, index)">
-                  <button @click="navigateToDetail(intent)">Uredi</button>
-                  <hr/>
-                  <button @click="deleteIntent(intent.id)">Izbriši</button>
-                </div>
-                </div>
-              </td>
-            </tr>
-        </tbody>
+                </button>
+              </span>
+            </td>
+            <td>
+              <div style="position:relative">
+                <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(index)">
+                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
+                    <circle cx="16" cy="8" r="2"></circle>
+                    <circle cx="16" cy="16" r="2"></circle>
+                    <circle cx="16" cy="24" r="2"></circle>
+                    <title>Options</title>
+                  </svg>
+                </button>
+                <!-- Popup menu -->
+              <div v-if="showOptionsForIntent[index]" class="options-popup" :id="index" tabindex="0" @focusout="focusOut($event, index)">
+                <button @click="navigateToDetail(intent)">Uredi</button>
+                <hr/>
+                <button @click="deleteIntent(intent.id)">Izbriši</button>
+              </div>
+              </div>
+            </td>
+          </tr>
+        </TransitionGroup>
     </table>
     <!-- Pagination Controls -->
     <div style="border: 1px solid #e0e0e0;display: flex;font-weight: 400;justify-content: space-between;letter-spacing: .16px;line-height: 1.28572;min-height: 2.5rem;align-items: center;">
