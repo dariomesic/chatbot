@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar">
-      <div style="padding-left:1%;height:35px">
+      <div style="padding-left:1%">
         <a href="https://nesolventnost.pravosudje.hr/">
           <img src="../assets/grb.png" height="35" alt="Republika Hrvatska">
           <h2>
