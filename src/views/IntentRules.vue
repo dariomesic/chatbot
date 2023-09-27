@@ -91,7 +91,6 @@
             <div :ref="'scrollableCard_' + index">
               <Rule
                 :rule="rule"
-                :rules_options="distinctCustomerResponses"
                 :rules_answers="distinctAnswers"
                 @add="addRule"
                 @remove="removeRule"
@@ -203,29 +202,33 @@ export default {
       );
     },
     distinctAnswers() {
-      const distinctAnswersWithIndices = [];
+      const distinctAnswersWithResponses = [];
 
       this.rules_copy.forEach((rule, index) => {
         if (rule.customer_response && rule.customer_response.length > 0) {
-          distinctAnswersWithIndices.push({ index: index + 1, answer: index + 1 + ". " + rule.assistant_answer });
-        }
-      });
-      console.log(distinctAnswersWithIndices)
-      return distinctAnswersWithIndices;
-    },
-
-    distinctCustomerResponses() {
-      const distinctCustomerResponsesSet = new Set();
-
-      this.rules_copy.forEach(rule => {
-        if (rule.customer_response && rule.customer_response.length > 0) {
-          rule.customer_response.forEach(response => {
-            distinctCustomerResponsesSet.add(response);
+          const distinctResponses = [...new Set(rule.customer_response)]; // Get distinct customer responses
+          distinctResponses.forEach((response) => {
+            distinctAnswersWithResponses.push({
+              index: index + 1,
+              answer: rule.assistant_answer,
+              responses: [response],
+            });
           });
         }
       });
-      return [...distinctCustomerResponsesSet];
-    }
+
+      // Combine answers with the same text and merge their customer responses
+      const mergedAnswers = [];
+      distinctAnswersWithResponses.forEach((item) => {
+        const existingAnswer = mergedAnswers.find((a) => a.answer === item.answer);
+        if (existingAnswer) {
+          existingAnswer.responses.push(...item.responses);
+        } else {
+          mergedAnswers.push(item);
+        }
+      });
+      return mergedAnswers;
+    },
   },
   async mounted() {
     let intentId = this.$route.query.id;

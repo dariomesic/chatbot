@@ -71,7 +71,6 @@ export default {
 
 <style scoped>
 .modal {
-  position: absolute;
   position: fixed;
   top: 0;
   right: 0;
@@ -79,6 +78,7 @@ export default {
   left: 0;
   height: fit-content;
   max-height: 90%;
+  overflow: auto;
   margin: auto;
   width: 30%;
   padding: 2rem;
@@ -88,6 +88,7 @@ export default {
   z-index: 999;
   transform: none;
 }
+
 .modal h1 {
   margin: 0 0 1rem;
 }

@@ -22,9 +22,19 @@
         </div>
         <div v-for="(step, step_index) in conditions.conditionsList" :key="step_index" style="display: flex; margin: 0 0 0.5rem">
           <div style="margin-right: 0.25rem; max-width: 1.5rem; min-width: 1.5rem;display: flex;flex: 1 1;"></div>
-          <CustomSelect :options="rules_answers.map(item => item.answer)" :value="rules_answers.find(item => item.index === step.subject) ? rules_answers.find(item => item.index === step.subject).answer : ''" @update:value="localConditions.conditionsList[step_index]['subject'] = rules_answers.find(item => item.answer === $event).index" style="margin-right: 3px; color: var(--main__color);flex: 2 1;flex-direction: column;min-width: 38px;" />
+          <CustomSelect
+            :options="rules_answers.map(item => item.answer)"
+            :value="localConditions.conditionsList[step_index]?.subject ? rules_answers.find(item => item.index === localConditions.conditionsList[step_index].subject)?.answer : ''"
+            @update:value="handleAnswerSelect($event, step_index)"
+            style="margin-right: 3px; color: var(--main__color); flex: 2 1; flex-direction: column; min-width: 38px;"
+          />
           <CustomSelect :options="['je', 'nije']" :value="step.predicate" @update:value="localConditions.conditionsList[step_index]['predicate'] = $event" style="flex: 2 1;max-width: 6rem;flex-direction: column;margin-right: 3px;min-width: 38px; color: var(--main__color)" />
-          <CustomSelect :options="rules_options" :value="step.object" @update:value="localConditions.conditionsList[step_index]['object'] = $event" style="flex: 3 1;flex-direction: column;margin-right: 3px;min-width: 38px; color: var(--main__color)" />
+          <CustomSelect
+            :options="availableResponses"
+            :value="localConditions.conditionsList[step_index]?.object || ''"
+            @update:value="localConditions.conditionsList[step_index]['object'] = $event"
+            style="flex: 3 1; flex-direction: column; margin-right: 3px; min-width: 38px; color: var(--main__color)"
+          />
           <button @click="deleteStep(step_index)" style="align-items: center;display: inline-flex">
             <svg style="margin-top: 6px;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Close" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
               <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
@@ -43,11 +53,12 @@
 import CustomSelect from './CustomSelect.vue'
 export default {
   components: { CustomSelect },
-  props: ['conditions','rules_answers','rules_options'],
+  props: ['conditions','rules_answers'],
   data() {
     return {
       isCollapsed: false,
       localConditions: JSON.parse(JSON.stringify(this.conditions)),
+      availableResponses: [],
     };
   },
   watch: {
@@ -69,6 +80,16 @@ export default {
     },
     toggleSection() {
       this.isCollapsed = !this.isCollapsed;
+    },
+    handleAnswerSelect(selectedAnswer, step_index) {
+      this.localConditions.conditionsList[step_index]['subject'] = this.rules_answers.find(item => item.answer === selectedAnswer).index
+      const answerObject = this.rules_answers.find(item => item.answer === selectedAnswer);
+
+      if (answerObject) {
+        this.availableResponses = answerObject.responses;
+      } else {
+        this.availableResponses = [];
+      }
     },
   },
 };

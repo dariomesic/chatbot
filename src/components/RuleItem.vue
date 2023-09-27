@@ -5,7 +5,7 @@
         <div style="min-width: 7rem;">Ako je odabran</div>
         <CustomSelect :options="options" :value="selected_option" @update:value="conditionTypeChanged"/>
       </div>
-      <CustomCondition v-if="selected_option == 's uvjetom'" @update:conditions="updateConditions" :conditions="ruleCopy.conditions" :rules_options="rules_options" :rules_answers="rules_answers"/>
+      <CustomCondition v-if="selected_option == 's uvjetom'" @update:conditions="updateConditions" :conditions="ruleCopy.conditions" :rules_answers="rules_answers"/>
       <hr/>
       <section>
         <h5>Odgovor asistenta</h5>
@@ -138,7 +138,6 @@ export default {
   components:{TextEditor, CustomCondition, CustomSelect, Popup},
    props: {
     rule: Object,
-    rules_options: Array,
     rules_answers: Array,
   },
   data() {
