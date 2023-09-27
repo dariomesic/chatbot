@@ -51,7 +51,7 @@
                 <a @click="navigateToDetail(intent)">{{intent.name ? intent.name : 'Bez naslova'}}</a>
               </div>
             </td>
-            <td>{{intent.last_edited}}</td>
+            <td>{{ intent.last_edited_formatted }}</td>
             <td>
               <span>{{intent.examples_count}}</span>
             </td>
@@ -218,20 +218,49 @@ export default {
     focusOut(event, index) {
       !event.relatedTarget ? this.showOptionsForIntent[index] = false : ''
     },
-    async getIntents(){
+    async getIntents() {
       try {
-       let tmp = await DataService.getIntents()
-       tmp = tmp.map(obj => {
-        const lastEditedDate = new Date(obj.last_edited);
-        const isoString = lastEditedDate.toISOString(); // Convert to ISO string
-        return { ...obj, last_edited: isoString };
-      });
+        let tmp = await DataService.getIntents();
 
-      this.intents = tmp.sort(
-        (objA, objB) => objB.last_edited.localeCompare(objA.last_edited)
-      );
+        // Sort by the original date objects
+        tmp = tmp.sort((objA, objB) =>
+          new Date(objB.last_edited) - new Date(objA.last_edited)
+        );
+
+        // Format the date strings
+        const formattedIntents = tmp.map((obj) => {
+          const lastEditedDate = new Date(obj.last_edited);
+          const formattedTimeDifference = this.formatTimeDifference(lastEditedDate);
+          return { ...obj, last_edited_formatted: formattedTimeDifference };
+        });
+
+        // Assign the sorted and formatted intents to the data property
+        this.intents = formattedIntents;
       } catch (error) {
         console.error(error);
+      }
+    },
+    formatTimeDifference(lastEditedDate) {
+      const currentDate = new Date();
+      const timeDifference = currentDate - lastEditedDate;
+
+      // Define time intervals in milliseconds
+      const minute = 60 * 1000;
+      const hour = 60 * minute;
+      const day = 24 * hour;
+
+      if (timeDifference < minute) {
+        const seconds = Math.floor(timeDifference / 1000);
+        return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+      } else if (timeDifference < hour) {
+        const minutes = Math.floor(timeDifference / minute);
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+      } else if (timeDifference < day) {
+        const hours = Math.floor(timeDifference / hour);
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+      } else {
+        const days = Math.floor(timeDifference / day);
+        return `${days} day${days !== 1 ? 's' : ''} ago`;
       }
     }
   }

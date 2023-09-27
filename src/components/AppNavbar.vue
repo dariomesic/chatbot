@@ -28,6 +28,7 @@
 }
 
 .navbar h2{
+  text-align: left;
   margin-left: 1rem;
   font-weight: bolder;
   font-size: .635rem;

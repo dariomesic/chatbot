@@ -59,7 +59,7 @@
                 :key="index"
                 @mouseenter="showDetails(index)"
                 @mouseleave="hideDetails"
-                @click="option === 'Opcije' ? (show_modal = true,ruleCopy.response_type = 'OPCIJE') : (step_selected = option, ruleCopy.response_type = '');optionsResponseVisible = false"
+                @click="option === 'Opcije' ? (show_modal = true,ruleCopy.response_type = 'OPCIJE') : (ruleCopy.response_type = '');optionsResponseVisible = false"
               >
                 {{ option }}
               </div>
@@ -78,7 +78,7 @@
       <hr/>
 
       <!--NEXT STEP-->
-      <h5 style="margin-bottom:unset">And then</h5>
+      <h5 style="margin-bottom:unset">Zatim</h5>
       <div class="main-container" @click="optionsContinuationVisible = !optionsContinuationVisible">
         <div class="clickable-div" tabindex="1">
           <span style="align-items: center;display: flex;color:#0f62fe">
