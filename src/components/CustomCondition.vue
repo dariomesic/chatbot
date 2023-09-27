@@ -69,6 +69,15 @@ export default {
       },
     },
   },
+   mounted() {
+    // Call handleAnswerSelect for the initial state
+    if (this.localConditions.conditionsList.length > 0) {
+      const selectedAnswer = this.rules_answers.find(item => item.index === this.localConditions.conditionsList[0].subject)?.answer;
+      if (selectedAnswer) {
+        this.handleAnswerSelect(selectedAnswer, 0);
+      }
+    }
+  },
   methods: {
     addCondition() {
       this.localConditions.conditionsList.push({});
