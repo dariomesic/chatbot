@@ -29,7 +29,7 @@
               <div v-for="response in ruleCopy.customer_response" :key="response" class="response-option"><span>{{response}}</span></div>
             </div>
             <div style="border-top: 1px solid #e0e0e0;display: flex;flex-wrap: wrap;">
-              <button @click="show_modal = true" class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Edit response</button>
+              <button @click="show_modal = true" class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Uredi odgovor</button>
               <div style="flex: 1 1;"></div>
               <button disabled class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
