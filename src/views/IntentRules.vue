@@ -8,7 +8,7 @@
 
 
       <div :class="['left-panel', { 'collapsed': isLeftPanelCollapsed }]">
-        <button style="position: absolute;bottom: 10px;left: 10px;" @click="toggleLeftPanel">{{'<< Sakrij slijed konverzacije'}}</button>
+        <button style="position: absolute;bottom: 10px;left: 10px;" @click="toggleLeftPanel">{{'<< Sakrij'}}</button>
         <transition name="card-slide" mode="out-in">
           <section class="left-cards-container" v-show="!isLeftPanelCollapsed">
             <div class="left-cards">
@@ -99,7 +99,7 @@
             </div>
           </div>
         </TransitionGroup>
-        <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">{{'>> Prikaži slijed konverzacije'}}</button>
+        <button class="expand-button" v-if="isLeftPanelCollapsed" @click="toggleLeftPanel">{{'>> Prikaži'}}</button>
         <div class="chat" @click="showChatbot = !showChatbot">
           <svg height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 58 58" xml:space="preserve" fill="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

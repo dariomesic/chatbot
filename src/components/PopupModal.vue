@@ -7,7 +7,7 @@
       <div>
         <h3>Uredi opcije</h3>
         <p>Unesite popis opcija</p>
-        <button class="color-button" style="text-align: right;width: 100%;" @click="addNewOption()">Add New +</button>
+        <button class="color-button" style="align-self: flex-end;margin-left: auto;display:block" @click="addNewOption()">Dodaj novu opciju +</button>
         <hr/>
         <transition-group name="list" tag="ul">
           <li v-for="(option, index) in response_options" :key="index" style="align-items: center;display: flex;margin-top: .5rem;">
@@ -24,8 +24,8 @@
           </li>
         </transition-group>
         <div class="footer">
-          <button style="background-color: #393939;" @click="applyOptions()">Apply</button>
-          <button style="background: #c6c6c6;" @click="$emit('close')">Cancel</button>
+          <button style="background: var(--main__color)" @click="$emit('close')">Poništi</button>
+          <button style="background-color: #393939;" @click="applyOptions()">Primijeni</button>
         </div>
       </div>
     </div>
@@ -124,6 +124,7 @@ export default {
   padding-bottom: 2rem;
   padding-top: 1rem;
   padding: calc(.875rem - 3px) 63px calc(.875rem - 3px) 15px;
+  color: white;
 }
 
 input{
