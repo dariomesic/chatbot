@@ -4,6 +4,11 @@
   </transition>
   <transition name="pop" appear>
     <div class="modal" role="dialog" v-if="showModal">
+      <button @click="$emit('close')" tabindex="0" type="button" style="position:absolute;top:0;right:0;padding: .75rem;width: 3rem;height: 3rem;">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"/>
+        </svg>
+      </button>
       <div>
         <h3>Uredi opcije</h3>
         <p>Unesite popis opcija</p>
@@ -24,8 +29,8 @@
           </li>
         </transition-group>
         <div class="footer">
-          <button style="background: var(--main__color)" @click="$emit('close')">Poništi</button>
-          <button style="background-color: #393939;" @click="applyOptions()">Primijeni</button>
+          <button style="background-color: #393939;" @click="$emit('close')">Poništi</button>
+          <button style="background: var(--main__color)" @click="applyOptions()">Primijeni</button>
         </div>
       </div>
     </div>

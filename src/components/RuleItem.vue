@@ -317,6 +317,7 @@ h2[class="plus-separator"]:after{
 }
 
 .options-details-container {
+  display: flex;
   position: absolute;
   top: 100%;
   left: 0;
@@ -325,10 +326,6 @@ h2[class="plus-separator"]:after{
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 2;
-}
-
-.main-container:hover .options-details-container {
-  display: flex;
 }
 
 .options-container {
