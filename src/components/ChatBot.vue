@@ -366,7 +366,7 @@ a {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 50px;
+  min-height: 50px;
 }
 
 .send-icon {
