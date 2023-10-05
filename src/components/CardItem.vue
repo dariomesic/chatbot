@@ -228,7 +228,7 @@ label {
 
 .step-number {
   border-right: 2px solid #f4f4f4;
-  padding: 0.2rem 0.35rem;
+  padding: .25rem .5rem;
 }
 
 .conditions {
@@ -241,20 +241,16 @@ label {
 }
 
 .predicate {
-  padding: 0.2rem;
+  padding: .25rem .5rem;
   text-align: center;
 }
 
 .object {
-  padding: 0.2rem;
+  padding: .25rem .5rem;
   max-width: 130px;
   overflow: hidden;
   text-wrap: nowrap;
   text-overflow: ellipsis;
-}
-.object {
-  margin-top: 0.1rem;
-  margin-right: 0.2rem;
 }
 
 .object-container {

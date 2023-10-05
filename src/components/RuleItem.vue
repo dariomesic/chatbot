@@ -106,17 +106,11 @@
           </div>
         </div>
       </div>
-
-
-      <div class="topright">
-        <button @click="$emit('remove', rule.id)" class="main-button" style="align-items: center;display: flex;">
-          <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
-            <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
-            <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
-          </svg>
-          UKLONI
-        </button>
-      </div>
+      <button @click="$emit('remove', rule.id)" tabindex="0" type="button" class="exit-button">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"/>
+        </svg>
+      </button>
     </div>
     <h2 class="plus-separator"><button @click="$emit('add', rule.id)" class="line-center">+</button></h2>
     <Teleport to="body">
@@ -242,10 +236,19 @@ export default {
     word-break: break-word;
 }
 
-.topright{
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+.exit-button{
+  position:absolute;
+  top:0;
+  right:0;
+  padding: .75rem;
+  width: 3rem;
+  height: 3rem;
+  transition: all .11s cubic-bezier(.2,0,.38,.9);
+}
+
+.exit-button:hover{
+  background: var(--hover__color);
+  transition: .2s;
 }
 
 .line-center{
