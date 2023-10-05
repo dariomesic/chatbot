@@ -455,7 +455,6 @@ a {
   display: flex;
   align-items: center;
   height: 65px;
-  width: 100%;
   padding-left: 13px;
   -webkit-box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
   box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
