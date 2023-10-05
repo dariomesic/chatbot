@@ -30,7 +30,7 @@
           />
           <CustomSelect :options="['je', 'nije']" :value="step.predicate" @update:value="localConditions.conditionsList[step_index]['predicate'] = $event" style="flex: 2 1;max-width: 6rem;flex-direction: column;margin-right: 3px;min-width: 38px; color: var(--main__color)" />
           <CustomSelect
-            :options="availableResponses"
+            :options="thirdSelectOptions(step_index)"
             :value="localConditions.conditionsList[step_index]?.object || ''"
             @update:value="localConditions.conditionsList[step_index]['object'] = $event"
             style="flex: 3 1; flex-direction: column; margin-right: 3px; min-width: 38px; color: var(--main__color)"
@@ -58,7 +58,6 @@ export default {
     return {
       isCollapsed: false,
       localConditions: JSON.parse(JSON.stringify(this.conditions)),
-      availableResponses: [],
     };
   },
   watch: {
@@ -69,8 +68,7 @@ export default {
       },
     },
   },
-   mounted() {
-    // Call handleAnswerSelect for the initial state
+  mounted() {
     if (this.localConditions.conditionsList.length > 0) {
       const selectedAnswer = this.rules_answers.find(item => item.index === this.localConditions.conditionsList[0].subject)?.answer;
       if (selectedAnswer) {
@@ -92,13 +90,11 @@ export default {
     },
     handleAnswerSelect(selectedAnswer, step_index) {
       this.localConditions.conditionsList[step_index]['subject'] = this.rules_answers.find(item => item.answer === selectedAnswer).index
-      const answerObject = this.rules_answers.find(item => item.answer === selectedAnswer);
-
-      if (answerObject) {
-        this.availableResponses = answerObject.responses;
-      } else {
-        this.availableResponses = [];
-      }
+    },
+    thirdSelectOptions(index) {
+      const selectedValue = this.localConditions.conditionsList[index].subject
+      const answerObject = this.rules_answers.find(item => item.index === selectedValue)
+      return answerObject ? answerObject.responses : [];
     },
   },
 };

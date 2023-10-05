@@ -158,6 +158,28 @@ input[type=text]:focus {
   white-space: nowrap;
 }
 
+.pause {
+  display: flex;
+}
+
+.pause > p {
+  margin: 0 0 0 5px;
+}
+
+.timer-buttons > button {
+  all: unset;
+  cursor: pointer;
+}
+
+.timer-buttons > button:nth-child(1) {
+  margin-right: 12px;
+}
+
+.new-editor:empty:before {
+  content: attr(data-title);
+  color: #f5f7f7;
+}
+
 .fade_main-enter-active, .fade_main-leave-active {
   transition: opacity 0.5s;
 }

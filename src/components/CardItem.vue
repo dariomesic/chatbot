@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="tile">
-        <span class="tile-title">{{ card.assistant_answer }}</span>
+        <span class="tile-title" :innerHTML="card.assistant_answer"/>
         <hr />
         <div style="display: flex; justify-content: space-between">
           <span class="ctr">

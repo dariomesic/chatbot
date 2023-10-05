@@ -9,7 +9,7 @@
       <hr/>
       <section>
         <h5>Odgovor asistenta</h5>
-        <TextEditor :text="ruleCopy.assistant_answer" @updateText="updateAssistantAnswer"/>
+        <TextEditor :text="ruleCopy.assistant_answer"/>
 
         <!--RESPONSE PART-->
         <div class="main-container">
@@ -118,10 +118,10 @@
     </Teleport>
 </template>
 <script>
-import TextEditor from './TextEditor.vue'
+import TextEditor from './textarea/TextEditor.vue'
 import CustomCondition from './CustomCondition.vue'
 import CustomSelect from './CustomSelect.vue'
-import Popup from './PopupModal.vue'
+import Popup from './OptionResponse.vue'
 export default {
   components:{TextEditor, CustomCondition, CustomSelect, Popup},
    props: {
