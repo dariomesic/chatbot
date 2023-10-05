@@ -278,7 +278,6 @@ export default {
   width: 100%;
 }
 
-
 .search-container{
   width:100%;
   color: #555;

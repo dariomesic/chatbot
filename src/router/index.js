@@ -1,14 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
+const HomePage = () => import("../views/HomePage.vue");
 const IntentList = () => import("../views/IntentList.vue");
 const IntentRules  = () => import("../views/IntentRules.vue");
 
 const routes = [
     {
         path: "/",
+        component: HomePage,
+    },
+    {
+        path: "/intents",
         component: IntentList,
     },
     { 
-      path: '/intent/', 
+      path: '/intents/intent', 
       name: 'IntentRules', 
       component: IntentRules,
     },

@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar">
       <div style="padding-left:1%">
-        <a href="https://nesolventnost.pravosudje.hr/">
+        <a href="https://mpu.gov.hr/">
           <img src="../assets/grb.png" height="35" alt="Republika Hrvatska">
           <h2>
             <p>REPUBLIKA HRVATSKA</p>
