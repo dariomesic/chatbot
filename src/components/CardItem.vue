@@ -32,39 +32,39 @@
       <div class="tile">
         <span class="tile-title">{{ card.assistant_answer }}</span>
         <hr />
-        <div style="display: flex; justify-content: space-between">
-          <span class="ctr">
-            <div class="text-style">
-              <svg
-                focusable="false"
-                preserveAspectRatio="xMidYMid meet"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                width="16"
+        <div class="bottom-part-wrapper">
+          <div class="arrow-and-text">
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+              style="margin-bottom: -0.25rem; margin-right: 0.5rem"
+            >
+              <path
+                d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
+              ></path>
+            </svg>
+            {{ card.continuation }}
+          </div>
+          <div class="buttons-container">
+            <button
+              tabindex="0"
+              type="button"
+              aria-label="Duplicate"
+              @click="handleDuplicateClick"
+            >
+              <img
+                src="../assets/duplicate.png"
                 height="16"
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-                style="margin-bottom: -0.25rem; margin-right: 0.5rem"
-              >
-                <path
-                  d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
-                ></path>
-              </svg>
-              {{ card.continuation }}
-              <span></span>
-            </div>
-          </span>
-          <div
-            style="
-              display: flex;
-              position: absolute;
-              align-items: center;
-              right: 1rem;
-            "
-          >
-            <div
-              style="background-color: #f4f4f4; height: 1.5rem; width: 1px"
-            ></div>
+                width="16"
+                alt="Duplicate"
+              />
+            </button>
             <button
               @click="handleRemoveClick"
               tabindex="0"
@@ -91,16 +91,6 @@
               </svg>
             </button>
           </div>
-          <div style="position: absolute; right: 3.5rem">
-            <button tabindex="0" type="button" aria-label="Duplicate">
-              <img
-                src="../assets/duplicate.png"
-                height="16"
-                width="16"
-                alt="Duplicate"
-              />
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -117,6 +107,10 @@ export default {
     handleRemoveClick(event) {
       event.stopPropagation();
       this.$emit("remove", this.card.id);
+    },
+    handleDuplicateClick(event) {
+      event.stopPropagation();
+      this.$emit("duplicate", this.card.id);
     },
     getObjectColors(subject) {
       const colorMap = {
@@ -185,6 +179,9 @@ export default {
 .card:not(.selected):hover label {
   background: var(--hover__color);
   transition: 0.2s;
+}
+.card:not(.selected) .tile button:hover {
+  background-color: #919491;
 }
 
 .selected .right-part,
@@ -284,12 +281,25 @@ label {
   word-break: break-word;
 }
 
-.ctr {
+/* .ctr {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
   width: 75%;
+} */
+
+.bottom-part-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
+.buttons-container {
+  display: flex;
+}
+
+.arrow-and-text {
+  padding-top: 0.4rem;
+}
 .tile button {
   padding-left: 0.6875rem;
   padding-right: 0.6875rem;
