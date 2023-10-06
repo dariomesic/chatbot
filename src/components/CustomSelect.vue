@@ -2,16 +2,14 @@
   <div class="custom-select-wrapper" tabindex="1">
     <div class="custom-select" @click="optionsVisible = !optionsVisible">
       <div class="selected-option">
-        <span class="option-text">{{ selectedOption }}</span>
+        <span class="option-text" :innerHTML="selectedOption"/>
         <svg class="arrow-icon" viewBox="0 0 16 16">
           <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
           <title>Open menu</title>
         </svg>
       </div>
       <div v-show="optionsVisible" class="options">
-        <div class="option" v-for="option in options" :key="option" @click="selectOption(option)" tabindex="1">
-          {{ option }}
-        </div>
+        <div class="option" v-for="option in options" :key="option" @click="selectOption(option)" tabindex="1" :innerHTML="option"/>
       </div>
     </div>
   </div>
