@@ -27,6 +27,7 @@
                         :card="card"
                         @click="scrollToCard(index)"
                         @remove="removeRule"
+                        @duplicate="duplicateRule"
                         :isSelected="selectedCardIndex === index"
                         :style="{ backgroundColor: selectedCardIndex === index ? 'rgb(188, 218, 238)' : 'transparent' }"
                       />
@@ -63,7 +64,7 @@
                 <li style="border-bottom: 1px solid #e0e0e0;margin-bottom: 1rem;padding-bottom: 1rem;padding-right: 3rem;">
                   <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                     <div style="display: flex;position: relative;width: 100%;">
-                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" placeholder="Unesite pitanje" type="text" title="Unesite frazu" aria-describedby="" autocomplete="off">
+                      <input v-model="newPhrase" @input="onInput" @keyup.enter="addPhrase" style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;padding: 0 1rem" placeholder="Unesite pitanje" type="text" title="Unesite frazu" aria-describedby="" autocomplete="off">
                     </div>
                   </div>
                 </li>
@@ -71,7 +72,7 @@
                   <li v-for="(question, index) in questions" :key="index" style="align-items: center;display: flex;margin-top: .5rem;">
                     <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                       <div style="display: flex;position: relative;width: 100%;">
-                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;" type="text" @blur="handleBlur($event, index)" :value="questions[index].question" aria-describedby="" autocomplete="off">
+                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;padding: 0 1rem" type="text" @blur="handleBlur($event, index)" :value="questions[index].question" aria-describedby="" autocomplete="off">
                       </div>
                     </div>
                     <button @click="deletePhrase(index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
@@ -169,7 +170,7 @@ export default {
               }
             }
           }
-        });
+        })
       }
     }
   },
@@ -277,6 +278,23 @@ export default {
         this.rules_copy = this.rules_copy.filter(rule => rule.id != id);
         for (let i = id - 1; i < this.rules_copy.length; i++) {
           this.rules_copy[i].id = (i+1);
+        }
+      }
+    },
+    duplicateRule(id) {
+      // Find the index of the rule to duplicate based on its id
+      const indexToDuplicate = this.rules_copy.findIndex(
+        (rule) => rule.id === id
+      );
+      // Make sure we found the rule to duplicate
+      if (indexToDuplicate !== -1) {
+        const duplicatedRule = JSON.parse(
+          JSON.stringify(this.rules_copy[indexToDuplicate])
+        );
+        duplicatedRule.id = this.rules_copy[this.rules_copy.length - 1].id + 1;
+        this.rules_copy.splice(indexToDuplicate + 1, 0, duplicatedRule);
+        for (let i = 0; i < this.rules_copy.length; i++) {
+          this.rules_copy[i].id = i + 1;
         }
       }
     },

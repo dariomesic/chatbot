@@ -116,12 +116,15 @@ input[type=text]{
   line-height: 1.28572;
   outline: 2px solid transparent;
   outline-offset: -2px;
-  padding: 0 1rem;
   transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
   width: 100%;
 }
 
 input[type=text]:focus {
+  outline: 2px solid #0f62fe;
+}
+
+input[type=number]:focus {
   outline: 2px solid #0f62fe;
 }
 

@@ -61,6 +61,12 @@ export default {
     };
   },
   watch: {
+    conditions: {
+      deep: true,
+      handler(newVal) {
+        this.localConditions = JSON.parse(JSON.stringify(newVal))
+      },
+    },
     localConditions: {
       deep: true,
       handler(newVal) {

@@ -6,13 +6,12 @@
     :buttonText="'Primijeni'"
   >
     <div class="main-content">
-      <h3>Add a pause response</h3>
-      <p>Insert a pause before sending the next message to the channel</p>
-      <div style="display:flex;margin-bottom: 3rem;justify-content: space-around;">
+      <h3>Dodajte odgovor s pauzom</h3>
+      <p>Umetnite pauzu prije slanja sljedeće poruke na kanal</p>
+      <div style="display:flex;margin-bottom: 3rem;justify-content: space-around;gap:2rem">
         <div class="form-control">
-          <label for="duration">Duration (sec)</label>
+          <label for="duration">Trajanje (sekunde)</label>
           <div class="input-group">
-            <input type="button" class="minus" value="-" @click="decrement" />
             <input
               type="number"
               id="duration"
@@ -22,7 +21,8 @@
               @keydown="checkValidKey"
               @input="checkValue"
             />
-            <input type="button" class="plus" value="+" @click="increment" />
+            <input type="button"  value="-" @click="decrement" />
+            <input type="button"  value="+" @click="increment" />
           </div>
           <p v-if="!isValid" style="color: red">
             "Too high,maximum duration is 5 seconds."
@@ -30,7 +30,7 @@
         </div>
         <div class="preview-card">
           <header class="timer-preview-header">
-            <h4>Pause preview</h4>
+            <h4>Pregled pauze</h4>
             <button @click="refresh">
               <svg
                 width="18"
@@ -48,9 +48,12 @@
             </button>
           </header>
           <div class="preview-container">
-            <p>Hello! This is what a pause will look like.</p>
+            <section style="display:flex;margin-bottom:8px">
+              <div style="width:3px;border-radius:2px;background-color: var(--main__color);height:16px;margin-right:8px"/>
+              <p>Pozdrav! Ovako će izgledati pauza.</p>
+            </section>
             <base-typing-indicator v-if="isTyping"></base-typing-indicator>
-            <p v-else>Message after pause</p>
+            <p style="margin-left:12px" v-else>Poruka nakon pauze</p>
           </div>
         </div>
       </div>
@@ -141,50 +144,35 @@ label {
   margin: 20px 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .form-control > p {
   margin: 0;
 }
 
+.input-group{
+  border-bottom: 1px solid #161616;
+}
+
+input[type=button]{
+  margin-left: 3px;
+  height: 100%;
+  color: #161616;
+  border: none;
+  padding-left:10px;
+  padding-right: 10px;
+
+}
+
 input[type="number"] {
-  padding: 8px 00px;
-  font-size: 13px;
-  background-color: #f5f7f7;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #161616;
+  padding: 0 3rem 0 1rem;
+  height: 2rem;
+  max-height: 2rem;
   text-align: center;
-  width: 200px;
-}
-input[type="button"] {
-  color: #fff;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  width: 30px;
-  padding: 4px;
-  cursor: pointer;
-  margin: 4px;
-  font-size: 18px;
-}
-
-.minus {
-  background-color: #fa162d;
-}
-
-.minus:hover,
-.plus:hover {
-  border: 2px solid #000;
-}
-
-.minus:active {
-  background-color: #f74d5f;
-}
-
-.plus {
-  background-color: #20e62a;
-}
-
-.plus:active {
-  background-color: #68f76e;
+  min-width: 9.375rem;
+  border: none;
 }
 
 #duration::-webkit-inner-spin-button,
@@ -197,9 +185,8 @@ input[type="button"] {
 .preview-card {
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
-  border: 1px solid;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
   background-color: #f5f7f7;
-  box-shadow: 1px 2px 5px #777;
   margin-top: 20px;
   height: fit-content;
   min-height: 30vh;
@@ -210,7 +197,7 @@ input[type="button"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: solid 2px;
+  box-shadow: 0 9.5px 12.7px 0 rgba(0,0,0,.05);
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   background-color: #fff;
@@ -220,14 +207,16 @@ input[type="button"] {
 .preview-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  font-weight: 600;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 8px;
 }
 
 h4 {
   text-align: center;
   margin: 0;
   flex: 1;
+  font-weight: 400;
 }
 
 button {

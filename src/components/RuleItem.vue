@@ -155,6 +155,14 @@ export default {
       ruleCopy: { ... this.rule},
     };
   },
+  watch: {
+    rule: {
+      deep: true,
+      handler(newVal) {
+        this.ruleCopy = {...newVal}
+      },
+    },
+  },
   methods: {
     conditionTypeChanged(event){
       this.selected_option = event

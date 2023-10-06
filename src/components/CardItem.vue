@@ -92,7 +92,7 @@
             </button>
           </div>
           <div style="position: absolute; right: 3.5rem">
-            <button tabindex="0" type="button" aria-label="Duplicate">
+            <button tabindex="0" type="button" aria-label="Duplicate" @click="handleDuplicateClick">
               <img
                 src="../assets/duplicate.png"
                 height="16"
@@ -133,6 +133,10 @@ export default {
           textColor: "black",
         }
       );
+    },
+    handleDuplicateClick(event) {
+      event.stopPropagation();
+      this.$emit("duplicate", this.card.id);
     },
   },
   computed: {
@@ -295,5 +299,9 @@ label {
 .tile button:hover {
   background-color: var(--hover__color);
   transition: 0.2s;
+}
+
+.card:not(.selected) .tile button:hover {
+  background-color: #C6C6C6;
 }
 </style>

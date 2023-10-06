@@ -7,32 +7,32 @@
     :isDisabledClass="isImageNull"
     :buttonText="'Umetni'"
   >
-    <h3>Include an image with your response</h3>
-    <p>Insert images from any public sources</p>
+    <h3>Uključite sliku u svoj odgovor</h3>
+    <p>Umetnite sliku s računala</p>
     <div class="main-content">
       <section class="form-section">
         <div class="form-control">
           <div class="counter-label">
-            <label for="alt-text">Alt text (recommended)</label>
+            <label for="alt-text">Zamjenski tekst (preporučeno)</label>
             <span>{{ altCounter }}</span>
           </div>
           <input
             type="text"
             id="alt-text"
-            placeholder="Alternate text for an image"
+            placeholder="Zamjenski tekst za sliku"
             maxlength="60"
             v-model.trim="altText"
           />
         </div>
         <div class="form-control">
           <div class="counter-label">
-            <label for="title-text">Title (Optional)</label>
+            <label for="title-text">Naslov (opcionalno)</label>
             <span>{{ titleCounter }}</span>
           </div>
           <input
             type="text"
             id="title-text"
-            placeholder="Tooltip text for image"
+            placeholder="Tekst opisa za sliku"
             maxlength="60"
             v-model.trim="imageTitle"
           />
@@ -53,7 +53,7 @@
         </div>
       </section>
       <div class="preview-card">
-        <header class="image-preview-title">Image preview</header>
+        <header class="image-preview-title">Pregled slike</header>
         <div class="image-container">
           <img :src="image" :alt="this.altText" :title="this.imageTitle" />
         </div>
@@ -148,6 +148,7 @@ export default {
 .main-content {
   display: flex;
   margin-bottom: 3rem;
+  gap: 2rem;
 }
 
 .form-control {
@@ -189,23 +190,21 @@ input[type="text"]{
   line-height: 1.28572;
   outline: 2px solid transparent;
   outline-offset: -2px;
-  padding: 0 0rem;
+  padding-left: 10px;
+  width: calc(100% - 10px);
   transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
-  width: 100%;
 }
 
 .form-section {
   flex-basis: 55%;
-  margin-right: 30px;
 }
 
 .preview-card {
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
-  border: 1px solid;
   background-color: #f5f7f7;
   flex-basis: 45%;
-  box-shadow: 1px 2px 5px #777;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
   height: fit-content;
   min-height: 40vh;
   min-width: 340px;
@@ -213,10 +212,10 @@ input[type="text"]{
 
 .image-preview-title {
   text-align: center;
-  border-bottom: solid 2px;
+  box-shadow: 0 9.5px 12.7px 0 rgba(0,0,0,.05);
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
-  padding: 5px;
+  padding: 10px 20px;
   background-color: #fff;
 }
 

@@ -16,7 +16,7 @@
 }
 
 .ticontainer .dot {
-  background-color: #1a90ff;
+  background-color: var(--main__color);
 }
 
 .dot {

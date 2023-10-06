@@ -10,7 +10,7 @@
     <div class="main-content">
       <div class="form-control">
         <h3>Unesi link</h3>
-        <label for="link-text">Label (optional)</label>
+        <label for="link-text">Oznaka (opcionalno)</label>
         <input
           type="text"
           id="link-text"
@@ -112,8 +112,8 @@ input{
   line-height: 1.28572;
   outline: 2px solid transparent;
   outline-offset: -2px;
-  padding: 0 0rem;
+  padding-left: 10px;
+  width: calc(100% - 10px);
   transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
-  width: 100%;
 }
 </style>
