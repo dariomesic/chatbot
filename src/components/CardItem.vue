@@ -117,7 +117,7 @@ export default {
   methods: {
     handleRemoveClick(event) {
       event.stopPropagation();
-      this.$emit("remove", this.index + 1);
+      this.$emit("remove", this.index);
     },
     getObjectColors(subject) {
       const colorMap = {
