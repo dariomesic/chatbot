@@ -152,7 +152,7 @@
       ref="timerDialog"
     ></timer-dialog>
   </div>
-  <button @click="send">send</button>
+  <!-- <button @click="send">send</button> -->
   <div id="output"></div>
 </template>
 
