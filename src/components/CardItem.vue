@@ -1,6 +1,6 @@
 <template>
   <div class="card" :class="{ selected: isSelected }" @click="$emit('click')">
-    <label>{{ card.id }}</label>
+    <label>{{ index + 1 }}</label>
     <div class="right-part">
       <div class="conditions">
         <div
@@ -112,11 +112,12 @@ export default {
   props: {
     card: Object,
     isSelected: Boolean,
+    index: Number,
   },
   methods: {
     handleRemoveClick(event) {
       event.stopPropagation();
-      this.$emit("remove", this.card.id);
+      this.$emit("remove", this.index + 1);
     },
     getObjectColors(subject) {
       const colorMap = {
@@ -136,7 +137,7 @@ export default {
     },
     handleDuplicateClick(event) {
       event.stopPropagation();
-      this.$emit("duplicate", this.card.id);
+      this.$emit("duplicate", this.index + 1);
     },
   },
   computed: {

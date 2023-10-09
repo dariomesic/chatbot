@@ -22,9 +22,10 @@
               <div class="conversation-steps">
                   <p class="text-style" style="font-weight:600;margin-left: 2%;font-style:initial">Slijed konverzacije</p>
                   <TransitionGroup name="list" tag="ul">
-                    <div v-for="(card, index) in rules_copy" :key="card.continuation">
+                    <div v-for="(card, index) in rules_copy" :key="card.id">
                       <Card
                         :card="card"
+                        :index="index"
                         @click="scrollToCard(index)"
                         @remove="removeRule"
                         @duplicate="duplicateRule"
@@ -88,10 +89,11 @@
       </div>
         
          <TransitionGroup name="list" tag="ul">
-          <div v-for="(rule, index) in rules_copy" :key="rule.continuation">
+          <div v-for="(rule, index) in rules_copy" :key="rule.id">
             <div :ref="'scrollableCard_' + index">
               <Rule
                 :rule="rule"
+                :index="index"
                 :rules_answers="distinctAnswers"
                 @add="addRule"
                 @remove="removeRule"
@@ -269,16 +271,10 @@ export default {
         customer_response: [],
         continuation: 'Nastavite na idući korak'
       });
-      for (let i = id; i < this.rules_copy.length; i++) {
-        this.rules_copy[i].id = i + 1;
-      }
     },
     removeRule(id) {
       if (this.rules_copy.length !== 1) {
-        this.rules_copy = this.rules_copy.filter(rule => rule.id != id);
-        for (let i = id - 1; i < this.rules_copy.length; i++) {
-          this.rules_copy[i].id = (i+1);
-        }
+        this.rules_copy.splice(id, 1);
       }
     },
     duplicateRule(id) {

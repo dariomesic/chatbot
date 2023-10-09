@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-      <h4 style="margin-top:unset">Korak {{rule.id}}</h4>
+      <h4 style="margin-top:unset">Korak {{index + 1}}</h4>
       <div style="align-items: center;display: flex;margin-bottom: 1.5rem;">
         <div style="min-width: 7rem;">Ako je odabran</div>
         <CustomSelect :options="options" :value="selected_option" @update:value="conditionTypeChanged"/>
@@ -106,13 +106,13 @@
           </div>
         </div>
       </div>
-      <button @click="$emit('remove', rule.id)" tabindex="0" type="button" class="exit-button">
+      <button @click="$emit('remove', index)" tabindex="0" type="button" class="exit-button">
         <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
           <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"/>
         </svg>
       </button>
     </div>
-    <h2 class="plus-separator"><button @click="$emit('add', rule.id)" class="line-center">+</button></h2>
+    <h2 class="plus-separator"><button @click="$emit('add', this.index + 1)" class="line-center">+</button></h2>
     <Teleport to="body">
         <Popup :show_modal="show_modal" @addOptions="updateOptions" @close="show_modal = false" :options="ruleCopy.customer_response"/>
     </Teleport>
@@ -127,6 +127,7 @@ export default {
    props: {
     rule: Object,
     rules_answers: Array,
+    index: Number,
   },
   data() {
     return {
@@ -154,14 +155,6 @@ export default {
       show_modal: false,
       ruleCopy: { ... this.rule},
     };
-  },
-  watch: {
-    rule: {
-      deep: true,
-      handler(newVal) {
-        this.ruleCopy = {...newVal}
-      },
-    },
   },
   methods: {
     conditionTypeChanged(event){
