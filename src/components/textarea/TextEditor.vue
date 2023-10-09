@@ -181,12 +181,13 @@ export default {
       storedSelection: null,
       editMode: false,
       selectedTimer: null,
+      observer: null,
     };
   },
   methods: {
     insertTimer() {
       const timer = `
-        <div id="content" class="content" v-if="${this.isTimerSet}">
+        <div id="content" class="timer-content" v-if="${this.isTimerSet}">
           <div class="pause">
             <svg
               focusable="false"
@@ -505,7 +506,7 @@ export default {
         this.deleteTimer(event);
       }
     });
-  },
+  }
 };
 </script>
 

@@ -161,6 +161,16 @@ input[type=number]:focus {
   white-space: nowrap;
 }
 
+.timer-content {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
 .pause {
   display: flex;
 }
