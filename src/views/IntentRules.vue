@@ -70,7 +70,7 @@
                   </div>
                 </li>
                 <TransitionGroup name="list" tag="ul">
-                  <li v-for="(question, index) in questions" :key="index" style="align-items: center;display: flex;margin-top: .5rem;">
+                  <li v-for="(question, index) in questions" :key="question.question_id" style="align-items: center;display: flex;margin-top: .5rem;">
                     <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
                       <div style="display: flex;position: relative;width: 100%;">
                         <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;padding: 0 1rem" type="text" @blur="handleBlur($event, index)" :value="questions[index].question" aria-describedby="" autocomplete="off">
