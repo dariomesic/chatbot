@@ -30,7 +30,84 @@
         </div>
       </div>
       <div class="tile">
-        <span class="tile-title" :innerHTML="card.assistant_answer"/>
+        <span class="tile-title" :innerHTML="card.assistant_answer" />
+        <div class="selected-options">
+          <template v-if="card.response_type === 'OPCIJE'">
+            <div
+              class="tag"
+              v-for="(response, index) in card.customer_response"
+              :key="index"
+              :style="{
+                backgroundColor: getObjectColors(card.id).backgroundColor,
+                color: getObjectColors(card.id).textColor,
+              }"
+            >
+              {{ response }}
+            </div>
+          </template>
+          <template v-else-if="card.response_type === 'Regularni izraz'">
+            <div
+              class="tag"
+              :style="{
+                backgroundColor: getObjectColors(card.id).backgroundColor,
+                color: getObjectColors(card.id).textColor,
+              }"
+            >
+              <span>
+                <svg
+                  focusable="false"
+                  preserveAspectRatio="xMidYMid meet"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 32 32"
+                  aria-hidden="true"
+                  transform="translate(0, 3)"
+                >
+                  <path
+                    d="M27,22.14V9.86A4,4,0,1,0,22.14,5H9.86A4,4,0,1,0,5,9.86V22.14A4,4,0,1,0,9.86,27H22.14A4,4,0,1,0,27,22.14ZM26,4a2,2,0,1,1-2,2A2,2,0,0,1,26,4ZM4,6A2,2,0,1,1,6,8,2,2,0,0,1,4,6ZM6,28a2,2,0,1,1,2-2A2,2,0,0,1,6,28Zm16.14-3H9.86A4,4,0,0,0,7,22.14V9.86A4,4,0,0,0,9.86,7H22.14A4,4,0,0,0,25,9.86V22.14A4,4,0,0,0,22.14,25ZM26,28a2,2,0,1,1,2-2A2,2,0,0,1,26,28Z"
+                  ></path>
+                  <path
+                    d="M21 11L11 11 11 13 15 13 15 22 17 22 17 13 21 13 21 11z"
+                  ></path>
+                </svg>
+                Regularni Izraz
+              </span>
+            </div>
+          </template>
+          <template v-else>
+            <div
+              class="tag"
+              :style="{
+                backgroundColor: getObjectColors(card.id).backgroundColor,
+                color: getObjectColors(card.id).textColor,
+              }"
+            >
+              <span>
+                <svg
+                  focusable="false"
+                  preserveAspectRatio="xMidYMid meet"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 32 32"
+                  aria-hidden="true"
+                  transform="translate(0, 3)"
+                >
+                  <path
+                    d="M23 27L23 15 18 15 18 13 30 13 30 15 25 15 25 27 23 27z"
+                  ></path>
+                  <path
+                    d="M11 27L11 8 2 8 2 6 22 6 22 8 13 8 13 27 11 27z"
+                  ></path>
+                </svg>
+                Slobodni tekst
+              </span>
+            </div>
+          </template>
+        </div>
         <hr />
         <div style="display: flex; justify-content: space-between">
           <span class="ctr">
@@ -92,7 +169,12 @@
             </button>
           </div>
           <div style="position: absolute; right: 3.5rem">
-            <button tabindex="0" type="button" aria-label="Duplicate" @click="handleDuplicateClick">
+            <button
+              tabindex="0"
+              type="button"
+              aria-label="Duplicate"
+              @click="handleDuplicateClick"
+            >
               <img
                 src="../assets/duplicate.png"
                 height="16"
@@ -168,7 +250,7 @@ export default {
   border: 1px solid transparent;
   display: flex;
   list-style: none;
-  max-height: 228px;
+  max-height: 235px;
   min-height: 3rem;
   padding: 0.5rem 1rem;
   position: relative;
@@ -233,10 +315,11 @@ label {
 
 .step-number {
   border-right: 2px solid #f4f4f4;
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
 }
 
 .conditions {
+  max-height: 80px;
   overflow-y: auto;
 }
 
@@ -246,12 +329,12 @@ label {
 }
 
 .predicate {
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
   text-align: center;
 }
 
 .object {
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
   max-width: 130px;
   overflow: hidden;
   text-wrap: nowrap;
@@ -261,6 +344,25 @@ label {
 .object-container {
   display: flex;
   flex-wrap: wrap;
+}
+
+.selected-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.tag {
+  max-width: 130px;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  padding: 0.25rem 0.5rem;
+  border-radius: 16px;
+  margin-left: 0.25rem;
+  margin-top: 0.55rem;
 }
 
 .comma {
@@ -303,6 +405,6 @@ label {
 }
 
 .card:not(.selected) .tile button:hover {
-  background-color: #C6C6C6;
+  background-color: #c6c6c6;
 }
 </style>
