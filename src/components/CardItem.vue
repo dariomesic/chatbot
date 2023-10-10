@@ -76,7 +76,7 @@
               </span>
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="card.response_type === 'Slobodni tekst'">
             <div
               class="tag"
               :style="{
@@ -355,6 +355,7 @@ label {
 }
 
 .tag {
+  height: fit-content;
   max-width: 130px;
   overflow: hidden;
   text-wrap: nowrap;
