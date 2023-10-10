@@ -14,7 +14,7 @@
         <!--RESPONSE PART-->
         <div class="main-container">
 
-          <div v-if="!(ruleCopy.response_type === 'OPCIJE')" class="clickable-div" tabindex="1" @click="optionsResponseVisible = !optionsResponseVisible">
+          <div v-if="!['Regularni izraz', 'OPCIJE', 'Slobodni tekst'].includes(ruleCopy.response_type)" class="clickable-div" tabindex="1" @click="optionsResponseVisible = !optionsResponseVisible">
             <span style="align-items: center;display: flex;color:#0f62fe">
               <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 2c1.4 0 2.5 1.1 2.5 2.5S9.4 7 8 7 5.5 5.9 5.5 4.5 6.6 2 8 2M8 1C6.1 1 4.5 2.6 4.5 4.5S6.1 8 8 8s3.5-1.6 3.5-3.5S9.9 1 8 1zM13 15h-1v-2.5c0-1.4-1.1-2.5-2.5-2.5h-3C5.1 10 4 11.1 4 12.5V15H3v-2.5C3 10.6 4.6 9 6.5 9h3c1.9 0 3.5 1.6 3.5 3.5V15z"></path>
@@ -26,21 +26,25 @@
               </svg>
           </div>
 
-
-
-          <div v-else style="background-color: #f4f4f4;margin-top:2%;position:relative">
+          <div v-else style="background-color: #f4f4f4; margin-top: 2%; position: relative">
             <div style="align-items: center;display: flex;flex-wrap: wrap;min-height: 3.5rem;padding: .75rem;">
-              <div v-for="response in ruleCopy.customer_response" :key="response" class="response-option"><span>{{response}}</span></div>
+              <div v-if="['Regularni izraz', 'Slobodni tekst'].includes(ruleCopy.response_type)">
+                <div class="response-option"><span>{{ ruleCopy.response_type }}</span></div>
+              </div>
+
+              <div v-else v-for="response in ruleCopy.customer_response" :key="response" class="response-option">
+                <span>{{response}}</span>
+              </div>
             </div>
-            <div style="border-top: 1px solid #e0e0e0;display: flex;flex-wrap: wrap;">
+            <div style="border-top: 1px solid #e0e0e0; display: flex; flex-wrap: wrap;">
               <button @click="show_modal = true" class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Uredi odgovor</button>
               <button @click="optionsResponseVisible = !optionsResponseVisible" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">Promijeni tip odgovora</button>
-              <div style="flex: 1 1"></div>
-              <button @click="deleteOptions" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
-                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
-                    <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
-                    <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
-                  </svg>
+              <div style="flex: 1 1;"></div>
+              <button @click="deleteOptions" class="color-button" style="padding-left: .4375rem; padding-right: .4375rem;" tabindex="0" type="button">
+                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
+                  <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
+                </svg>
               </button>
             </div>
           </div>
@@ -53,7 +57,7 @@
                 :key="index"
                 @mouseenter="showDetails(index)"
                 @mouseleave="hideDetails"
-                @click="option === 'Opcije' ? (show_modal = true,ruleCopy.response_type = 'OPCIJE') : (ruleCopy.response_type = '');optionsResponseVisible = false"
+                @click="option === 'Opcije' ? (show_modal = true,ruleCopy.response_type = 'OPCIJE') : (ruleCopy.response_type = option);optionsResponseVisible = false"
               >
                 {{ option }}
               </div>
