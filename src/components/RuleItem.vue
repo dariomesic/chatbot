@@ -13,6 +13,7 @@
 
         <!--RESPONSE PART-->
         <div class="main-container">
+
           <div v-if="!(ruleCopy.response_type === 'OPCIJE')" class="clickable-div" tabindex="1" @click="optionsResponseVisible = !optionsResponseVisible">
             <span style="align-items: center;display: flex;color:#0f62fe">
               <svg style="margin-right: .75rem;fill: #0f62fe" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -24,18 +25,17 @@
                 <path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path>
               </svg>
           </div>
+
+
+
           <div v-else style="background-color: #f4f4f4;margin-top:2%;position:relative">
             <div style="align-items: center;display: flex;flex-wrap: wrap;min-height: 3.5rem;padding: .75rem;">
               <div v-for="response in ruleCopy.customer_response" :key="response" class="response-option"><span>{{response}}</span></div>
             </div>
             <div style="border-top: 1px solid #e0e0e0;display: flex;flex-wrap: wrap;">
               <button @click="show_modal = true" class="color-button" style="padding: calc(.375rem - 3px) 16px;" tabindex="0" type="button">Uredi odgovor</button>
-              <div style="flex: 1 1;"></div>
-              <button @click="optionsResponseVisible = !optionsResponseVisible" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
-                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
-                    <path d="M6 6H26.1719l-3.586-3.5859L24 1l6 6-6 6-1.4141-1.4141L26.1719 8H6v7H4V8A2.0024 2.0024 0 016 6zM9.4141 20.4141L5.8281 24H26V17h2v7a2.0024 2.0024 0 01-2 2H5.8281L9.414 29.5859 8 31 2 25l6-6z"></path>
-                  </svg>
-              </button>
+              <button @click="optionsResponseVisible = !optionsResponseVisible" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">Promijeni tip odgovora</button>
+              <div style="flex: 1 1"></div>
               <button @click="deleteOptions" class="color-button" style="padding-left: .4375rem;padding-right: .4375rem;" tabindex="0" type="button">
                   <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
                     <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
