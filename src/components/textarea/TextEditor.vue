@@ -130,7 +130,7 @@
         @mouseup="saveSelection"
         @keyup="saveSelection"
         @keydown="handleLineBreak"
-        :innerHTML="text"
+        :innerHTML="html"
       ></div>
     </div>
     <image-dialog
@@ -162,6 +162,7 @@ import TimerDialog from "./TimerDialog.vue";
 import LinkDialog from "./LinkDialog.vue";
 export default {
   props:['text'],
+  emits:['updateText'],
   components: {
     ImageDialog,
     TimerDialog,
@@ -181,7 +182,7 @@ export default {
       storedSelection: null,
       editMode: false,
       selectedTimer: null,
-      observer: null,
+      html: this.text
     };
   },
   methods: {
@@ -369,15 +370,18 @@ export default {
     closeImageDialog() {
       this.$refs.imageDialog.resetInput();
       this.showImageDialog = false;
+      this.$emit('updateText', this.$refs.editor.innerHTML)
     },
     closeTimerDialog() {
       this.showTimerDialog = false;
       if (!this.isTimerSet) {
         this.$refs.timerDialog.resetTimer();
       }
+      this.$emit('updateText', this.$refs.editor.innerHTML)
     },
     closeLinkDialog() {
       this.showLinkDialog = false;
+      this.$emit('updateText', this.$refs.editor.innerHTML)
     },
     async send() {
       const editor = document.getElementById("editorId");
@@ -474,6 +478,7 @@ export default {
     deleteTimer(event) {
       const timerDiv = event.target.closest(".pause-wrapper");
       timerDiv.remove();
+      this.$emit('updateText', this.$refs.editor.innerHTML)
     },
     editTimer(event) {
       this.editMode = true;
@@ -493,6 +498,7 @@ export default {
     handleInput() {
       this.isActive();
       this.saveSelection();
+      this.$emit('updateText', this.$refs.editor.innerHTML)
     },
   },
   mounted() {

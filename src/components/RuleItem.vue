@@ -9,7 +9,7 @@
       <hr/>
       <section>
         <h5>Odgovor asistenta</h5>
-        <TextEditor :text="ruleCopy.assistant_answer"/>
+        <TextEditor :text="ruleCopy.assistant_answer" @updateText="updateAssistantAnswer"/>
 
         <!--RESPONSE PART-->
         <div class="main-container">
@@ -191,6 +191,7 @@ export default {
     updateAssistantAnswer(text) {
       this.ruleCopy.assistant_answer = text;
       this.$emit("updateRule", this.ruleCopy);
+      console.log(this.ruleCopy)
     },
     updateContinuation(option){
       this.ruleCopy.continuation = option;

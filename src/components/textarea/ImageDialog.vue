@@ -79,7 +79,6 @@ export default {
       const imageFile = event.target.files[0];
       if (imageFile) {
         const base64String = await convertFileToBase64(imageFile);
-        console.log(base64String);
         this.image = base64String;
       }
       function convertFileToBase64(imageFile) {
