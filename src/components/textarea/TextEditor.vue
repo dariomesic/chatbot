@@ -161,8 +161,8 @@ import ImageDialog from "./ImageDialog.vue";
 import TimerDialog from "./TimerDialog.vue";
 import LinkDialog from "./LinkDialog.vue";
 export default {
-  props:['text'],
-  emits:['updateText'],
+  props: ["text"],
+  emits: ["updateText"],
   components: {
     ImageDialog,
     TimerDialog,
@@ -182,7 +182,7 @@ export default {
       storedSelection: null,
       editMode: false,
       selectedTimer: null,
-      html: this.text
+      html: this.text,
     };
   },
   methods: {
@@ -262,7 +262,7 @@ export default {
       tempContainer.innerHTML = timer;
 
       if (this.editMode) {
-        this.$refs.editor.replaceChild(tempContainer, this.selectedTimer);
+        this.selectedTimer.replaceWith(tempContainer);
         this.editMode = false;
       } else {
         if (this.storedSelection) {
@@ -275,12 +275,17 @@ export default {
         const nextElement = tempContainer.nextSibling;
         if (
           previousElement === null ||
-          previousElement.nodeType === Node.TEXT_NODE
+          previousElement.textContent.trim() === ""
         ) {
-          this.$refs.editor.insertAdjacentHTML("afterbegin", "&nbsp;");
+          const spaceBefore = document.createTextNode("\u00A0");
+          tempContainer.parentNode.insertBefore(spaceBefore, tempContainer);
         }
-        if (nextElement === null || nextElement.nodeType === Node.TEXT_NODE) {
-          this.$refs.editor.insertAdjacentHTML("beforeend", "&nbsp;");
+        if (nextElement === null || nextElement.textContent.trim() === "") {
+          const spaceAfter = document.createTextNode("\u00A0");
+          tempContainer.parentNode.insertBefore(
+            spaceAfter,
+            tempContainer.nextSibling
+          );
         }
       }
 
@@ -370,18 +375,18 @@ export default {
     closeImageDialog() {
       this.$refs.imageDialog.resetInput();
       this.showImageDialog = false;
-      this.$emit('updateText', this.$refs.editor.innerHTML)
+      this.$emit("updateText", this.$refs.editor.innerHTML);
     },
     closeTimerDialog() {
       this.showTimerDialog = false;
       if (!this.isTimerSet) {
         this.$refs.timerDialog.resetTimer();
       }
-      this.$emit('updateText', this.$refs.editor.innerHTML)
+      this.$emit("updateText", this.$refs.editor.innerHTML);
     },
     closeLinkDialog() {
       this.showLinkDialog = false;
-      this.$emit('updateText', this.$refs.editor.innerHTML)
+      this.$emit("updateText", this.$refs.editor.innerHTML);
     },
     async send() {
       const editor = document.getElementById("editorId");
@@ -478,7 +483,7 @@ export default {
     deleteTimer(event) {
       const timerDiv = event.target.closest(".pause-wrapper");
       timerDiv.remove();
-      this.$emit('updateText', this.$refs.editor.innerHTML)
+      this.$emit("updateText", this.$refs.editor.innerHTML);
     },
     editTimer(event) {
       this.editMode = true;
@@ -498,7 +503,7 @@ export default {
     handleInput() {
       this.isActive();
       this.saveSelection();
-      this.$emit('updateText', this.$refs.editor.innerHTML)
+      this.$emit("updateText", this.$refs.editor.innerHTML);
     },
   },
   mounted() {
@@ -512,7 +517,7 @@ export default {
         this.deleteTimer(event);
       }
     });
-  }
+  },
 };
 </script>
 
@@ -599,9 +604,9 @@ export default {
   border: none;
   border-top: 1px solid #e0e0e0;
   width: 100%;
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 400;
-  letter-spacing: .32px;
+  letter-spacing: 0.32px;
   font-family: "Gill Sans", sans-serif;
 }
 </style>

@@ -6,129 +6,132 @@
 
 <script>
 export default {
-  name: 'App',
-}
+  name: "App",
+};
 </script>
 
 <style>
 :root {
-  --hover__color: #E5E5E5;
+  --hover__color: #e5e5e5;
   --background: #f4f4f4;
   --main__color: #003366;
   --border__color: #d2d2d2;
 
   --font__size: 15px;
-  --font__family: "Gill Sans", sans-serif;;
+  --font__family: "Gill Sans", sans-serif;
 }
 
-html, body {
-  margin:0;
+html,
+body {
+  margin: 0;
   font-family: var(--font__family);
 }
 
-ul, li{
+ul,
+li {
   list-style: none;
   padding: unset;
 }
 
-hr{
-    background-color: var(--border__color);
-    border: 0;
-    height: 1px;
-    margin: 0.5rem 0 0;
-    padding-bottom: 0;
+hr {
+  background-color: var(--border__color);
+  border: 0;
+  height: 1px;
+  margin: 0.5rem 0 0;
+  padding-bottom: 0;
 }
 
-button{
+button {
   cursor: pointer;
 }
 
 button {
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
   position: relative;
 }
 
-button:disabled{
+button:disabled {
   cursor: not-allowed;
   opacity: 0.3;
 }
 
-.color-button{
+.color-button {
   color: var(--main__color);
   padding: calc(0.375rem - 3px) 16px;
   min-height: 2rem;
 }
 
-.main-button{
+.main-button {
   color: #000;
   font-weight: unset;
   background: white;
-  padding:5px;
+  padding: 5px;
   align-items: center;
   border: 1px solid #d3d3d3;
   border-radius: 5px;
-  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   cursor: pointer;
   margin: 0 10px;
 }
 
-
-.main-button:hover{
+.main-button:hover {
   background-color: var(--hover__color);
-  transition: .2s;
+  transition: 0.2s;
 }
 
-.color-button:hover{
+.color-button:hover {
   background: var(--hover__color);
-  transition: .2s;
+  transition: 0.2s;
 }
 
-.background-button{
-    background-color: var(--main__color);
-    border: 1px solid transparent;
-    color: #fff;
-    min-width: 11rem;
-    padding: calc(0.675rem - 3px) 60px calc(0.675rem - 3px) 12px;
+.background-button {
+  background-color: var(--main__color);
+  border: 1px solid transparent;
+  color: #fff;
+  min-width: 11rem;
+  padding: calc(0.675rem - 3px) 60px calc(0.675rem - 3px) 12px;
 }
 
-.background-button:hover{
-    background-color: #003d7b;
-    transition: .2s;
+.background-button:hover {
+  background-color: #003d7b;
+  transition: 0.2s;
 }
 
-p{
-  margin:unset;
+p {
+  margin: unset;
 }
 
-input[type=text]{
+input[type="text"] {
   background-color: #fff;
   border: none;
   color: #161616;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 400;
-  letter-spacing: .16px;
+  letter-spacing: 0.16px;
   line-height: 1.28572;
   outline: 2px solid transparent;
   outline-offset: -2px;
-  transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
+  transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+    outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   width: 100%;
 }
 
-input[type=text]:focus {
+input[type="text"]:focus {
   outline: 2px solid #0f62fe;
 }
 
-input[type=number]:focus {
+input[type="number"]:focus {
   outline: 2px solid #0f62fe;
 }
 
-.svg{
+.svg {
   height: 1rem;
   position: absolute;
   right: 1rem;
@@ -149,13 +152,13 @@ input[type=number]:focus {
   padding-top: 1rem;
 }
 
-.text-style{
-  font-size: .75rem;
+.text-style {
+  font-size: 0.75rem;
   font-style: italic;
   font-weight: 400;
-  letter-spacing: .32px;
+  letter-spacing: 0.32px;
   line-height: 1.33333;
-  margin-top: .75rem;
+  margin-top: 0.75rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -169,6 +172,8 @@ input[type=number]:focus {
   margin-top: 5px;
   margin-bottom: 5px;
   border-radius: 5px;
+  font-style: normal;
+  font-weight: normal;
 }
 
 .pause {
@@ -193,10 +198,12 @@ input[type=number]:focus {
   color: #f5f7f7;
 }
 
-.fade_main-enter-active, .fade_main-leave-active {
+.fade_main-enter-active,
+.fade_main-leave-active {
   transition: opacity 0.5s;
 }
-.fade_main-enter-from, .fade_main-leave-to {
+.fade_main-enter-from,
+.fade_main-leave-to {
   opacity: 0;
 }
 </style>
