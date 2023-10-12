@@ -253,64 +253,115 @@ export default{
 
     /*ONLY IF CONTENT INCLUDES PAUSE*/
     async displayContentWithDelays(message) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(message.assistant_answer, 'text/html');
-      const contentElements = doc.body.childNodes;
-      let index = 0;
-      const delayBetweenElements = 1000; // Adjust the delay as needed
+      const tempElement = document.createElement("div");
+      tempElement.innerHTML = message.assistant_answer;
 
-      const displayNextElement = async () => {
-        if (index < contentElements.length) {
-          const element = contentElements[index];
-          console.log(element)
-          if (element.nodeType === Node.TEXT_NODE) {
-            const text = element.textContent;
-            this.partialContent += text;
-            if (this.messages.length > 0) {
-              this.messages[this.messages.length - 1].text =
-                '<div class="bot-response text" text-first="true">' +
-                this.partialContent +
-                '</div>';
+      // Create an element to build the message content
+      const messageContentElement = document.createElement("div");
+
+      const processNode = async (node, isFirstNode, isLastNode) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          // Handle text formatting here, e.g., for bold and italic
+          const formattingTags = ["B", "I"];
+          const parentNodes = [];
+          let parentNode = node.parentNode;
+
+          // Check for formatting parent nodes
+          while (parentNode) {
+            if (formattingTags.includes(parentNode.nodeName)) {
+              parentNodes.push(parentNode.nodeName);
             }
-          } else if (element.nodeType === Node.ELEMENT_NODE) {
-            if (element.classList.contains('pause-wrapper')) {
-              const duration = element.querySelector('p[data-duration]').getAttribute('data-duration');
-              await this.delay(duration * 1000);
-              this.partialContent += '<br/>'; // Add a line break after the pause
-            } else if (element.nodeName === 'B') {
-              // Handle bold text
-              this.partialContent += '<b>' + element.textContent;
-            } else if (element.nodeName === 'I') {
-              // Handle italic text
-              this.partialContent += '<i>' + element.textContent;
-            } else if (element.nodeName === 'IMG') {
-              // Handle images
-              const src = element.getAttribute('src');
-              this.partialContent += '<img src="' + src + '"/>';
-            } else if (element.nodeName === 'A') {
-              // Handle links
-              const href = element.getAttribute('href');
-              this.partialContent += '<a href="' + href + '">' + element.textContent + '</a>';
-            } else if (element.nodeName === 'BR') {
-              // Handle line breaks
-              this.partialContent += '<br/>';
-            }
+            parentNode = parentNode.parentNode;
           }
 
-          index++;
-          if (index < contentElements.length) {
-            setTimeout(displayNextElement, delayBetweenElements); // Use setTimeout here
+          let textNode = document.createTextNode(node.textContent);
+
+          if (parentNodes.length > 0) {
+            for (const tagName of parentNodes) {
+              const formattedNode = document.createElement(tagName);
+              formattedNode.appendChild(textNode);
+              textNode = formattedNode;
+            }
+
+            // Trim text based on its position
+            if (isFirstNode) {
+              textNode.textContent = textNode.textContent.trimStart();
+            }
+            if (isLastNode) {
+              textNode.textContent = textNode.textContent.trimEnd();
+            }
+
+            // Append the formatted text to the message content element
+            messageContentElement.appendChild(textNode);
+            messageContentElement.appendChild(document.createElement("br"));
+          } else {
+            // Append text content to the message content element
+            const trimmedText = isFirstNode
+              ? textNode.textContent.trimStart()
+              : isLastNode
+              ? textNode.textContent.trimEnd()
+              : textNode.textContent;
+            messageContentElement.appendChild(document.createTextNode(trimmedText));
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.nodeName === "A") {
+            const link = document.createElement("a");
+            link.href = node.getAttribute("href");
+            link.textContent = node.textContent;
+            messageContentElement.appendChild(link);
+          } else if (node.nodeName === "IMG") {
+            const image = document.createElement("img");
+            image.src = node.getAttribute("src");
+            image.alt = node.getAttribute("alt");
+            messageContentElement.appendChild(image);
+          } else if (node.nodeName === "BR") {
+            // Handle line breaks
+            messageContentElement.appendChild(document.createElement("br"));
+          } else if (node.classList.contains("pause-wrapper")) {
+            const duration = node.querySelector("p").getAttribute("data-duration");
+            if (!isNaN(duration) && duration > 0) {
+              // Append the content before the pause to the message content element
+              if (this.messages.length > 0) {
+                this.messages[this.messages.length - 1].text.includes('bot-response') ? this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML) : this.messages[this.messages.length - 1].text = `<div class="bot-response text" text-first="true">${messageContentElement.innerHTML}</div>`
+              }
+              messageContentElement.innerHTML = '';
+
+              // Delay here
+              await new Promise((resolve) => setTimeout(resolve, duration * 1000));
+            }
+          } else {
+            const childNodes = node.childNodes;
+            for (let i = 0; i < childNodes.length; i++) {
+              const childNode = childNodes[i];
+              await processNode(
+                childNode,
+                isFirstNode && i === 0,
+                isLastNode && i === childNodes.length - 1
+              );
+            }
           }
         }
       };
 
-      displayNextElement(); // Start the display process once
+      const childNodes = tempElement.childNodes;
+      for (let i = 0; i < childNodes.length; i++) {
+        const childNode = childNodes[i];
+        await processNode(childNode, i === 0, i === childNodes.length - 1);
+      }
+
+      // After processing, set the HTML content to the last message
+      if (this.messages.length > 0) {
+        this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML)
+      }
     },
 
-    async delay(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+    removeLastOccurrence(inputString, update) {
+      const lastIndex = inputString.lastIndexOf('</div>');
+      const beforeSubstring = inputString.slice(0, lastIndex);
+      const afterSubstring = inputString.slice(lastIndex + '</div>'.length);
+      console.log(beforeSubstring + afterSubstring + update + '</div>')
+      return beforeSubstring + afterSubstring + update + '</div>';
     }
-
   },
 }
 </script>
