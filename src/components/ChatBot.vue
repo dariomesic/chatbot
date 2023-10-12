@@ -262,17 +262,38 @@ export default{
       const displayNextElement = async () => {
         if (index < contentElements.length) {
           const element = contentElements[index];
-
+          console.log(element)
           if (element.nodeType === Node.TEXT_NODE) {
             const text = element.textContent;
             this.partialContent += text;
             if (this.messages.length > 0) {
-              this.messages[this.messages.length - 1].text = `<div class="bot-response text" text-first="true">` + this.partialContent + '</div>';
+              this.messages[this.messages.length - 1].text =
+                '<div class="bot-response text" text-first="true">' +
+                this.partialContent +
+                '</div>';
             }
           } else if (element.nodeType === Node.ELEMENT_NODE) {
             if (element.classList.contains('pause-wrapper')) {
               const duration = element.querySelector('p[data-duration]').getAttribute('data-duration');
               await this.delay(duration * 1000);
+              this.partialContent += '<br/>'; // Add a line break after the pause
+            } else if (element.nodeName === 'B') {
+              // Handle bold text
+              this.partialContent += '<b>' + element.textContent;
+            } else if (element.nodeName === 'I') {
+              // Handle italic text
+              this.partialContent += '<i>' + element.textContent;
+            } else if (element.nodeName === 'IMG') {
+              // Handle images
+              const src = element.getAttribute('src');
+              this.partialContent += '<img src="' + src + '"/>';
+            } else if (element.nodeName === 'A') {
+              // Handle links
+              const href = element.getAttribute('href');
+              this.partialContent += '<a href="' + href + '">' + element.textContent + '</a>';
+            } else if (element.nodeName === 'BR') {
+              // Handle line breaks
+              this.partialContent += '<br/>';
             }
           }
 
@@ -288,7 +309,7 @@ export default{
 
     async delay(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
-    },
+    }
 
   },
 }
