@@ -506,9 +506,9 @@ export default {
     const editorWrapper = document.querySelector(".textarea");
     editorWrapper.addEventListener("click", (event) => {
       const clickedButton = event.target;
-      if (clickedButton.id === "edit") {
+      if (clickedButton.ariaLabel === "Edit") {
         this.editTimer(event);
-      } else if (clickedButton.id === "delete") {
+      } else if (clickedButton.ariaLabel === "Delete") {
         this.deleteTimer(event);
       }
     });

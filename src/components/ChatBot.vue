@@ -64,7 +64,8 @@ export default{
       chatbotOptions: '',
       showFeedbackButtons: false,
       selectedFeedbackButton: false,
-      intent_id: ''
+      intent_id: '',
+      partialContent: ''
     }
   },
   mounted() {
@@ -130,16 +131,13 @@ export default{
       this.scrollChatToBottom()
     },
 
-    addBotMessage(message, first) {
+    async addBotMessage(message, first) {
+      this.partialContent = ''
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
         dataUser: false,
       });
-
-      let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
-      let tmp = message.assistant_answer
-      message.assistant_answer = tmp
 
       if (message.response_type === 'OPCIJE') {
         // Display the options as buttons.
@@ -151,13 +149,27 @@ export default{
         this.showOptions = false; // Hide chatbot options
       }*/
 
-    this.messages.push({
-      text: messageText,
-      classes: ['message'],
-      dataUser: false,
-    });
-    (message.response_type !== 'OPCIJE' && !first) ? this.showFeedbackButtons = true : this.showFeedbackButtons = false
-    this.scrollChatToBottom();
+      let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
+      let tmp = message.assistant_answer
+      message.assistant_answer = tmp
+    
+      if(!message.assistant_answer.includes("pause-wrapper")){
+        this.messages.push({
+          text: messageText,
+          classes: ['message'],
+          dataUser: false,
+        });
+      }
+      else{
+        this.messages.push({
+          text: '',
+          classes: ['message'],
+          dataUser: false,
+        });
+        await this.displayContentWithDelays(message);
+      }
+      (message.response_type !== 'OPCIJE' && !first) ? this.showFeedbackButtons = true : this.showFeedbackButtons = false
+      this.scrollChatToBottom();
     },
 
     renderOptions(message) {
@@ -236,7 +248,47 @@ export default{
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+
+
+    /*ONLY IF CONTENT INCLUDES PAUSE*/
+    async displayContentWithDelays(message) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(message.assistant_answer, 'text/html');
+      const contentElements = doc.body.childNodes;
+      let index = 0;
+      const delayBetweenElements = 1000; // Adjust the delay as needed
+
+      const displayNextElement = async () => {
+        if (index < contentElements.length) {
+          const element = contentElements[index];
+
+          if (element.nodeType === Node.TEXT_NODE) {
+            const text = element.textContent;
+            this.partialContent += text;
+            if (this.messages.length > 0) {
+              this.messages[this.messages.length - 1].text = `<div class="bot-response text" text-first="true">` + this.partialContent + '</div>';
+            }
+          } else if (element.nodeType === Node.ELEMENT_NODE) {
+            if (element.classList.contains('pause-wrapper')) {
+              const duration = element.querySelector('p[data-duration]').getAttribute('data-duration');
+              await this.delay(duration * 1000);
+            }
+          }
+
+          index++;
+          if (index < contentElements.length) {
+            setTimeout(displayNextElement, delayBetweenElements); // Use setTimeout here
+          }
+        }
+      };
+
+      displayNextElement(); // Start the display process once
+    },
+
+    async delay(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
 
   },
 }

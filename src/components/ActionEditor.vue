@@ -92,7 +92,7 @@ button:disabled{
     margin:auto;
     font-style:italic;
     font-size:12px;
-    color:red;
+    color:var(--main__color);
     margin-right: 15px;
 }
 
@@ -102,7 +102,7 @@ button:disabled{
         opacity: 1;
     }
     50% {
-        transform: scale(1.2);
+        transform: scale(1.15);
         opacity: 1;
     }
     100% {
