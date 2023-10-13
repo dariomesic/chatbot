@@ -322,12 +322,14 @@ export default{
               // Append the content before the pause to the message content element
               if (this.messages.length > 0) {
                 this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML)
+                this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, `<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`)
               }
               messageContentElement.innerHTML = '';
 
               // Delay here
               await new Promise((resolve) => setTimeout(resolve, duration * 1000));
             }
+            this.messages[this.messages.length - 1].text = this.messages[this.messages.length - 1].text.replace(`<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`, '')
             messageContentElement.appendChild(document.createElement("br"));
           } else {
             const childNodes = node.childNodes;
@@ -634,5 +636,34 @@ a {
   background-color: #ccc;
   color: #888;
   cursor: not-allowed;
+}
+
+
+
+
+
+
+
+.loading-dots {
+  text-align: center;
+  z-index: 5;
+}
+
+.dot {
+  display: inline;
+  position: relative;
+  opacity: 0;
+  animation: showHideDot 2.5s ease-in-out infinite;
+}
+
+.one { animation-delay: 0.2s; }
+.two { animation-delay: 0.4s; }
+.three { animation-delay: 0.6s; }
+
+@keyframes showHideDot {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; }
 }
 </style>
