@@ -293,7 +293,6 @@ export default{
 
             // Append the formatted text to the message content element
             messageContentElement.appendChild(textNode);
-            messageContentElement.appendChild(document.createElement("br"));
           } else {
             // Append text content to the message content element
             const trimmedText = isFirstNode
@@ -329,6 +328,7 @@ export default{
               // Delay here
               await new Promise((resolve) => setTimeout(resolve, duration * 1000));
             }
+            messageContentElement.appendChild(document.createElement("br"));
           } else {
             const childNodes = node.childNodes;
             for (let i = 0; i < childNodes.length; i++) {
