@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .tiblock {
   align-items: center;
   display: flex;

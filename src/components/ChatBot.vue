@@ -256,52 +256,25 @@ export default{
       const tempElement = document.createElement("div");
       tempElement.innerHTML = message.assistant_answer;
 
-      // Create an element to build the message content
       const messageContentElement = document.createElement("div");
 
       const processNode = async (node, isFirstNode, isLastNode) => {
         if (node.nodeType === Node.TEXT_NODE) {
-          // Handle text formatting here, e.g., for bold and italic
+          let textNode = document.createTextNode(node.textContent.trim());
+
+          // Handle text formatting
           const formattingTags = ["B", "I"];
-          const parentNodes = [];
-          let parentNode = node.parentNode;
-
-          // Check for formatting parent nodes
-          while (parentNode) {
-            if (formattingTags.includes(parentNode.nodeName)) {
-              parentNodes.push(parentNode.nodeName);
-            }
-            parentNode = parentNode.parentNode;
-          }
-
-          let textNode = document.createTextNode(node.textContent);
-
-          if (parentNodes.length > 0) {
-            for (const tagName of parentNodes) {
-              const formattedNode = document.createElement(tagName);
+          let parent = node.parentNode;
+          while (parent) {
+            if (formattingTags.includes(parent.nodeName)) {
+              const formattedNode = document.createElement(parent.nodeName);
               formattedNode.appendChild(textNode);
               textNode = formattedNode;
             }
-
-            // Trim text based on its position
-            if (isFirstNode) {
-              textNode.textContent = textNode.textContent.trimStart();
-            }
-            if (isLastNode) {
-              textNode.textContent = textNode.textContent.trimEnd();
-            }
-
-            // Append the formatted text to the message content element
-            messageContentElement.appendChild(textNode);
-          } else {
-            // Append text content to the message content element
-            const trimmedText = isFirstNode
-              ? textNode.textContent.trimStart()
-              : isLastNode
-              ? textNode.textContent.trimEnd()
-              : textNode.textContent;
-            messageContentElement.appendChild(document.createTextNode(trimmedText));
+            parent = parent.parentNode;
           }
+
+          messageContentElement.appendChild(textNode);
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           if (node.nodeName === "A") {
             const link = document.createElement("a");
@@ -314,10 +287,9 @@ export default{
             image.alt = node.getAttribute("alt");
             messageContentElement.appendChild(image);
           } else if (node.nodeName === "BR") {
-            // Handle line breaks
             messageContentElement.appendChild(document.createElement("br"));
           } else if (node.classList.contains("pause-wrapper")) {
-            const duration = node.querySelector("p").getAttribute("data-duration");
+            const duration = parseFloat(node.querySelector("p").getAttribute("data-duration"));
             if (!isNaN(duration) && duration > 0) {
               // Append the content before the pause to the message content element
               if (this.messages.length > 0) {
@@ -325,7 +297,6 @@ export default{
                 this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, `<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`)
               }
               messageContentElement.innerHTML = '';
-
               // Delay here
               await new Promise((resolve) => setTimeout(resolve, duration * 1000));
             }
@@ -335,11 +306,7 @@ export default{
             const childNodes = node.childNodes;
             for (let i = 0; i < childNodes.length; i++) {
               const childNode = childNodes[i];
-              await processNode(
-                childNode,
-                isFirstNode && i === 0,
-                isLastNode && i === childNodes.length - 1
-              );
+              await processNode(childNode, isFirstNode && i === 0, isLastNode && i === childNodes.length - 1);
             }
           }
         }
@@ -351,9 +318,8 @@ export default{
         await processNode(childNode, i === 0, i === childNodes.length - 1);
       }
 
-      // After processing, set the HTML content to the last message
       if (this.messages.length > 0) {
-        this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML)
+        this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML);
       }
     },
 
@@ -361,13 +327,17 @@ export default{
       const lastIndex = inputString.lastIndexOf('</div>');
       const beforeSubstring = inputString.slice(0, lastIndex);
       const afterSubstring = inputString.slice(lastIndex + '</div>'.length);
-      console.log(beforeSubstring + afterSubstring + update + '</div>')
       return beforeSubstring + afterSubstring + update + '</div>';
     }
+
   },
 }
 </script>
-
+<style scoped>
+input[type="text"]:focus {
+  outline: none;
+}
+</style>
 <style>
 .send-icon-animation .none {
   display: block;
@@ -638,32 +608,8 @@ a {
   cursor: not-allowed;
 }
 
-
-
-
-
-
-
 .loading-dots {
   text-align: center;
   z-index: 5;
-}
-
-.dot {
-  display: inline;
-  position: relative;
-  opacity: 0;
-  animation: showHideDot 2.5s ease-in-out infinite;
-}
-
-.one { animation-delay: 0.2s; }
-.two { animation-delay: 0.4s; }
-.three { animation-delay: 0.6s; }
-
-@keyframes showHideDot {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  60% { opacity: 1; }
-  100% { opacity: 0; }
 }
 </style>
