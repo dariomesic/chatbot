@@ -162,7 +162,7 @@ export default{
       }
       else{
         this.messages.push({
-          text: '',
+          text: `<div class="bot-response text" text-first="true"></div>`,
           classes: ['message'],
           dataUser: false,
         });
@@ -321,7 +321,7 @@ export default{
             if (!isNaN(duration) && duration > 0) {
               // Append the content before the pause to the message content element
               if (this.messages.length > 0) {
-                this.messages[this.messages.length - 1].text.includes('bot-response') ? this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML) : this.messages[this.messages.length - 1].text = `<div class="bot-response text" text-first="true">${messageContentElement.innerHTML}</div>`
+                this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML)
               }
               messageContentElement.innerHTML = '';
 
