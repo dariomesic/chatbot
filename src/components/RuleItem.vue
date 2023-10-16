@@ -1,7 +1,14 @@
 <template>
   <div class="content">
     <h4 style="margin-top: unset">Korak {{ index + 1 }}</h4>
-    <div style="align-items: center; display: flex; margin-bottom: 1.5rem">
+    <div
+      style="
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      "
+    >
       <div style="min-width: 7rem">Ako je odabran</div>
       <CustomSelect
         :options="options"
@@ -407,19 +414,24 @@ export default {
       }
     },
     closeOptionsOnOutsideClick(event, elementRef) {
-      const targetContainer = this.$refs[elementRef];
-      if (!targetContainer.contains(event.target)) {
-        if (
-          elementRef === "clientResponse" ||
-          elementRef === "changeResponse"
-        ) {
-          this.optionsResponseVisible = false;
-        } else {
-          this.optionsContinuationVisible = false;
+      if (this.$refs[elementRef]) {
+        const targetContainer = this.$refs[elementRef];
+
+        if (!targetContainer.contains(event.target)) {
+          if (
+            elementRef === "clientResponse" ||
+            elementRef === "changeResponse"
+          ) {
+            this.optionsResponseVisible = false;
+          } else {
+            this.optionsContinuationVisible = false;
+          }
+
+          // Remove the event listener
+          document.removeEventListener("click", (event) =>
+            this.closeOptionsOnOutsideClick(event, elementRef)
+          );
         }
-        document.removeEventListener("click", (event) =>
-          this.closeOptionsOnOutsideClick(event, elementRef)
-        );
       }
     },
   },
@@ -427,13 +439,14 @@ export default {
 </script>
 <style>
 .content {
-  margin: 25px 100px 25px 100px;
+  margin: 3% 10% 3% 10%;
   padding: 2%;
   border: 1px solid #d3d3d3;
   box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
     rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   border-radius: 3px;
   position: relative;
+  max-width:60vw;
 }
 .res-val {
   margin-top: 2%;

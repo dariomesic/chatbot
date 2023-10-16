@@ -206,4 +206,11 @@ input[type="number"]:focus {
 .fade_main-leave-to {
   opacity: 0;
 }
+
+.option-text > p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
 </style>
