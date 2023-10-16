@@ -176,7 +176,6 @@ export default {
       showTimerDialog: false,
       showLinkDialog: false,
       isLoading: false,
-      isTimerSet: false,
       receivedDuration: 0,
       isMessageSent: false,
       storedSelection: null,
@@ -188,7 +187,7 @@ export default {
   methods: {
     insertTimer() {
       const timer = `
-        <div id="content" class="timer-content" v-if="${this.isTimerSet}">
+        <div id="content" class="timer-content">
           <div class="pause">
             <svg
               focusable="false"
@@ -288,8 +287,6 @@ export default {
           );
         }
       }
-
-      this.isTimerSet = true;
       setTimeout(() => {
         const editButton = tempContainer.querySelector("#edit");
         const deleteButton = tempContainer.querySelector("#delete");
@@ -379,9 +376,7 @@ export default {
     },
     closeTimerDialog() {
       this.showTimerDialog = false;
-      if (!this.isTimerSet) {
-        this.$refs.timerDialog.resetTimer();
-      }
+      this.$refs.timerDialog.resetTimer();
       this.$emit("updateText", this.$refs.editor.innerHTML);
     },
     closeLinkDialog() {
