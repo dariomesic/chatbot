@@ -234,7 +234,7 @@ export default {
     },
   },
   async mounted() {
-    let intentId = this.$route.query.id;
+    let intentId = this.$route.query.intent_id;
     await this.loadQuestionsAndRules(await DataService.getNameForIntent(intentId), intentId);
   },
   methods: {
@@ -315,7 +315,7 @@ export default {
     },
     onSaveButtonClicked() {
       this.loading = true
-      const intentId = this.$route.query.id;
+      const intentId = this.$route.query.intent_id;
       if (this.intentTextCopy !== this.intentText) {
         DataService.updateIntent(this.intentTextCopy, intentId)
           .then(() => {
@@ -335,7 +335,7 @@ export default {
         if (this.addedQuestions.length > 0) {
           apiRequests.push(
             ...this.addedQuestions.map((question) =>
-              DataService.postQuestion(question.question, intentId)
+              DataService.postQuestion(question.question, intentId, this.$route.query.system_id)
             )
           );
         }

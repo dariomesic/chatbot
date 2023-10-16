@@ -9,6 +9,7 @@ const routes = [
         component: HomePage,
     },
     {
+        name: 'Intents',
         path: "/intents",
         component: IntentList,
     },

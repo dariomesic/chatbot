@@ -183,13 +183,13 @@ export default {
   methods: {
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
-      this.$router.push({ name: 'IntentRules', query: { id: intent.id } });
+      this.$router.push({ name: 'IntentRules', query: { system_id: this.$route.query.system_id, intent_id: intent.id } });
     },
     async newAction(){
-      let id = JSON.parse(JSON.stringify(await DataService.addIntent())).intent_id
+      let id = JSON.parse(JSON.stringify(await DataService.addIntentForSystem(this.$route.query.system_id))).intent_id
       console.log(id)
       await DataService.addRuleForIntent(id)
-      this.$router.push({ name: 'IntentRules', query: { id: id } });
+      this.$router.push({ name: 'IntentRules', query: { intent_id: id } });
   },
     async deleteIntent(id) {
         try {
@@ -220,7 +220,7 @@ export default {
     },
     async getIntents() {
       try {
-        let tmp = await DataService.getIntents();
+        let tmp = await DataService.getIntentsForSystem(this.$route.query.system_id);
 
         // Sort by the original date objects
         tmp = tmp.sort((objA, objB) =>

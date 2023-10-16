@@ -1,6 +1,18 @@
 /*class DataService {
-  getIntents() {
-    return fetch('getIntents', {
+  getSystems() {
+    return fetch('getSystems', {
+      method: "GET",
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.error);
+      }
+      return response.json();
+    });
+  }
+
+  getIntentsForSystem(system_id) {
+    return fetch('getIntentsForSystem?system_id=' + system_id, {
       method: "GET",
     })
     .then((response) => {
@@ -35,14 +47,14 @@
     })
   }
 
-  postQuestion(question, intent_id){
+  postQuestion(question, intent_id, system_id){
     return fetch('/postQuestion', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({question: question, intent_id: intent_id})
+      body: JSON.stringify({question: question, intent_id: intent_id, system_id: system_id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -64,8 +76,8 @@
     })
   }
 
-  addIntent(){
-    return fetch('/addIntent', {
+  addIntentForSystem(system_id){
+    return fetch('/addIntentForSystem?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -257,11 +269,22 @@
     })
   }
 }
-export default new DataService()
-*/
+export default new DataService()*/
 class DataService {
-  getIntents() {
-    return fetch('/api/getIntents', {
+  getSystems() {
+    return fetch('/api/getSystems', {
+      method: "GET",
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.error);
+      }
+      return response.json();
+    });
+  }
+
+  getIntentsForSystem(system_id) {
+    return fetch('/api/getIntentsForSystem?system_id=' + system_id, {
       method: "GET",
     })
     .then((response) => {
@@ -296,14 +319,14 @@ class DataService {
     })
   }
 
-  postQuestion(question, intent_id){
+  postQuestion(question, intent_id, system_id){
     return fetch('/api/postQuestion', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({question: question, intent_id: intent_id})
+      body: JSON.stringify({question: question, intent_id: intent_id, system_id: system_id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -324,8 +347,9 @@ class DataService {
         return response.json();
     })
   }
-  addIntent(){
-    return fetch('/api/addIntent', {
+
+  addIntentForSystem(system_id){
+    return fetch('/api/addIntentForSystem?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -423,9 +447,9 @@ class DataService {
     })
   }
 
-  getRulesForIntent(intent_id){
-    return fetch('/api/getRulesForIntent?intent_id=' + intent_id, {
-      method : "GET",
+  deleteStep(intent_id){
+    return fetch('/api/deleteStep?intent_id=' + intent_id, {
+      method : "DELETE",
     })
     .then((response) => {
         if (!response.ok) {
@@ -435,9 +459,9 @@ class DataService {
     })
   }
 
-  deleteStep(intent_id){
-    return fetch('/api/deleteStep?intent_id=' + intent_id, {
-      method : "DELETE",
+  getRulesForIntent(intent_id){
+    return fetch('/api/getRulesForIntent?intent_id=' + intent_id, {
+      method : "GET",
     })
     .then((response) => {
         if (!response.ok) {
@@ -517,4 +541,4 @@ class DataService {
     })
   }
 }
-export default new DataService();
+export default new DataService()
