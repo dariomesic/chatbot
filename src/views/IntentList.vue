@@ -220,25 +220,27 @@ export default {
       !event.relatedTarget ? this.showOptionsForIntent[index] = false : ''
     },
     async getIntents() {
-      try {
-        let tmp = await DataService.getIntentsForSystem(this.$route.query.system_id);
+      if (this.$route.query.system_id !== undefined) {
+        try {
+          let tmp = await DataService.getIntentsForSystem(this.$route.query.system_id);
 
-        // Sort by the original date objects
-        tmp = tmp.sort((objA, objB) =>
-          new Date(objB.last_edited) - new Date(objA.last_edited)
-        );
+          // Sort by the original date objects
+          tmp = tmp.sort((objA, objB) =>
+            new Date(objB.last_edited) - new Date(objA.last_edited)
+          );
 
-        // Format the date strings
-        const formattedIntents = tmp.map((obj) => {
-          const lastEditedDate = new Date(obj.last_edited);
-          const formattedTimeDifference = this.formatTimeDifference(lastEditedDate);
-          return { ...obj, last_edited_formatted: formattedTimeDifference };
-        });
+          // Format the date strings
+          const formattedIntents = tmp.map((obj) => {
+            const lastEditedDate = new Date(obj.last_edited);
+            const formattedTimeDifference = this.formatTimeDifference(lastEditedDate);
+            return { ...obj, last_edited_formatted: formattedTimeDifference };
+          });
 
-        // Assign the sorted and formatted intents to the data property
-        this.intents = formattedIntents;
-      } catch (error) {
-        console.error(error);
+          // Assign the sorted and formatted intents to the data property
+          this.intents = formattedIntents;
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
     formatTimeDifference(lastEditedDate) {

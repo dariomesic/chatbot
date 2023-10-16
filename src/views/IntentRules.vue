@@ -235,7 +235,9 @@ export default {
   },
   async mounted() {
     let intentId = this.$route.query.intent_id;
-    await this.loadQuestionsAndRules(await DataService.getNameForIntent(intentId), intentId);
+    if (this.$route.query.system_id !== undefined) {
+      await this.loadQuestionsAndRules(await DataService.getNameForIntent(intentId), intentId);
+    }
   },
   methods: {
     async loadQuestionsAndRules(text, intentID) {
