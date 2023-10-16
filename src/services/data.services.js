@@ -88,8 +88,8 @@
     })
   }
 
-  deleteIntent(intent_id){
-    return fetch('/deleteIntent?intent_id=' + intent_id, {
+  deleteIntent(intent_id, system_id){
+    return fetch('/deleteIntent?intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -360,8 +360,8 @@ class DataService {
     })
   }
 
-  deleteIntent(intent_id){
-    return fetch('/api/deleteIntent?intent_id=' + intent_id, {
+  deleteIntent(intent_id, system_id){
+    return fetch('/api/deleteIntent?intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {

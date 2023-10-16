@@ -190,13 +190,13 @@ export default {
       let id = JSON.parse(JSON.stringify(await DataService.addIntentForSystem(this.$route.query.system_id))).intent_id
       console.log(id)
       await DataService.addRuleForIntent(id)
-      this.$router.push({ name: 'IntentRules', query: { intent_id: id } });
+      this.$router.push({ name: 'IntentRules', query: { system_id: this.$route.query.system_id, intent_id: id } });
   },
     async deleteIntent(id) {
         try {
           await DataService.deleteStep(id)
           await DataService.deleteQuestionsById(id)
-          await DataService.deleteIntent(id);
+          await DataService.deleteIntent(id, this.$route.query.system_id);
         } catch (error) {
           console.error(error);
         }
