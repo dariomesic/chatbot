@@ -407,19 +407,21 @@ export default {
       }
     },
     closeOptionsOnOutsideClick(event, elementRef) {
-      const targetContainer = this.$refs[elementRef];
-      if (!targetContainer.contains(event.target)) {
-        if (
-          elementRef === "clientResponse" ||
-          elementRef === "changeResponse"
-        ) {
-          this.optionsResponseVisible = false;
-        } else {
-          this.optionsContinuationVisible = false;
+      if (this.$refs[elementRef]) {
+        const targetContainer = this.$refs[elementRef];
+
+        if (!targetContainer.contains(event.target)) {
+          if (elementRef === "clientResponse" || elementRef === "changeResponse") {
+            this.optionsResponseVisible = false;
+          } else {
+            this.optionsContinuationVisible = false;
+          }
+
+          // Remove the event listener
+          document.removeEventListener("click", (event) =>
+            this.closeOptionsOnOutsideClick(event, elementRef)
+          );
         }
-        document.removeEventListener("click", (event) =>
-          this.closeOptionsOnOutsideClick(event, elementRef)
-        );
       }
     },
   },

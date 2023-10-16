@@ -83,7 +83,7 @@
               <div v-if="showOptionsForIntent[index]" class="options-popup" :id="index" tabindex="0" @focusout="focusOut($event, index)">
                 <button @click="navigateToDetail(intent)">Uredi</button>
                 <hr/>
-                <button @click="deleteIntent(intent.id)">Izbriši</button>
+                <button @click="deleteIntent(intent.id, 'true')">Izbriši</button>
               </div>
               </div>
             </td>
@@ -192,11 +192,14 @@ export default {
       await DataService.addRuleForIntent(id)
       this.$router.push({ name: 'IntentRules', query: { system_id: this.$route.query.system_id, intent_id: id } });
   },
-    async deleteIntent(id) {
+    async deleteIntent(id, once) {
         try {
           await DataService.deleteStep(id)
           await DataService.deleteQuestionsById(id)
           await DataService.deleteIntent(id, this.$route.query.system_id);
+          if(once){
+            this.getIntents()
+          }
         } catch (error) {
           console.error(error);
         }
