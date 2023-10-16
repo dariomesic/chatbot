@@ -1,5 +1,6 @@
 <template>
   <Navbar/>
+  <span @click="$router.push('/')" style="position: absolute;left: 0.7rem;top: 4.5rem;display:flex;cursor:pointer"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="16" height="16"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#0f62fe" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="#0f62fe" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></g></svg><a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a></span>
   <div class="actions">
     <h3>Namjera korisnika u komunikaciji s virtualnim asistentom</h3>
     <section>
