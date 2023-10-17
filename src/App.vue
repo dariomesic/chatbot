@@ -184,6 +184,13 @@ input[type="number"]:focus {
   margin: 0 0 0 5px;
 }
 
+.option-text > p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
 .timer-buttons > button {
   all: unset;
   cursor: pointer;

@@ -74,6 +74,7 @@ export default {
 .custom-select-wrapper {
   display: flex;
   align-items: center;
+  max-width: 100%;
 }
 
 .custom-select:hover {
@@ -105,6 +106,7 @@ export default {
   align-items: center;
   overflow: hidden;
   white-space: nowrap;
+  min-width:1rem
 }
 
 .arrow-icon {
@@ -139,6 +141,8 @@ export default {
 .option-text {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .option:last-child {

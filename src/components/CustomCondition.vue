@@ -20,7 +20,7 @@
           <CustomSelect :options="['Sve', 'Bilo što']" :value="conditions.allConditionsMustBeTrue ? 'Sve' : 'Bilo što'" @update:value="$event == 'Bilo što' ? localConditions.allConditionsMustBeTrue = false : localConditions.allConditionsMustBeTrue = true" style="margin-left: 0.5rem; margin-right: 6px; border-bottom-color: transparent" />
           od ovoga istina:
         </div>
-        <div v-for="(step, step_index) in conditions.conditionsList" :key="step_index" style="display: flex; margin: 0 0 0.5rem">
+        <div v-for="(step, step_index) in conditions.conditionsList" :key="step_index" style="display: flex;flex-wrap: wrap; margin: 0 0 0.5rem">
           <div style="margin-right: 0.25rem; max-width: 1.5rem; min-width: 1.5rem;display: flex;flex: 1 1;"></div>
           <CustomSelect
             :options="rules_answers.map(item => item.answer)"

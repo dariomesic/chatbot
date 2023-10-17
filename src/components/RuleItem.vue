@@ -429,13 +429,14 @@ export default {
 </script>
 <style>
 .content {
-  margin: 25px 100px 25px 100px;
+  margin: 3% 10% 3% 10%;
   padding: 2%;
   border: 1px solid #d3d3d3;
   box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
     rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   border-radius: 3px;
   position: relative;
+  max-width:60vw;
 }
 .res-val {
   margin-top: 2%;
@@ -507,7 +508,7 @@ h2 {
 }
 
 h2[class="plus-separator"]:after {
-  margin: 0px 100px 25px 100px;
+  margin: 0 10% 0 10%;
   content: "";
   position: absolute;
   top: 50%;
