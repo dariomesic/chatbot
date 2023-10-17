@@ -15,7 +15,7 @@
               <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
             </svg>
           </button>
-          <button v-else @click="deleteSelectedIntents" class="background-button" style="background:#ff0404">Izbriši sve
+          <button v-else @click="deleteSelectedIntents" class="background-button" style="background:#ff0404">Izbriši odabrane
             <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
               <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
               <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
@@ -274,7 +274,7 @@ export default {
 </script>
 <style scoped>
 .actions{
-  padding: 1rem 2rem;
+  padding: 2rem 2rem;
 }
 .actions section{
   background-color: #fff;
