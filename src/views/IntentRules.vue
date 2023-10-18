@@ -120,7 +120,7 @@
         </div>
         <Transition name="fade">
           <div v-if="showChatbot" class="chatbot-container">
-            <Chatbot/>
+            <Chatbot @exit="showChatbot = false"/>
           </div>
         </Transition>
       </div>
