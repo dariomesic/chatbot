@@ -108,7 +108,7 @@ p {
   margin: unset;
 }
 
-input[type="text"] {
+input[type="text"], .custom-input {
   background-color: #fff;
   border: none;
   color: #161616;
@@ -123,7 +123,7 @@ input[type="text"] {
   width: 100%;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus, .custom-input:focus {
   outline: 2px solid #0f62fe;
 }
 

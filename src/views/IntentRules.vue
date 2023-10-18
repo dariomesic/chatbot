@@ -70,15 +70,23 @@
                   </div>
                 </li>
                 <TransitionGroup name="list" tag="ul">
-                  <li v-for="(question, index) in questions" :key="question.question_id" style="align-items: center;display: flex;margin-top: .5rem;">
-                    <div style="align-items: flex-start;display: flex;flex-direction: column;width: 100%;">
-                      <div style="display: flex;position: relative;width: 100%;">
-                        <input style="min-height: 48px;padding-right: 3rem;scroll-margin-bottom: 2rem;width: 100%;padding: 0 1rem" type="text" @blur="handleBlur($event, index)" :value="questions[index].question" aria-describedby="" autocomplete="off">
+                  <li v-for="(question, index) in questions" :key="question.question_id" style="align-items: center; display: flex; margin-top: .5rem;">
+                    <div style="align-items: flex-start; display: flex; flex-direction: column; width: 100%;">
+                      <div style="display: flex; position: relative; width: 100%;">
+                        <div
+                          class="custom-input"
+                          contenteditable="true"
+                          style="padding-right: 3rem; scroll-margin-bottom: 2rem; width: 100%; padding: 1rem 1rem;line-height:17px"
+                          @blur="handleBlur($event, index)"
+                        >
+                          {{ questions[index].question }}
+                        </div>
                       </div>
                     </div>
-                    <button @click="deletePhrase(index)" tabindex="0" type="button" style="align-items: center;cursor: pointer;display: inline-flex;overflow: visible;position: relative;padding-left: .9375rem;padding-right: .9375rem;padding: calc(.875rem - 3px) 16px;">
+                    <button @click="deletePhrase(index)" tabindex="0" type="button" style="align-items: center; cursor: pointer; display: inline-flex; overflow: visible; position: relative; padding-left: .9375rem; padding-right: .9375rem; padding: calc(.875rem - 3px) 16px;">
                       <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon">
-                        <path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
+                        <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
+                        <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
                       </svg>
                     </button>
                   </li>
@@ -310,7 +318,7 @@ export default {
       }
     },
     async handleBlur(event, index) {
-      this.questions[index].question = event.target.value;
+      this.questions[index].question = event.target.textContent;
     },
     async deletePhrase(index) {
       this.questions.splice(index, 1);
