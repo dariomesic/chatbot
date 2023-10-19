@@ -32,7 +32,7 @@
       <div class="tile">
         <span class="tile-title" :innerHTML="card.assistant_answer" />
         <div class="selected-options">
-          <template v-if="card.response_type === 'OPCIJE'">
+          <template v-if="card.response_type === 'Opcije'">
             <div
               class="tag"
               v-for="(response, index) in card.customer_response"
@@ -355,7 +355,6 @@ label {
 }
 
 .tag {
-  height: fit-content;
   max-width: 130px;
   overflow: hidden;
   text-wrap: nowrap;

@@ -1,7 +1,14 @@
 <template>
   <div class="content">
     <h4 style="margin-top: unset">Korak {{ index + 1 }}</h4>
-    <div style="align-items: center; display: flex; margin-bottom: 1.5rem">
+    <div
+      style="
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      "
+    >
       <div style="min-width: 7rem">Ako je odabran</div>
       <CustomSelect
         :options="options"
@@ -27,7 +34,7 @@
       <div class="main-container">
         <div
           v-if="
-            !['Regularni izraz', 'OPCIJE', 'Slobodni tekst'].includes(
+            !['Regularni izraz', 'Opcije', 'Slobodni tekst'].includes(
               ruleCopy.response_type
             )
           "
@@ -111,7 +118,7 @@
             "
           >
             <button
-              @click="show_modal = true"
+              @click="editAnswer"
               class="color-button"
               style="padding: calc(0.375rem - 3px) 16px"
               tabindex="0"
@@ -168,12 +175,7 @@
               :key="index"
               @mouseenter="showDetails(index)"
               @mouseleave="hideDetails"
-              @click="
-                option === 'Opcije'
-                  ? ((show_modal = true), (ruleCopy.response_type = 'OPCIJE'))
-                  : (ruleCopy.response_type = option);
-                optionsResponseVisible = false;
-              "
+              @click="openSelectedResponse(option)"
             >
               {{ option }}
             </div>
@@ -293,14 +295,22 @@
       :options="ruleCopy.customer_response"
     />
   </Teleport>
+  <Teleport to="body">
+    <RegexPopup
+      :isRegexOpen="isRegexOpen"
+      @addRegex="updateRegex"
+      @close="isRegexOpen = false"
+    />
+  </Teleport>
 </template>
 <script>
 import TextEditor from "./textarea/TextEditor.vue";
 import CustomCondition from "./CustomCondition.vue";
 import CustomSelect from "./CustomSelect.vue";
 import Popup from "./OptionResponse.vue";
+import RegexPopup from "./RegexResponse.vue";
 export default {
-  components: { TextEditor, CustomCondition, CustomSelect, Popup },
+  components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup },
   props: {
     rule: Object,
     rules_answers: Array,
@@ -339,6 +349,7 @@ export default {
       ],
       step_selected: this.rule.continuation,
       show_modal: false,
+      isRegexOpen: false,
       ruleCopy: { ...this.rule },
     };
   },
@@ -359,7 +370,13 @@ export default {
         : (this.ruleCopy.conditions = {});
       this.$emit("updateRule", this.ruleCopy);
     },
+    updateRegex(regex) {
+      this.ruleCopy.response_type = "Regularni izraz";
+      this.ruleCopy.customer_response = regex;
+      this.$emit("updateRule", this.ruleCopy);
+    },
     updateOptions(options) {
+      this.ruleCopy.response_type = "Opcije";
       this.ruleCopy.customer_response = options;
       this.$emit("updateRule", this.ruleCopy);
     },
@@ -375,7 +392,6 @@ export default {
     updateAssistantAnswer(text) {
       this.ruleCopy.assistant_answer = text;
       this.$emit("updateRule", this.ruleCopy);
-      console.log(this.ruleCopy);
     },
     updateContinuation(option) {
       this.ruleCopy.continuation = option;
@@ -411,7 +427,10 @@ export default {
         const targetContainer = this.$refs[elementRef];
 
         if (!targetContainer.contains(event.target)) {
-          if (elementRef === "clientResponse" || elementRef === "changeResponse") {
+          if (
+            elementRef === "clientResponse" ||
+            elementRef === "changeResponse"
+          ) {
             this.optionsResponseVisible = false;
           } else {
             this.optionsContinuationVisible = false;
@@ -422,6 +441,23 @@ export default {
             this.closeOptionsOnOutsideClick(event, elementRef)
           );
         }
+      }
+    },
+    openSelectedResponse(option) {
+      if (option === "Opcije") {
+        this.show_modal = true;
+      } else if (option === "Regularni izraz") {
+        this.isRegexOpen = true;
+      } else if (option === "Slobodni tekst") {
+        this.ruleCopy.response_type = "Slobodni tekst";
+      }
+      this.optionsResponseVisible = false;
+    },
+    editAnswer() {
+      if (this.ruleCopy.response_type === "Opcije") {
+        this.show_modal = true;
+      } else if (this.ruleCopy.response_type === "Regularni izraz") {
+        this.isRegexOpen = true;
       }
     },
   },
@@ -436,7 +472,7 @@ export default {
     rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   border-radius: 3px;
   position: relative;
-  max-width:60vw;
+  max-width: 60vw;
 }
 .res-val {
   margin-top: 2%;
@@ -508,7 +544,7 @@ h2 {
 }
 
 h2[class="plus-separator"]:after {
-  margin: 0 10% 0 10%;
+  margin: 0px 100px 25px 100px;
   content: "";
   position: absolute;
   top: 50%;
