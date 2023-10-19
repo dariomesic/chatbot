@@ -7,9 +7,9 @@
     :isSubmitDisabled="isSubmitButtonDisabled"
   >
     <div class="content-wrapper">
-      <h1>Uredi opcije</h1>
+      <h3>Uredi opcije</h3>
       <div class="subtitle-wrapper">
-        <h3>Vrsta: Regularni izraz</h3>
+        <p>Unesite regularni izraz</p>
         <!-- <button class="color-button">Dodaj regularni izraz +</button> -->
       </div>
       <hr />
@@ -44,7 +44,7 @@
             :disabled="selectedRegex === ''"
             v-model="textareaContent"
             @input="checkMatches"
-          ></textarea>
+          />
         </div>
         <div class="form-control">
           <label>Asistent prepoznaje:</label>
@@ -216,7 +216,7 @@ textarea {
   outline: 2px solid transparent;
   outline-offset: -2px;
   padding: 1rem;
-  width: -webkit-fill-available;
+  width: calc(100% - 2rem);
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
     outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
