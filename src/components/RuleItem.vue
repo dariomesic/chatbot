@@ -371,13 +371,13 @@ export default {
       this.$emit("updateRule", this.ruleCopy);
     },
     updateRegex(regex) {
+      this.ruleCopy.response_type = "Regularni izraz";
       this.ruleCopy.customer_response = regex;
-      console.log(this.ruleCopy);
       this.$emit("updateRule", this.ruleCopy);
     },
     updateOptions(options) {
+      this.ruleCopy.response_type = "Opcije";
       this.ruleCopy.customer_response = options;
-      console.log(this.ruleCopy);
       this.$emit("updateRule", this.ruleCopy);
     },
     deleteOptions() {
@@ -392,7 +392,6 @@ export default {
     updateAssistantAnswer(text) {
       this.ruleCopy.assistant_answer = text;
       this.$emit("updateRule", this.ruleCopy);
-      console.log(this.ruleCopy);
     },
     updateContinuation(option) {
       this.ruleCopy.continuation = option;
@@ -447,10 +446,10 @@ export default {
     openSelectedResponse(option) {
       if (option === "Opcije") {
         this.show_modal = true;
-        this.ruleCopy.response_type = "Opcije";
       } else if (option === "Regularni izraz") {
         this.isRegexOpen = true;
-        this.ruleCopy.response_type = "Regularni izraz";
+      } else if (option === "Slobodni tekst") {
+        this.ruleCopy.response_type = "Slobodni tekst";
       }
       this.optionsResponseVisible = false;
     },

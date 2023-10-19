@@ -76,7 +76,7 @@
               </span>
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="card.response_type === 'Slobodni tekst'">
             <div
               class="tag"
               :style="{
@@ -377,7 +377,6 @@ label {
   padding: 0.75rem;
   position: relative;
 }
-
 
 .tile-title {
   -webkit-line-clamp: 2;

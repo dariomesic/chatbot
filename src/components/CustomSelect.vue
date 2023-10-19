@@ -27,7 +27,7 @@ export default {
   props: {
     options: Array,
     value: Number, // The value prop for v-model
-    placeholder:String,
+    placeholder: String,
   },
   emits: ["update:value"], // Event for v-model
   data() {
@@ -90,7 +90,6 @@ export default {
 .custom-select {
   width: -webkit-fill-available;
   width: -moz-available;
-
   position: relative;
   display: flex;
   align-items: center;

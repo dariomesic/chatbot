@@ -4,9 +4,7 @@
     @click-submit="applyRegex"
     @close="$emit('close')"
     :buttonText="'Primijeni'"
-    :isSubmitDisabled="
-      !selectedRegex || selectedRegex === 'Odaberite regularni izraz'
-    "
+    :isSubmitDisabled="isSubmitButtonDisabled"
   >
     <div class="content-wrapper">
       <h1>Uredi opcije</h1>
@@ -28,7 +26,11 @@
           </template>
           <template v-else>
             <div class="input-wrapper">
-              <input type="text" placeholder="Unesite regularni izraz" v-model.trim="customRegex" />
+              <input
+                type="text"
+                placeholder="Unesite regularni izraz"
+                v-model.trim="customRegex"
+              />
               <button class="remove-input" @click="toggleCustomInput">X</button>
             </div>
           </template>
@@ -39,6 +41,7 @@
           <textarea
             id="test"
             placeholder="Ovdje isprobajte svoj regularni izraz"
+            :disabled="selectedRegex === ''"
             v-model="textareaContent"
             @input="checkMatches"
           ></textarea>
@@ -68,7 +71,7 @@ export default {
     return {
       regexOptions: [
         "Email: \\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
-        "Broj mobitela: \\b(?:\\+?(\\d{1,3}))?[-.(]*(\\d{3})[-.)]*(\\d{3})[-.]*(\\d{4})(?: *x(\\d+))?\\b",
+        "Broj mobitela: \\b\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}\\b",
         "URL: \\b[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)\\b",
         "<button style='all:unset;color:var(--main__color);text-decoration:underline;'>Definiraj svoj regularni izraz</button>",
       ],
@@ -79,11 +82,22 @@ export default {
       showCustomInput: false,
       textareaContent: "",
       matches: [],
+      showError: false,
     };
   },
   watch: {
     selectedRegex: "handleRegexChange",
     customRegex: "handleRegexChange",
+  },
+  computed: {
+    isSubmitButtonDisabled() {
+      return (
+        !this.selectedRegex ||
+        this.selectedRegex === "Odaberite regularni izraz" ||
+        (this.selectedRegex === this.customRegexButton &&
+          this.customRegex === "")
+      );
+    },
   },
   methods: {
     toggleCustomInput() {
@@ -96,36 +110,41 @@ export default {
         this.checkMatches();
       }
     },
-    removePrefix(selectedRegex) {
-      const regexPattern = selectedRegex.replace(/^[^:]*:\s*/, "");
+    removePrefix(regex) {
+      const regexPattern = regex.replace(/^[^:]*:\s*/, "");
       const pattern = new RegExp(regexPattern, "g");
 
       return pattern;
     },
     checkMatches() {
       let pattern;
-      if (!this.customRegex) {
-        pattern = this.removePrefix(this.selectedRegex);
-      } else {
-        pattern = this.removePrefix(this.customRegex);
-      }
-      const text = this.textareaContent;
-      const foundMatches = text.match(pattern);
-     
-      if (foundMatches) {
-        this.matches = foundMatches;
-      } else {
-        this.matches = [];
+      try {
+        if (!this.customRegex) {
+          pattern = this.removePrefix(this.selectedRegex);
+        } else {
+          pattern = this.removePrefix(this.customRegex);
+        }
+
+        const text = this.textareaContent;
+        const foundMatches = text.match(pattern);
+
+        if (foundMatches) {
+          this.matches = foundMatches;
+        } else {
+          this.matches = [];
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
-    applyRegex(){
-      if(!this.customRegex){
-        this.$emit('addRegex',this.selectedRegex)
-      }else{
-        this.$emit('addRegex',this.customRegex)
+    applyRegex() {
+      if (!this.customRegex) {
+        this.$emit("addRegex", this.selectedRegex);
+      } else {
+        this.$emit("addRegex", this.customRegex);
       }
-      this.$emit('close');
-    }
+      this.$emit("close");
+    },
   },
 };
 </script>
@@ -202,6 +221,9 @@ textarea {
     outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
+textarea:disabled {
+  cursor: not-allowed;
+}
 .matches {
   height: 100px;
   display: flex;
