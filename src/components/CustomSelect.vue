@@ -27,6 +27,7 @@ export default {
   props: {
     options: Array,
     value: Number, // The value prop for v-model
+    placeholder: String,
   },
   emits: ["update:value"], // Event for v-model
   data() {
@@ -37,7 +38,7 @@ export default {
   computed: {
     selectedOption: {
       get() {
-        return this.value; // Get the value from the prop
+        return this.value || this.placeholder; // Get the value from the prop
       },
       set(newValue) {
         this.$emit("update:value", newValue); // Emit the event to update the prop
@@ -89,7 +90,6 @@ export default {
 .custom-select {
   width: -webkit-fill-available;
   width: -moz-available;
-
   position: relative;
   display: flex;
   align-items: center;
@@ -106,7 +106,7 @@ export default {
   align-items: center;
   overflow: hidden;
   white-space: nowrap;
-  min-width:1rem
+  min-width: 1rem;
 }
 
 .arrow-icon {
@@ -136,6 +136,8 @@ export default {
   transition: background-color 0.2s;
   cursor: pointer;
   white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .option-text {
