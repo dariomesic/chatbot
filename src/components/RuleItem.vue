@@ -292,7 +292,7 @@
       :show_modal="show_modal"
       @addOptions="updateOptions"
       @close="show_modal = false"
-      :options="ruleCopy.customer_response"
+      :options="computedOptions"
     />
   </Teleport>
   <Teleport to="body">
@@ -300,6 +300,7 @@
       :isRegexOpen="isRegexOpen"
       @addRegex="updateRegex"
       @close="isRegexOpen = false"
+      :ruleCopy="ruleCopy"
     />
   </Teleport>
 </template>
@@ -335,16 +336,16 @@ export default {
       step_options: [
         "Nastavite na idući korak",
         "Ponovite prethodne korake",
-        "Odlazak na pod-akciju",
-        "Kontaktiranje agenta",
+        // "Odlazak na pod-akciju",
+        // "Kontaktiranje agenta",
         "Završetak radnje",
       ], // 'Search for the answer',
       step_details: [
         "Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.",
         "Ponovite jedan ili više koraka koji su ranije navedeni u trenutnoj radnji.",
-        "Prebaci tijek razgovora na drugu radnju za obavljanje određenog zadatka.",
+        // "Prebaci tijek razgovora na drugu radnju za obavljanje određenog zadatka.",
         /*'Detalji za searching for the answer',*/
-        "Prenesi korisnika nekome iz svog tima za podršku.",
+        // "Prenesi korisnika nekome iz svog tima za podršku.",
         "Neka ovo bude posljednji korak koji dovršava radnju.",
       ],
       step_selected: this.rule.continuation,
@@ -458,6 +459,15 @@ export default {
         this.show_modal = true;
       } else if (this.ruleCopy.response_type === "Regularni izraz") {
         this.isRegexOpen = true;
+      }
+    },
+  },
+  computed: {
+    computedOptions() {
+      if (this.ruleCopy.response_type === "Opcije") {
+        return this.ruleCopy.customer_response;
+      } else {
+        return [];
       }
     },
   },

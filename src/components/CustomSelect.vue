@@ -123,7 +123,7 @@ export default {
   width: 100%;
   min-width: 100%;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #0f62fe;
   border-top: none;
   z-index: 3;
   overflow: hidden;
@@ -156,7 +156,4 @@ export default {
   transition: 0.2s;
 }
 
-.option:focus {
-  border: 1px solid #0f62fe;
-}
 </style>

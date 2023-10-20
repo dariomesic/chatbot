@@ -7,9 +7,9 @@
     :isSubmitDisabled="isSubmitButtonDisabled"
   >
     <div class="content-wrapper">
-      <h1>Uredi opcije</h1>
+      <h3>Uredi opcije</h3>
       <div class="subtitle-wrapper">
-        <h3>Vrsta: Regularni izraz</h3>
+        <p>Vrsta: Regularni izraz</p>
         <!-- <button class="color-button">Dodaj regularni izraz +</button> -->
       </div>
       <hr />
@@ -65,7 +65,7 @@
 import CustomSelect from "./CustomSelect.vue";
 export default {
   components: { CustomSelect },
-  props: ["isRegexOpen"],
+  props: ["isRegexOpen", "ruleCopy"],
   emits: ["close"],
   data() {
     return {
@@ -82,12 +82,29 @@ export default {
       showCustomInput: false,
       textareaContent: "",
       matches: [],
-      showError: false,
     };
   },
   watch: {
     selectedRegex: "handleRegexChange",
     customRegex: "handleRegexChange",
+    isRegexOpen(newIsOpen) {
+      if (newIsOpen) {
+        if (this.ruleCopy.response_type !== "Regularni izraz") {
+          this.selectedRegex = "Odaberite regularni izraz";
+        } else if (
+          this.ruleCopy.response_type === "Regularni izraz" &&
+          this.regexOptions.includes(this.ruleCopy.customer_response)
+        ) {
+          this.selectedRegex = this.ruleCopy.customer_response;
+        } else if (
+          this.ruleCopy.response_type === "Regularni izraz" &&
+          !this.regexOptions.includes(this.ruleCopy.customer_response)
+        ) {
+          this.selectedRegex = this.customRegexButton;
+          this.customRegex = this.ruleCopy.customer_response;
+        }
+      }
+    },
   },
   computed: {
     isSubmitButtonDisabled() {
@@ -99,6 +116,7 @@ export default {
       );
     },
   },
+
   methods: {
     toggleCustomInput() {
       this.customRegex = "";
@@ -216,7 +234,7 @@ textarea {
   outline: 2px solid transparent;
   outline-offset: -2px;
   padding: 1rem;
-  width: -webkit-fill-available;
+  width: calc(100% - 2rem);
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
     outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
@@ -238,4 +256,3 @@ textarea:disabled {
   margin-right: 0.3rem;
 }
 </style>
-
