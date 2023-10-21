@@ -60,13 +60,11 @@ export default{
       messages: [],
       status_func_SendMsgBot: 0,
       conditionLogs: [],
-      displayOptions: false,
       showOptions: false, // Add this property to control input/option visibility
       chatbotOptions: '',
       showFeedbackButtons: false,
       selectedFeedbackButton: false,
-      intent_id: '',
-      partialContent: ''
+      responseApi: {},
     }
   },
   mounted() {
@@ -78,11 +76,9 @@ export default{
 
     responseContainer.addEventListener('click', (event) => {
       if (event.target.classList.contains('bot-option')) {
-        const intentId = event.target.getAttribute('data-intent-id');
         const optionText = event.target.innerText;
-        const options = event.target.getAttribute('data-options').split(',');
         const text = event.target.getAttribute('data-text');
-        this.handleUserResponse(optionText, intentId, options, text);
+        this.handleUserResponse(optionText, text);
       }
     });
   },
@@ -102,19 +98,50 @@ export default{
       if (this.inputValue !== '' && this.status_func_SendMsgBot === 0) {
         this.addUserMessage(this.inputValue);
         try {
-          // Make an API call to the backend to send the user's message.
-          const response = await DataService.sendMessage(this.inputValue)
-          this.intent_id = response.intent_id
-          this.conditionLogs[response.intent_id] = []; // Initialize the array
-          this.selectedFeedbackButton = false;
-          // Update the chat interface with the bot's response.
-          this.addBotMessage(response);
+            // Check the response type
+            if (this.responseApi.response_type === 'Slobodni tekst') {
+              if(this.responseApi.continuation === 'Ponovite prethodne korake'){
+                const response = await DataService.getRulesForIntent(this.responseApi);
+                this.addBotMessage(response)
+              }
+              else if(this.responseApi.continuation === 'Nastavite na idući korak'){
+                const response = await DataService.nextStep(this.responseApi);
+                response.intent_id = this.responseApi
+                this.addBotMessage(response);
+              }
+               //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA -- TREBA PROVJERITI KAKO OTICI U NOVI KORAK
+            } else if (this.responseApi.response_type === 'Regularni izraz') {
+                // Handle "Regularni izraz" user response here
+                var regEx = new RegExp(this.responseApi.customer_response.split(' ')[1]);
+                if (regEx.test(this.inputValue)) {
+                  if(this.responseApi.continuation === 'Ponovite prethodne korake'){
+                    const response = await DataService.getRulesForIntent(this.responseApi);
+                    this.addBotMessage(response)
+                  }
+                  else if(this.responseApi.continuation === 'Nastavite na idući korak'){
+                    const response = await DataService.nextStep(this.responseApi);
+                    response.intent_id = this.responseApi
+                    this.addBotMessage(response);
+                  }
+                  //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA -- TREBA PROVJERITI KAKO OTICI U NOVI KORAK
+                } else {
+                    const errorMessage = "Incorrect message, please try again";
+                    this.addBotMessage({ assistant_answer: errorMessage });
+                }
+            } else {
+                // For other response types, use the default DataService.sendMessage
+                const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id);
+                this.intent_id = response.intent_id;
+                this.conditionLogs[response.intent_id] = []; // Initialize the array
+                this.selectedFeedbackButton = false;
+                this.responseApi = response
+                this.addBotMessage(response);
+            }
+            // Clear the input field after sending the message.
+            this.inputValue = '';
         } catch (error) {
-          console.error('Error sending message:', error);
+            console.error('Error sending message:', error);
         }
-
-        // Clear the input field after sending the message.
-        this.inputValue = '';
       }
     },
 
@@ -133,22 +160,35 @@ export default{
     },
 
     async addBotMessage(message, first) {
-      this.partialContent = ''
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
         dataUser: false,
       });
 
-      if (message.response_type === 'OPCIJE') {
+
+      /*MAIN LOGIC FOR CHATBOT*/
+      if (message.response_type === 'Opcije') {
         // Display the options as buttons.
         this.showOptions = true; // Show chatbot options
         this.chatbotOptions = this.renderOptions(message);
-      } /*else if (message.response_type === 'INPUT') {
-        // Display a message with a text input field.
-        messageText += '<br>' + this.renderInput(message.inputPlaceholder);
-        this.showOptions = false; // Hide chatbot options
-      }*/
+      }
+      else if(message.continuation === 'Ponovite prethodne korake'){
+        const response = await DataService.getRulesForIntent(message.intent_id);
+        this.addBotMessage(response)
+      }
+      else if(message.continuation === 'Nastavite na idući korak'){
+        const response = await DataService.nextStep(this.responseApi);
+        response.intent_id = message.intent_id
+        this.showOptions = false
+        this.chatbotOptions = ''
+        this.addBotMessage(response);
+      }
+      else if(message.continuation === 'Završetak radnje'){
+        this.responseApi = {}
+      }
+
+
 
       let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
       let tmp = message.assistant_answer
@@ -176,40 +216,27 @@ export default{
     renderOptions(message) {
       let optionsHtml = '';
       message.customer_response.forEach((option) => {
-        optionsHtml += `<button class="bot-option" data-intent-id="${message.intent_id}" data-options="${message.customer_response}" data-text="${message.assistant_answer}")">${option}</button>`;
+        optionsHtml += `<button class="bot-option" data-text="${message.assistant_answer}")">${option}</button>`;
       });
       return optionsHtml;
     },
 
-    renderInput(inputPlaceholder) {
-      return `<input type="text" placeholder="${inputPlaceholder}" @keydown.enter="handleUserResponse($event.target.value)">`;
-    },
-
-    handleUserInput() {
-      // Handle the user's input when they press Enter.
-      const userInput = this.inputValue; // Get the user's input value
-      userInput
-      // Make an API call with the user's input, similar to the handleUserResponse method
-      // ...
-    },
-
-    async handleUserResponse(selectedOption, intent_id, options, text) {
+    async handleUserResponse(selectedOption, text) {
       this.addUserMessage(selectedOption)
       try {
         // Iterate through all options to build conditions
-        options.forEach((option) => {
+        this.responseApi.customer_response.forEach((option) => {
           const conditionLog = {
             subject: text,
             predicate: option === selectedOption ? 'je' : 'nije', // Condition based on selection
             object: option,
           };
-          console.log(intent_id)
           // Add the condition log to the array
-          this.conditionLogs[intent_id].push(conditionLog);
+          this.conditionLogs[this.responseApi.intent_id].push(conditionLog);
         });
 
         // Disable all options after the user makes a selection and change the style of the selected button
-        const allOptions = document.querySelectorAll(`.bot-option[data-intent-id="${intent_id}"]`);
+        const allOptions = document.querySelectorAll(`.bot-option[data-intent-id="${this.responseApi.intent_id}"]`);
         allOptions.forEach((optionElement) => {
           optionElement.setAttribute('disabled', '');
           if (optionElement.innerText === selectedOption) {
@@ -221,8 +248,9 @@ export default{
         });
 
         // Make an API call to send the user's selected option.
-        const response = await DataService.userResponse(this.conditionLogs[intent_id], intent_id);
-        response.intent_id = intent_id
+        const response = await DataService.userResponse(this.conditionLogs[this.responseApi.intent_id], this.responseApi.intent_id);
+        response.intent_id = this.responseApi.intent_id
+        this.responseApi = response
         this.showOptions = false
         this.chatbotOptions = ''
         // Update the chat interface with the bot's response.

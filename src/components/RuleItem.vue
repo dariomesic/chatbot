@@ -118,6 +118,7 @@
             "
           >
             <button
+              :disabled="ruleCopy.response_type === 'Slobodni tekst'"
               @click="editAnswer"
               class="color-button"
               style="padding: calc(0.375rem - 3px) 16px"

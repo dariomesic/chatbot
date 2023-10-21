@@ -345,7 +345,7 @@ export default {
         if (this.addedQuestions.length > 0) {
           apiRequests.push(
             ...this.addedQuestions.map((question) =>
-              DataService.postQuestion(question.question, intentId, this.$route.query.system_id)
+              DataService.postQuestion(question.question, intentId)
             )
           );
         }
@@ -366,7 +366,7 @@ export default {
           );
         }
         if(apiRequests.length){
-          apiRequests.push(DataService.sendQuestions(this.questions.length, intentId));
+          apiRequests.push(DataService.sendQuestions(this.questions.length, intentId, this.$route.query.system_id));
         }
 
         if (!(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))) {
