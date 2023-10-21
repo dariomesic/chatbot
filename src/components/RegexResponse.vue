@@ -9,7 +9,7 @@
     <div class="content-wrapper">
       <h3>Uredi opcije</h3>
       <div class="subtitle-wrapper">
-        <p>Vrsta: Regularni izraz</p>
+        <p>Unesite regularni izraz</p>
         <!-- <button class="color-button">Dodaj regularni izraz +</button> -->
       </div>
       <hr />
@@ -44,7 +44,7 @@
             :disabled="selectedRegex === ''"
             v-model="textareaContent"
             @input="checkMatches"
-          ></textarea>
+          />
         </div>
         <div class="form-control">
           <label>Asistent prepoznaje:</label>

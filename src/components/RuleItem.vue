@@ -336,16 +336,16 @@ export default {
       step_options: [
         "Nastavite na idući korak",
         "Ponovite prethodne korake",
-        // "Odlazak na pod-akciju",
-        // "Kontaktiranje agenta",
+         //"Odlazak na pod-akciju",
+         //"Kontaktiranje agenta",
         "Završetak radnje",
       ], // 'Search for the answer',
       step_details: [
         "Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.",
         "Ponovite jedan ili više koraka koji su ranije navedeni u trenutnoj radnji.",
-        // "Prebaci tijek razgovora na drugu radnju za obavljanje određenog zadatka.",
+         //"Prebaci tijek razgovora na drugu radnju za obavljanje određenog zadatka.",
         /*'Detalji za searching for the answer',*/
-        // "Prenesi korisnika nekome iz svog tima za podršku.",
+         //"Prenesi korisnika nekome iz svog tima za podršku.",
         "Neka ovo bude posljednji korak koji dovršava radnju.",
       ],
       step_selected: this.rule.continuation,

@@ -155,5 +155,4 @@ export default {
   background-color: #f5f5f5;
   transition: 0.2s;
 }
-
 </style>
