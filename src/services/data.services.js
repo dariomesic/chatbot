@@ -199,8 +199,8 @@
     })
   }
 
-  sendQuestions(questions, intent_id){
-    return fetch('/sendQuestions?questions=' + questions + '&intent_id=' + intent_id, {
+  nextStep(response){
+    return fetch('/nextStep?response=' + response, {
       method : "GET",
     })
     .then((response) => {
@@ -211,14 +211,26 @@
     })
   }
 
-  sendMessage(question){
+  sendQuestions(questions, intent_id, system_id){
+    return fetch('/sendQuestions?questions=' + questions + '&intent_id=' + intent_id + '&system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  sendMessage(question, systemID){
     return fetch('/chatbotSentMessage', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({question: question})
+      body: JSON.stringify({question: question, systemID: systemID})
     })
     .then((response) => {
         if (!response.ok) {
@@ -471,8 +483,8 @@ class DataService {
     })
   }
 
-  sendQuestions(questions, intent_id){
-    return fetch('/api/sendQuestions?questions=' + questions + '&intent_id=' + intent_id, {
+  sendQuestions(questions, intent_id, system_id){
+    return fetch('/api/sendQuestions?questions=' + questions + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -483,14 +495,14 @@ class DataService {
     })
   }
 
-  sendMessage(question){
+  sendMessage(question, systemID){
     return fetch('/api/chatbotSentMessage', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({question: question})
+      body: JSON.stringify({question: question, systemID: systemID})
     })
     .then((response) => {
         if (!response.ok) {
