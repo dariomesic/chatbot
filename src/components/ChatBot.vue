@@ -59,7 +59,6 @@ export default{
       inputValue: '',
       messages: [],
       status_func_SendMsgBot: 0,
-      conditionLogs: [],
       showOptions: false, // Add this property to control input/option visibility
       chatbotOptions: '',
       showFeedbackButtons: false,
@@ -132,7 +131,6 @@ export default{
                 // For other response types, use the default DataService.sendMessage
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id);
                 this.intent_id = response.intent_id;
-                this.conditionLogs[response.intent_id] = []; // Initialize the array
                 this.selectedFeedbackButton = false;
                 this.responseApi = response
                 this.addBotMessage(response);
@@ -225,6 +223,7 @@ export default{
       this.addUserMessage(selectedOption)
       try {
         // Iterate through all options to build conditions
+        let conditions = []
         this.responseApi.customer_response.forEach((option) => {
           const conditionLog = {
             subject: text,
@@ -232,7 +231,7 @@ export default{
             object: option,
           };
           // Add the condition log to the array
-          this.conditionLogs[this.responseApi.intent_id].push(conditionLog);
+          conditions.push(conditionLog);
         });
 
         // Disable all options after the user makes a selection and change the style of the selected button
@@ -248,7 +247,7 @@ export default{
         });
 
         // Make an API call to send the user's selected option.
-        const response = await DataService.userResponse(this.conditionLogs[this.responseApi.intent_id], this.responseApi.intent_id);
+        const response = await DataService.userResponse(conditions, this.responseApi.intent_id);
         response.intent_id = this.responseApi.intent_id
         this.responseApi = response
         this.showOptions = false
