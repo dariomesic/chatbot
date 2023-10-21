@@ -65,7 +65,7 @@
 import CustomSelect from "./CustomSelect.vue";
 export default {
   components: { CustomSelect },
-  props: ["isRegexOpen"],
+  props: ["isRegexOpen", "ruleCopy"],
   emits: ["close"],
   data() {
     return {
@@ -82,12 +82,29 @@ export default {
       showCustomInput: false,
       textareaContent: "",
       matches: [],
-      showError: false,
     };
   },
   watch: {
     selectedRegex: "handleRegexChange",
     customRegex: "handleRegexChange",
+    isRegexOpen(newIsOpen) {
+      if (newIsOpen) {
+        if (this.ruleCopy.response_type !== "Regularni izraz") {
+          this.selectedRegex = "Odaberite regularni izraz";
+        } else if (
+          this.ruleCopy.response_type === "Regularni izraz" &&
+          this.regexOptions.includes(this.ruleCopy.customer_response)
+        ) {
+          this.selectedRegex = this.ruleCopy.customer_response;
+        } else if (
+          this.ruleCopy.response_type === "Regularni izraz" &&
+          !this.regexOptions.includes(this.ruleCopy.customer_response)
+        ) {
+          this.selectedRegex = this.customRegexButton;
+          this.customRegex = this.ruleCopy.customer_response;
+        }
+      }
+    },
   },
   computed: {
     isSubmitButtonDisabled() {
@@ -99,6 +116,7 @@ export default {
       );
     },
   },
+
   methods: {
     toggleCustomInput() {
       this.customRegex = "";
@@ -238,4 +256,3 @@ textarea:disabled {
   margin-right: 0.3rem;
 }
 </style>
-

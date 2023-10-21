@@ -293,7 +293,7 @@
       :show_modal="show_modal"
       @addOptions="updateOptions"
       @close="show_modal = false"
-      :options="ruleCopy.customer_response"
+      :options="computedOptions"
     />
   </Teleport>
   <Teleport to="body">
@@ -301,6 +301,7 @@
       :isRegexOpen="isRegexOpen"
       @addRegex="updateRegex"
       @close="isRegexOpen = false"
+      :ruleCopy="ruleCopy"
     />
   </Teleport>
 </template>
@@ -459,6 +460,15 @@ export default {
         this.show_modal = true;
       } else if (this.ruleCopy.response_type === "Regularni izraz") {
         this.isRegexOpen = true;
+      }
+    },
+  },
+  computed: {
+    computedOptions() {
+      if (this.ruleCopy.response_type === "Opcije") {
+        return this.ruleCopy.customer_response;
+      } else {
+        return [];
       }
     },
   },
