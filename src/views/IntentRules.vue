@@ -224,7 +224,7 @@ export default {
           // Check if response_type is "Regularni izraz" or "Slobodni tekst"
           if (rule.response_type === "Regularni izraz" || rule.response_type === "Slobodni tekst") {
             // Save "defined" and "undefined" as responsesToAdd
-            responsesToAdd = ["defined", "undefined"];
+            responsesToAdd = ["defined"];
           } else {
             // Use the actual responses
             responsesToAdd = distinctResponses;

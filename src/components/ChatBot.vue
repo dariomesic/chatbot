@@ -106,12 +106,18 @@ export default{
                 this.addBotMessage(response)
               }
               else if(this.responseApi.continuation === 'Nastavite na idući korak'){
-                const response = await DataService.nextStep(this.responseApi);
+                let condition = {
+                  subject: this.responseApi.assistant_answer,
+                  predicate: 'je',
+                  object: "defined",
+                }
+                const response = await DataService.userResponse(condition, this.responseApi.intent_id);
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
               else if(this.responseApi.continuation === 'Završetak radnje'){
                 this.responseApi = {}
+                this.showFeedbackButtons = true
               }
                //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
             } else if (this.responseApi.response_type === 'Regularni izraz') {
@@ -125,18 +131,22 @@ export default{
                     this.addBotMessage(response)
                   }
                   else if(this.responseApi.continuation === 'Nastavite na idući korak'){
-                    const response = await DataService.nextStep(this.responseApi);
+                    let condition = {
+                      subject: this.responseApi.assistant_answer,
+                      predicate: 'je',
+                      object: "defined",
+                    }
+                    const response = await DataService.userResponse(condition, this.responseApi.intent_id);
                     response.intent_id = this.responseApi.intent_id
-                    this.showOptions = false
-                    this.chatbotOptions = ''
                     this.addBotMessage(response);
                   }
                   else if(this.responseApi.continuation === 'Završetak radnje'){
                     this.responseApi = {}
+                    this.showFeedbackButtons = true
                   }
                   //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
                 } else {
-                    const errorMessage = "Incorrect message, please try again";
+                    const errorMessage = "Unijeli ste netočan regularni izraz. Molim Vas pokušajte ponovno.";
                     this.addBotMessage({ assistant_answer: errorMessage });
                 }
             } else {
