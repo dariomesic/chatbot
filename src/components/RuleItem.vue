@@ -248,6 +248,7 @@
             @click="
               step_selected = option;
               updateContinuation(option);
+              option === 'Vrati se na pod-akciju' ? isPreviousResponseOpen = true : ''
             "
           >
             {{ option }}
@@ -266,8 +267,8 @@
         <div style="padding: 0.75rem;">
           <div style="background:white;padding:.25rem">
             <div style="display:flex">
-              <span style="padding-left: 1rem;padding: .75rem .5rem;min-width: 62px;">Ponovno pitaj:</span>
-              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">6.Unesite email adresu na koju Vas možemo kontaktirati</span>
+              <span style="padding-left: 1rem;padding: .75rem .5rem;min-width: 62px;">Odi na akciju:</span>
+              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ruleCopy.previous_response.id + '. ' + ruleCopy.previous_response.name}}</span>
             </div>
           </div>
         </div>
@@ -283,6 +284,7 @@
             style="padding: calc(0.375rem - 3px) 16px"
             tabindex="0"
             type="button"
+            @click="isPreviousResponseOpen = true"
           >
             Uredi odgovor
           </button>
@@ -321,13 +323,18 @@
       @close="show_modal = false"
       :options="computedOptions"
     />
-  </Teleport>
-  <Teleport to="body">
     <RegexPopup
       :isRegexOpen="isRegexOpen"
       @addRegex="updateRegex"
       @close="isRegexOpen = false"
       :ruleCopy="ruleCopy"
+    />
+    <PreviousResponse
+      :isPreviousResponseOpen="isPreviousResponseOpen"
+      :rules="rules.slice(0, index)"
+      :selectedAnswer="ruleCopy.previous_response"
+      @addResponse="addResponse"
+      @close="isPreviousResponseOpen = false"
     />
   </Teleport>
 </template>
@@ -337,12 +344,14 @@ import CustomCondition from "./CustomCondition.vue";
 import CustomSelect from "./CustomSelect.vue";
 import Popup from "./popups/OptionResponse.vue";
 import RegexPopup from "./popups/RegexResponse.vue";
+import PreviousResponse from "./popups/PreviousResponse.vue";
 export default {
-  components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup },
+  components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup, PreviousResponse },
   props: {
     rule: Object,
     rules_answers: Array,
     index: Number,
+    rules: Object,
   },
   data() {
     return {
@@ -373,6 +382,7 @@ export default {
       step_selected: this.rule.continuation,
       show_modal: false,
       isRegexOpen: false,
+      isPreviousResponseOpen: false,
       ruleCopy: { ...this.rule },
     };
   },
@@ -407,6 +417,11 @@ export default {
       this.ruleCopy.customer_response = [];
       this.ruleCopy.response_type = "";
       this.$emit("updateRule", this.ruleCopy);
+    },
+    addResponse(obj){
+      this.ruleCopy.previous_response = obj;
+      this.$emit("updateRule", this.ruleCopy);
+      console.log(this.ruleCopy)
     },
     updateConditions(conditions) {
       this.ruleCopy.conditions = conditions;

@@ -1,7 +1,7 @@
 <template>
   <base-dialog
-    :show="isRegexOpen"
-    @click-submit="applyRegex"
+    :show="isPreviousResponseOpen"
+    @click-submit="applyResponse"
     @close="$emit('close')"
     :buttonText="'Odaberi'"
   >
@@ -10,30 +10,13 @@
       <div class="subtitle-wrapper">
         <p>Odaberite prethodni odgovor</p>
       </div>
-      <hr />
-      <div class="main-wrapper">
-        <div class="form-control">
-          <label for="regex-options">Prethodni koraci</label>
-          <template v-if="selectedRegex !== customRegexButton">
-            <CustomSelect
-              :options="rules_answers"
-              :placeholder="'Odaberite prethodni odgovor'"
-              :value="selectedAnswer"
-              @update:value="selectedAnswer = $event"
-            />
-          </template>
-          <template v-else>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                placeholder="Odaberite prethodni odgovor"
-                v-model.trim="customRegex"
-              />
-              <button class="remove-input" @click="toggleCustomInput">X</button>
-            </div>
-          </template>
-        </div>
-        <hr />
+      <div class="main-wrapper" style="margin:5% 0 5% 0">
+        <CustomSelect
+          :options="rules.map(function (el) { return el.assistant_answer })"
+          :placeholder="'Odaberite prethodni odgovor'"
+          :value="selected"
+          @update:value="selected = $event"
+        />
       </div>
     </div>
   </base-dialog>
@@ -43,7 +26,25 @@
 import CustomSelect from "../CustomSelect.vue";
 export default {
   components: { CustomSelect },
-  props: ["rules_answers", selectedAnswer],
-  emits: ["close"],
+  props: ["isPreviousResponseOpen", "rules", "selectedAnswer"],
+  emits: ["close", "addResponse"],
+  data(){
+    return{
+      selected: this.selectedAnswer ? this.selectedAnswer.name : ''
+    }
+  },
+  methods:{
+    applyResponse(){
+      var foundId = ''
+      this.rules.forEach((item) => {
+        if (item.assistant_answer === this.selected) {
+          foundId = item.id;
+          return;
+        }
+      })
+      this.$emit("addResponse", {name: this.selected, id: foundId});
+      this.$emit('close')
+    }
+  }
 };
 </script>

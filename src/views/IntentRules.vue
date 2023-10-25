@@ -103,6 +103,7 @@
                 :rule="rule"
                 :index="index"
                 :rules_answers="distinctAnswers"
+                :rules="rules_copy"
                 @add="addRule"
                 @remove="removeRule"
                 @updateRule="updateRule(index, $event)"
