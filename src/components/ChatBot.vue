@@ -99,7 +99,7 @@ export default{
         try {
             // Check the response type
             if (this.responseApi.response_type === 'Slobodni tekst') {
-              if(this.responseApi.continuation === 'Vrati se na pod akciju'){
+              if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
                 const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
                 response.intent_id = this.responseApi.intent_id
                 this.selectedFeedbackButton = false;
@@ -124,7 +124,7 @@ export default{
                 // Handle "Regularni izraz" user response here
                 var regEx = new RegExp(this.responseApi.customer_response.split(' ')[1]);
                 if (regEx.test(this.inputValue)) {
-                  if(this.responseApi.continuation === 'Vrati se na pod akciju'){
+                  if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
                     const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
                     response.intent_id = this.responseApi.intent_id
                     this.selectedFeedbackButton = false;
@@ -215,7 +215,7 @@ export default{
         this.chatbotOptions = this.renderOptions(message);
       }
       else if(message.response_type === 'Regularni izraz' || message.response_type === 'Slobodni tekst'){console.log()}
-      else if(message.continuation === 'Vrati se na pod akciju'){
+      else if(message.continuation === 'Vrati se na pod-akciju'){
         const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
         response.intent_id = message.intent_id
         this.selectedFeedbackButton = false;

@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import CustomSelect from "./CustomSelect.vue";
+import CustomSelect from "../CustomSelect.vue";
 export default {
   components: { CustomSelect },
   props: ["isRegexOpen", "ruleCopy"],

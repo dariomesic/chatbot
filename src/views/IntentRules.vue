@@ -146,7 +146,7 @@ import ActionEditor from '../components/ActionEditor.vue'
 import { windowScrollPosition } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
 import DataService from '../services/data.services'
-import Loading from '../components/LoadingModal.vue'
+import Loading from '../components/popups/LoadingModal.vue'
 export default {
   mixins: [windowScrollPosition('position')],
   components: {

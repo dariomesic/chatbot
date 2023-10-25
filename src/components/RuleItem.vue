@@ -262,6 +262,32 @@
           </div>
         </div>
       </div>
+      <div v-if="ruleCopy.continuation === 'Vrati se na pod-akciju'" style="background-color: #f4f4f4; margin-top: 1%; position: relative">
+        <div style="padding: 0.75rem;">
+          <div style="background:white;padding:.25rem">
+            <div style="display:flex">
+              <span style="padding-left: 1rem;padding: .75rem .5rem;min-width: 62px;">Ponovno pitaj:</span>
+              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">6.Unesite email adresu na koju Vas možemo kontaktirati</span>
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+          "
+        >
+          <button
+            class="color-button"
+            style="padding: calc(0.375rem - 3px) 16px"
+            tabindex="0"
+            type="button"
+          >
+            Uredi odgovor
+          </button>
+        </div>
+      </div>
     </div>
     <button
       @click="$emit('remove', index)"
@@ -309,8 +335,8 @@
 import TextEditor from "./textarea/TextEditor.vue";
 import CustomCondition from "./CustomCondition.vue";
 import CustomSelect from "./CustomSelect.vue";
-import Popup from "./OptionResponse.vue";
-import RegexPopup from "./RegexResponse.vue";
+import Popup from "./popups/OptionResponse.vue";
+import RegexPopup from "./popups/RegexResponse.vue";
 export default {
   components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup },
   props: {
@@ -336,12 +362,12 @@ export default {
       ],
       step_options: [
         "Nastavite na idući korak",
-        "Vrati se na pod akciju",
+        "Vrati se na pod-akciju",
         "Završetak radnje",
       ],
       step_details: [
         "Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.",
-        "Vrati se na pod akciju za obavljanje određenog zadatka.",
+        "Vrati se na pod-akciju za obavljanje određenog zadatka.",
         "Neka ovo bude posljednji korak koji dovršava radnju.",
       ],
       step_selected: this.rule.continuation,
