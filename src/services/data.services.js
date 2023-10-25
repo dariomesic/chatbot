@@ -216,6 +216,18 @@
     })
   }
 
+  goToStep(intent_id,id){
+    return fetch('/goToStep?intent_id=' + intent_id + '&id=' + id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   sendQuestions(questions, intent_id, system_id){
     return fetch('/sendQuestions?questions=' + questions + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
@@ -496,6 +508,18 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({response: response})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  goToStep(intent_id,id){
+    return fetch('/api/goToStep?intent_id=' + intent_id + '&id=' + id, {
+      method : "GET",
     })
     .then((response) => {
         if (!response.ok) {
