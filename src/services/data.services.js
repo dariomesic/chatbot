@@ -200,8 +200,13 @@
   }
 
   nextStep(response){
-    return fetch('/nextStep?response=' + response, {
-      method : "GET",
+    return fetch('/nextStep', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({response: response})
     })
     .then((response) => {
         if (!response.ok) {
@@ -474,6 +479,23 @@ class DataService {
   getRulesForIntent(intent_id){
     return fetch('/api/getRulesForIntent?intent_id=' + intent_id, {
       method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  nextStep(response){
+    return fetch('/api/nextStep', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({response: response})
     })
     .then((response) => {
         if (!response.ok) {

@@ -88,7 +88,7 @@ export default{
         const responseMessage = {
           assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ePredmet. Postavite pitanje vezano uz sustav`
         }
-        this.addBotMessage(responseMessage, true);
+        this.addBotMessage(responseMessage);
       }, 1000);
     },
     
@@ -100,7 +100,9 @@ export default{
             // Check the response type
             if (this.responseApi.response_type === 'Slobodni tekst') {
               if(this.responseApi.continuation === 'Ponovite prethodne korake'){
-                const response = await DataService.getRulesForIntent(this.responseApi);
+                const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
+                response.intent_id = this.responseApi.intent_id
+                this.selectedFeedbackButton = false;
                 this.addBotMessage(response)
               }
               else if(this.responseApi.continuation === 'Nastavite na idući korak'){
@@ -108,21 +110,31 @@ export default{
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
-               //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA -- TREBA PROVJERITI KAKO OTICI U NOVI KORAK
+              else if(this.responseApi.continuation === 'Završetak radnje'){
+                this.responseApi = {}
+              }
+               //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
             } else if (this.responseApi.response_type === 'Regularni izraz') {
                 // Handle "Regularni izraz" user response here
                 var regEx = new RegExp(this.responseApi.customer_response.split(' ')[1]);
                 if (regEx.test(this.inputValue)) {
                   if(this.responseApi.continuation === 'Ponovite prethodne korake'){
-                    const response = await DataService.getRulesForIntent(this.responseApi);
+                    const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
+                    response.intent_id = this.responseApi.intent_id
+                    this.selectedFeedbackButton = false;
                     this.addBotMessage(response)
                   }
                   else if(this.responseApi.continuation === 'Nastavite na idući korak'){
                     const response = await DataService.nextStep(this.responseApi);
-                    response.intent_id = this.responseApi
+                    response.intent_id = this.responseApi.intent_id
+                    this.showOptions = false
+                    this.chatbotOptions = ''
                     this.addBotMessage(response);
                   }
-                  //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA -- TREBA PROVJERITI KAKO OTICI U NOVI KORAK
+                  else if(this.responseApi.continuation === 'Završetak radnje'){
+                    this.responseApi = {}
+                  }
+                  //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
                 } else {
                     const errorMessage = "Incorrect message, please try again";
                     this.addBotMessage({ assistant_answer: errorMessage });
@@ -132,7 +144,6 @@ export default{
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id);
                 this.intent_id = response.intent_id;
                 this.selectedFeedbackButton = false;
-                this.responseApi = response
                 this.addBotMessage(response);
             }
             // Clear the input field after sending the message.
@@ -157,35 +168,13 @@ export default{
       this.scrollChatToBottom()
     },
 
-    async addBotMessage(message, first) {
+    async addBotMessage(message) {
+      this.responseApi = message
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
         dataUser: false,
       });
-
-
-      /*MAIN LOGIC FOR CHATBOT*/
-      if (message.response_type === 'Opcije') {
-        // Display the options as buttons.
-        this.showOptions = true; // Show chatbot options
-        this.chatbotOptions = this.renderOptions(message);
-      }
-      else if(message.continuation === 'Ponovite prethodne korake'){
-        const response = await DataService.getRulesForIntent(message.intent_id);
-        this.addBotMessage(response)
-      }
-      else if(message.continuation === 'Nastavite na idući korak'){
-        const response = await DataService.nextStep(this.responseApi);
-        response.intent_id = message.intent_id
-        this.showOptions = false
-        this.chatbotOptions = ''
-        this.addBotMessage(response);
-      }
-      else if(message.continuation === 'Završetak radnje'){
-        this.responseApi = {}
-      }
-
 
 
       let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
@@ -207,7 +196,34 @@ export default{
         });
         await this.displayContentWithDelays(message);
       }
-      (message.response_type !== 'OPCIJE' && !first) ? this.showFeedbackButtons = true : this.showFeedbackButtons = false
+
+
+      /*MAIN LOGIC FOR CHATBOT*/
+      if (message.response_type === 'Opcije') {
+        // Display the options as buttons.
+        this.showOptions = true; // Show chatbot options
+        this.chatbotOptions = this.renderOptions(message);
+      }
+      else if(message.response_type === 'Regularni izraz' || message.response_type === 'Slobodni tekst'){console.log()}
+      else if(message.continuation === 'Ponovite prethodne korake'){
+        const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
+        response.intent_id = message.intent_id
+        this.selectedFeedbackButton = false;
+        this.addBotMessage(response)
+      }
+      else if(message.continuation === 'Nastavite na idući korak'){
+        const response = await DataService.nextStep(message);
+        response.intent_id = message.intent_id
+        this.showOptions = false
+        this.chatbotOptions = ''
+        this.addBotMessage(response);
+      }
+      else if(message.continuation === 'Završetak radnje'){
+        this.responseApi = {}
+        this.showFeedbackButtons = true
+      }
+
+
       this.scrollChatToBottom();
     },
 
