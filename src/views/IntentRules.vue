@@ -218,7 +218,19 @@ export default {
       this.rules_copy.forEach((rule, index) => {
         if (rule.customer_response && rule.customer_response.length > 0) {
           const distinctResponses = [...new Set(rule.customer_response)]; // Get distinct customer responses
-          distinctResponses.forEach((response) => {
+
+          let responsesToAdd;
+
+          // Check if response_type is "Regularni izraz" or "Slobodni tekst"
+          if (rule.response_type === "Regularni izraz" || rule.response_type === "Slobodni tekst") {
+            // Save "defined" and "undefined" as responsesToAdd
+            responsesToAdd = ["defined", "undefined"];
+          } else {
+            // Use the actual responses
+            responsesToAdd = distinctResponses;
+          }
+
+          responsesToAdd.forEach((response) => {
             distinctAnswersWithResponses.push({
               index: index + 1,
               answer: rule.assistant_answer,
