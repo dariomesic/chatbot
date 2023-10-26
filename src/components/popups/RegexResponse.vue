@@ -41,7 +41,7 @@
           <textarea
             id="test"
             placeholder="Ovdje isprobajte svoj regularni izraz"
-            :disabled="selectedRegex === ''"
+            :disabled="selectedRegex === 'Odaberite regularni izraz'"
             v-model="textareaContent"
             @input="checkMatches"
           />
@@ -51,7 +51,7 @@
           <hr />
           <div class="matches">
             <p v-for="(match, index) in matches" :key="index">
-              Podudaranje {{ index + 1 }}
+              Podudaranje {{ index + 1 }}:
               <span style="border-bottom: 2px solid #8bd1f9">{{ match }}</span>
             </p>
           </div>
@@ -104,6 +104,7 @@ export default {
           this.customRegex = this.ruleCopy.customer_response;
         }
       }
+      console.log(this.selectedRegex)
     },
   },
   computed: {

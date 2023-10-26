@@ -443,7 +443,6 @@ input[type="text"]:focus {
     max-width: 250px;
     padding: 15px 17px;
     border-bottom-right-radius: 5px;
-    word-break: break-all;
     white-space: normal;
 }
 
