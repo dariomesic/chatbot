@@ -207,20 +207,23 @@
       >
         <span style="align-items: center; display: flex; color: #0f62fe">
           <svg
-            style="margin-right: 0.75rem; fill: #0f62fe"
-            focusable="false"
-            preserveAspectRatio="xMidYMid meet"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            aria-hidden="true"
-          >
-            <path
-              d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
-            ></path>
-          </svg>
+                v-if="step_selected === 'Nastavite na idući korak'"
+                style="margin-right: 0.75rem; fill: #0f62fe"
+                focusable="false"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
+                ></path>
+              </svg>
+              <svg style="margin-right: 0.75rem; fill: #0f62fe" v-else-if="step_selected === 'Završetak radnje'" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"></path><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"></path></svg>
+              <svg style="margin-right: 0.75rem; fill: #0f62fe" v-else focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,8H6.83l3.58-3.59L9,3,3,9l6,6,1.41-1.41L6.83,10H27V26H7V19H5v7a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V10A2,2,0,0,0,27,8Z"></path></svg>
           {{ step_selected }}
         </span>
         <svg
@@ -263,12 +266,12 @@
           </div>
         </div>
       </div>
-      <div v-if="ruleCopy.continuation === 'Vrati se na pod-akciju'" style="background-color: #f4f4f4; margin-top: 1%; position: relative">
+      <div v-if="ruleCopy.continuation === 'Vrati se na pod-akciju' && ruleCopy.previous_response" style="background-color: #f4f4f4; margin-top: 1%; position: relative">
         <div style="padding: 0.75rem;">
           <div style="background:white;padding:.25rem">
             <div style="display:flex">
               <span style="padding-left: 1rem;padding: .75rem .5rem;min-width: 62px;">Odi na akciju:</span>
-              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ruleCopy.previous_response.id + '. ' + ruleCopy.previous_response.name}}</span>
+              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:flex;margin:auto" :innerHTML="ruleCopy.previous_response.id + '. ' + ruleCopy.previous_response.name"/>
             </div>
           </div>
         </div>
