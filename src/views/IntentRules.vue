@@ -345,7 +345,7 @@ export default {
         if (this.addedQuestions.length > 0) {
           apiRequests.push(
             ...this.addedQuestions.map((question) =>
-              DataService.postQuestion(question.question, intentId)
+              DataService.postQuestion(question.question, intentId, this.$route.query.system_id)
             )
           );
         }
