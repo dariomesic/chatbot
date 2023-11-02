@@ -509,7 +509,6 @@ export default {
     rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   border-radius: 3px;
   position: relative;
-  max-width: 60vw;
 }
 .res-val {
   margin-top: 2%;
