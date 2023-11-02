@@ -103,6 +103,7 @@
                 :rule="rule"
                 :index="index"
                 :rules_answers="distinctAnswers"
+                :rules="rules_copy"
                 @add="addRule"
                 @remove="removeRule"
                 @updateRule="updateRule(index, $event)"
@@ -146,7 +147,7 @@ import ActionEditor from '../components/ActionEditor.vue'
 import { windowScrollPosition } from '../utils/window-scroll-position'
 import Chatbot from '../components/ChatBot.vue'
 import DataService from '../services/data.services'
-import Loading from '../components/LoadingModal.vue'
+import Loading from '../components/popups/LoadingModal.vue'
 export default {
   mixins: [windowScrollPosition('position')],
   components: {
@@ -218,7 +219,19 @@ export default {
       this.rules_copy.forEach((rule, index) => {
         if (rule.customer_response && rule.customer_response.length > 0) {
           const distinctResponses = [...new Set(rule.customer_response)]; // Get distinct customer responses
-          distinctResponses.forEach((response) => {
+
+          let responsesToAdd;
+
+          // Check if response_type is "Regularni izraz" or "Slobodni tekst"
+          if (rule.response_type === "Regularni izraz" || rule.response_type === "Slobodni tekst") {
+            // Save "defined" and "undefined" as responsesToAdd
+            responsesToAdd = ["defined"];
+          } else {
+            // Use the actual responses
+            responsesToAdd = distinctResponses;
+          }
+
+          responsesToAdd.forEach((response) => {
             distinctAnswersWithResponses.push({
               index: index + 1,
               answer: rule.assistant_answer,

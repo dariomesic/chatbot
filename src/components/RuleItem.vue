@@ -207,20 +207,23 @@
       >
         <span style="align-items: center; display: flex; color: #0f62fe">
           <svg
-            style="margin-right: 0.75rem; fill: #0f62fe"
-            focusable="false"
-            preserveAspectRatio="xMidYMid meet"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            aria-hidden="true"
-          >
-            <path
-              d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
-            ></path>
-          </svg>
+                v-if="step_selected === 'Nastavite na idući korak'"
+                style="margin-right: 0.75rem; fill: #0f62fe"
+                focusable="false"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
+                ></path>
+              </svg>
+              <svg style="margin-right: 0.75rem; fill: #0f62fe" v-else-if="step_selected === 'Završetak radnje'" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"></path><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"></path></svg>
+              <svg style="margin-right: 0.75rem; fill: #0f62fe" v-else focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,8H6.83l3.58-3.59L9,3,3,9l6,6,1.41-1.41L6.83,10H27V26H7V19H5v7a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V10A2,2,0,0,0,27,8Z"></path></svg>
           {{ step_selected }}
         </span>
         <svg
@@ -248,6 +251,7 @@
             @click="
               step_selected = option;
               updateContinuation(option);
+              option === 'Vrati se na pod-akciju' ? isPreviousResponseOpen = true : ''
             "
           >
             {{ option }}
@@ -262,6 +266,33 @@
           </div>
         </div>
       </div>
+      <div v-if="ruleCopy.continuation === 'Vrati se na pod-akciju' && ruleCopy.previous_response" style="background-color: #f4f4f4; margin-top: 1%; position: relative">
+        <div style="padding: 0.75rem;">
+          <div style="background:white;padding:.25rem">
+            <div style="display:flex">
+              <span style="padding-left: 1rem;padding: .75rem .5rem;min-width: 62px;">Odi na akciju:</span>
+              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:flex;margin:auto" :innerHTML="ruleCopy.previous_response.id + '. ' + ruleCopy.previous_response.name"/>
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+          "
+        >
+          <button
+            class="color-button"
+            style="padding: calc(0.375rem - 3px) 16px"
+            tabindex="0"
+            type="button"
+            @click="isPreviousResponseOpen = true"
+          >
+            Uredi odgovor
+          </button>
+        </div>
+      </div>
     </div>
     <button
       @click="$emit('remove', index)"
@@ -269,20 +300,7 @@
       type="button"
       class="exit-button"
     >
-      <svg
-        focusable="false"
-        preserveAspectRatio="xMidYMid meet"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        aria-hidden="true"
-        width="20"
-        height="20"
-        viewBox="0 0 32 32"
-      >
-        <path
-          d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
-        />
-      </svg>
+      <svg data-v-70bf8631="" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon"><path data-v-70bf8631="" d="M12 12H14V24H12zM18 12H20V24H18z"></path><path data-v-70bf8631="" d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path></svg>
     </button>
   </div>
   <h2 class="plus-separator">
@@ -295,13 +313,18 @@
       @close="show_modal = false"
       :options="computedOptions"
     />
-  </Teleport>
-  <Teleport to="body">
     <RegexPopup
       :isRegexOpen="isRegexOpen"
       @addRegex="updateRegex"
       @close="isRegexOpen = false"
       :ruleCopy="ruleCopy"
+    />
+    <PreviousResponse
+      :isPreviousResponseOpen="isPreviousResponseOpen"
+      :rules="rules.slice(0, index)"
+      :selectedAnswer="ruleCopy.previous_response"
+      @addResponse="addResponse"
+      @close="isPreviousResponseOpen = false"
     />
   </Teleport>
 </template>
@@ -309,14 +332,16 @@
 import TextEditor from "./textarea/TextEditor.vue";
 import CustomCondition from "./CustomCondition.vue";
 import CustomSelect from "./CustomSelect.vue";
-import Popup from "./OptionResponse.vue";
-import RegexPopup from "./RegexResponse.vue";
+import Popup from "./popups/OptionResponse.vue";
+import RegexPopup from "./popups/RegexResponse.vue";
+import PreviousResponse from "./popups/PreviousResponse.vue";
 export default {
-  components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup },
+  components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup, PreviousResponse },
   props: {
     rule: Object,
     rules_answers: Array,
     index: Number,
+    rules: Object,
   },
   data() {
     return {
@@ -336,22 +361,18 @@ export default {
       ],
       step_options: [
         "Nastavite na idući korak",
-        "Ponovite prethodne korake",
-         //"Odlazak na pod-akciju",
-         //"Kontaktiranje agenta",
+        "Vrati se na pod-akciju",
         "Završetak radnje",
-      ], // 'Search for the answer',
+      ],
       step_details: [
         "Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.",
-        "Ponovite jedan ili više koraka koji su ranije navedeni u trenutnoj radnji.",
-         //"Prebaci tijek razgovora na drugu radnju za obavljanje određenog zadatka.",
-        /*'Detalji za searching for the answer',*/
-         //"Prenesi korisnika nekome iz svog tima za podršku.",
+        "Vrati se na pod-akciju za obavljanje određenog zadatka.",
         "Neka ovo bude posljednji korak koji dovršava radnju.",
       ],
       step_selected: this.rule.continuation,
       show_modal: false,
       isRegexOpen: false,
+      isPreviousResponseOpen: false,
       ruleCopy: { ...this.rule },
     };
   },
@@ -386,6 +407,11 @@ export default {
       this.ruleCopy.customer_response = [];
       this.ruleCopy.response_type = "";
       this.$emit("updateRule", this.ruleCopy);
+    },
+    addResponse(obj){
+      this.ruleCopy.previous_response = obj;
+      this.$emit("updateRule", this.ruleCopy);
+      console.log(this.ruleCopy)
     },
     updateConditions(conditions) {
       this.ruleCopy.conditions = conditions;

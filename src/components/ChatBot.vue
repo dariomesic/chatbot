@@ -99,44 +99,54 @@ export default{
         try {
             // Check the response type
             if (this.responseApi.response_type === 'Slobodni tekst') {
-              if(this.responseApi.continuation === 'Ponovite prethodne korake'){
-                const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
+              if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
+                let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
                 response.intent_id = this.responseApi.intent_id
                 this.selectedFeedbackButton = false;
                 this.addBotMessage(response)
               }
               else if(this.responseApi.continuation === 'Nastavite na idući korak'){
-                const response = await DataService.nextStep(this.responseApi);
+                let condition = {
+                  subject: this.responseApi.assistant_answer,
+                  predicate: 'je',
+                  object: "defined",
+                }
+                const response = await DataService.userResponse(condition, this.responseApi.intent_id);
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
               else if(this.responseApi.continuation === 'Završetak radnje'){
                 this.responseApi = {}
+                this.showFeedbackButtons = true
               }
                //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
             } else if (this.responseApi.response_type === 'Regularni izraz') {
                 // Handle "Regularni izraz" user response here
                 var regEx = new RegExp(this.responseApi.customer_response.split(' ')[1]);
                 if (regEx.test(this.inputValue)) {
-                  if(this.responseApi.continuation === 'Ponovite prethodne korake'){
-                    const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
+                  if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
+                    let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
                     response.intent_id = this.responseApi.intent_id
                     this.selectedFeedbackButton = false;
                     this.addBotMessage(response)
                   }
                   else if(this.responseApi.continuation === 'Nastavite na idući korak'){
-                    const response = await DataService.nextStep(this.responseApi);
+                    let condition = {
+                      subject: this.responseApi.assistant_answer,
+                      predicate: 'je',
+                      object: "defined",
+                    }
+                    const response = await DataService.userResponse(condition, this.responseApi.intent_id);
                     response.intent_id = this.responseApi.intent_id
-                    this.showOptions = false
-                    this.chatbotOptions = ''
                     this.addBotMessage(response);
                   }
                   else if(this.responseApi.continuation === 'Završetak radnje'){
                     this.responseApi = {}
+                    this.showFeedbackButtons = true
                   }
                   //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
                 } else {
-                    const errorMessage = "Incorrect message, please try again";
+                    const errorMessage = "Unijeli ste netočan regularni izraz. Molim Vas pokušajte ponovno.";
                     this.addBotMessage({ assistant_answer: errorMessage });
                 }
             } else {
@@ -205,8 +215,8 @@ export default{
         this.chatbotOptions = this.renderOptions(message);
       }
       else if(message.response_type === 'Regularni izraz' || message.response_type === 'Slobodni tekst'){console.log()}
-      else if(message.continuation === 'Ponovite prethodne korake'){
-        const response = JSON.parse(await DataService.getRulesForIntent(this.responseApi.intent_id))[0]
+      else if(message.continuation === 'Vrati se na pod-akciju'){
+        let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
         response.intent_id = message.intent_id
         this.selectedFeedbackButton = false;
         this.addBotMessage(response)
@@ -433,7 +443,6 @@ input[type="text"]:focus {
     max-width: 250px;
     padding: 15px 17px;
     border-bottom-right-radius: 5px;
-    word-break: break-all;
     white-space: normal;
 }
 
