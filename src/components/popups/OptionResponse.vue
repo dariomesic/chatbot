@@ -3,7 +3,7 @@
     :show="show_modal"
     @click-submit="applyOptions"
     @close="$emit('close')"
-    :buttonText="'Primijeni'"
+    :rightButtonText="'Primijeni'"
   >
     <div>
       <h3>Uredi opcije</h3>
@@ -97,8 +97,13 @@ export default {
   },
   watch: {
     show_modal(newShowModal) {
-      if (newShowModal && this.response_options.some(option => option.trim() === '')) {
-        this.response_options = this.response_options.filter(option => option.trim() !== '');
+      if (
+        newShowModal &&
+        this.response_options.some((option) => option.trim() === "")
+      ) {
+        this.response_options = this.response_options.filter(
+          (option) => option.trim() !== ""
+        );
       }
     },
   },

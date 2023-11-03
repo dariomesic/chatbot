@@ -3,7 +3,7 @@
     :show="isPreviousResponseOpen"
     @click-submit="applyResponse"
     @close="$emit('close')"
-    :buttonText="'Odaberi'"
+    :rightButtonText="'Odaberi'"
   >
     <div class="content-wrapper">
       <h3>Prethodni koraci</h3>

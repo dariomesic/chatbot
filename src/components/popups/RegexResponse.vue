@@ -3,7 +3,7 @@
     :show="isRegexOpen"
     @click-submit="applyRegex"
     @close="$emit('close')"
-    :buttonText="'Primijeni'"
+    :rightButtonText="'Primijeni'"
     :isSubmitDisabled="isSubmitButtonDisabled"
   >
     <div class="content-wrapper">
@@ -104,7 +104,6 @@ export default {
           this.customRegex = this.ruleCopy.customer_response;
         }
       }
-      console.log(this.selectedRegex)
     },
   },
   computed: {
