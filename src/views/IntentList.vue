@@ -247,28 +247,35 @@ export default {
       }
     },
     formatTimeDifference(lastEditedDate) {
-      const currentDate = new Date();
-      const timeDifference = currentDate - lastEditedDate;
+    // Assuming lastEditedDate is provided in a specific time zone (e.g., UTC)
 
-      // Define time intervals in milliseconds
-      const minute = 60 * 1000;
-      const hour = 60 * minute;
-      const day = 24 * hour;
+    // Create a new Date object for the current time in the CET time zone
+    const currentDate = new Date();
+    const offsetCET = -60; // CET is UTC+1, accounting for daylight saving time
+    currentDate.setMinutes(currentDate.getMinutes() - offsetCET);
 
-      if (timeDifference < minute) {
-        const seconds = Math.floor(timeDifference / 1000);
-        return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
-      } else if (timeDifference < hour) {
-        const minutes = Math.floor(timeDifference / minute);
-        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-      } else if (timeDifference < day) {
-        const hours = Math.floor(timeDifference / hour);
-        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-      } else {
-        const days = Math.floor(timeDifference / day);
-        return `${days} day${days !== 1 ? 's' : ''} ago`;
-      }
+    // Calculate the time difference
+    const timeDifference = currentDate - new Date(lastEditedDate);
+
+    // Define time intervals in milliseconds
+    const minute = 60 * 1000;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+
+    if (timeDifference < minute) {
+      const seconds = Math.floor(timeDifference / 1000);
+      return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+    } else if (timeDifference < hour) {
+      const minutes = Math.floor(timeDifference / minute);
+      return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    } else if (timeDifference < day) {
+      const hours = Math.floor(timeDifference / hour);
+      return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    } else {
+      const days = Math.floor(timeDifference / day);
+      return `${days} day${days !== 1 ? 's' : ''} ago`;
     }
+  }
   }
 };
 </script>
