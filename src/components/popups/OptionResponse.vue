@@ -16,7 +16,12 @@
         Dodaj novu opciju +
       </button>
       <hr />
-      <transition-group name="list" tag="ul">
+      <draggable
+        v-model="response_options"
+        tag="ul"
+        name="list"
+        class="options-list"
+      >
         <li
           v-for="(option, index) in response_options"
           :key="index"
@@ -81,15 +86,20 @@
             </svg>
           </button>
         </li>
-      </transition-group>
+      </draggable>
     </div>
   </base-dialog>
 </template>
 
 <script>
+import { VueDraggableNext as Draggable } from 'vue-draggable-next';
+
 export default {
   props: ["show_modal", "options"],
   emits: ["close"],
+  components: {
+    Draggable,
+  },
   data() {
     return {
       response_options: [...this.options],
@@ -116,7 +126,7 @@ export default {
       const nonEmptyOptions = this.response_options.filter(
         (option) => option.trim() !== ""
       );
-      this.$emit("addOptions", nonEmptyOptions); // Emit options to parent component
+      this.$emit("addOptions", nonEmptyOptions); // Emit options to the parent component
       this.$emit("close");
     },
   },
@@ -139,5 +149,6 @@ input {
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
     outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   width: 100%;
+  cursor: grab;
 }
 </style>
