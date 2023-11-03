@@ -139,7 +139,7 @@
             </button>
             <div style="flex: 1 1"></div>
             <button
-              @click="deleteOptions"
+              @click="emitDeleteOptionsEvents"
               class="color-button"
               style="padding-left: 0.4375rem; padding-right: 0.4375rem"
               tabindex="0"
@@ -207,23 +207,56 @@
       >
         <span style="align-items: center; display: flex; color: #0f62fe">
           <svg
-                v-if="step_selected === 'Nastavite na idući korak'"
-                style="margin-right: 0.75rem; fill: #0f62fe"
-                focusable="false"
-                preserveAspectRatio="xMidYMid meet"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
-                ></path>
-              </svg>
-              <svg style="margin-right: 0.75rem; fill: #0f62fe" v-else-if="step_selected === 'Završetak radnje'" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"></path><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"></path></svg>
-              <svg style="margin-right: 0.75rem; fill: #0f62fe" v-else focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,8H6.83l3.58-3.59L9,3,3,9l6,6,1.41-1.41L6.83,10H27V26H7V19H5v7a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V10A2,2,0,0,0,27,8Z"></path></svg>
+            v-if="step_selected === 'Nastavite na idući korak'"
+            style="margin-right: 0.75rem; fill: #0f62fe"
+            focusable="false"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+          >
+            <path
+              d="M12.3 9.3L8.5 13.1 8.5 1 7.5 1 7.5 13.1 3.7 9.3 3 10 8 15 13 10z"
+            ></path>
+          </svg>
+          <svg
+            style="margin-right: 0.75rem; fill: #0f62fe"
+            v-else-if="step_selected === 'Završetak radnje'"
+            focusable="false"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            width="16"
+            height="16"
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+          >
+            <path
+              d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"
+            ></path>
+            <path
+              d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"
+            ></path>
+          </svg>
+          <svg
+            style="margin-right: 0.75rem; fill: #0f62fe"
+            v-else
+            focusable="false"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            width="16"
+            height="16"
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+          >
+            <path
+              d="M27,8H6.83l3.58-3.59L9,3,3,9l6,6,1.41-1.41L6.83,10H27V26H7V19H5v7a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V10A2,2,0,0,0,27,8Z"
+            ></path>
+          </svg>
           {{ step_selected }}
         </span>
         <svg
@@ -251,7 +284,9 @@
             @click="
               step_selected = option;
               updateContinuation(option);
-              option === 'Vrati se na pod-akciju' ? isPreviousResponseOpen = true : ''
+              option === 'Vrati se na pod-akciju'
+                ? (isPreviousResponseOpen = true)
+                : '';
             "
           >
             {{ option }}
@@ -266,21 +301,44 @@
           </div>
         </div>
       </div>
-      <div v-if="ruleCopy.continuation === 'Vrati se na pod-akciju' && ruleCopy.previous_response" style="background-color: #f4f4f4; margin-top: 1%; position: relative">
-        <div style="padding: 0.75rem;">
-          <div style="background:white;padding:.25rem">
-            <div style="display:flex">
-              <span style="padding-left: 1rem;padding: .75rem .5rem;min-width: 62px;">Odi na akciju:</span>
-              <span style="padding: .75rem 2rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display:flex;margin:auto" :innerHTML="ruleCopy.previous_response.id + '. ' + ruleCopy.previous_response.name"/>
+      <div
+        v-if="
+          ruleCopy.continuation === 'Vrati se na pod-akciju' &&
+          ruleCopy.previous_response
+        "
+        style="background-color: #f4f4f4; margin-top: 1%; position: relative"
+      >
+        <div style="padding: 0.75rem">
+          <div style="background: white; padding: 0.25rem">
+            <div style="display: flex">
+              <span
+                style="
+                  padding-left: 1rem;
+                  padding: 0.75rem 0.5rem;
+                  min-width: 62px;
+                "
+                >Odi na akciju:</span
+              >
+              <span
+                style="
+                  padding: 0.75rem 2rem;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  display: flex;
+                  margin: auto;
+                "
+                :innerHTML="
+                  ruleCopy.previous_response.id +
+                  '. ' +
+                  ruleCopy.previous_response.name
+                "
+              />
             </div>
           </div>
         </div>
         <div
-          style="
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            flex-wrap: wrap;
-          "
+          style="border-top: 1px solid #e0e0e0; display: flex; flex-wrap: wrap"
         >
           <button
             class="color-button"
@@ -295,12 +353,31 @@
       </div>
     </div>
     <button
-      @click="$emit('remove', index)"
+      @click="emitDeleteRuleEvents"
       tabindex="0"
       type="button"
       class="exit-button"
     >
-      <svg data-v-70bf8631="" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon"><path data-v-70bf8631="" d="M12 12H14V24H12zM18 12H20V24H18z"></path><path data-v-70bf8631="" d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path></svg>
+      <svg
+        data-v-70bf8631=""
+        focusable="false"
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        aria-label="Delete"
+        aria-hidden="true"
+        width="16"
+        height="16"
+        viewBox="0 0 32 32"
+        role="img"
+        class="bx--btn__icon"
+      >
+        <path data-v-70bf8631="" d="M12 12H14V24H12zM18 12H20V24H18z"></path>
+        <path
+          data-v-70bf8631=""
+          d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"
+        ></path>
+      </svg>
     </button>
   </div>
   <h2 class="plus-separator">
@@ -336,7 +413,14 @@ import Popup from "./popups/OptionResponse.vue";
 import RegexPopup from "./popups/RegexResponse.vue";
 import PreviousResponse from "./popups/PreviousResponse.vue";
 export default {
-  components: { TextEditor, CustomCondition, CustomSelect, Popup, RegexPopup, PreviousResponse },
+  components: {
+    TextEditor,
+    CustomCondition,
+    CustomSelect,
+    Popup,
+    RegexPopup,
+    PreviousResponse,
+  },
   props: {
     rule: Object,
     rules_answers: Array,
@@ -377,6 +461,13 @@ export default {
     };
   },
   methods: {
+    emitDeleteRuleEvents() {
+      this.$emit("remove", this.index);
+      this.$emit("updateShowDeleteRule", true, this.index + 1);
+    },
+    emitDeleteOptionsEvents() {
+      this.$emit("updateShowDeleteOptions", true,this.ruleCopy, this.index + 1);
+    },
     conditionTypeChanged(event) {
       this.selected_option = event;
       event == "s uvjetom"
@@ -403,15 +494,10 @@ export default {
       this.ruleCopy.customer_response = options;
       this.$emit("updateRule", this.ruleCopy);
     },
-    deleteOptions() {
-      this.ruleCopy.customer_response = [];
-      this.ruleCopy.response_type = "";
-      this.$emit("updateRule", this.ruleCopy);
-    },
-    addResponse(obj){
+    addResponse(obj) {
       this.ruleCopy.previous_response = obj;
       this.$emit("updateRule", this.ruleCopy);
-      console.log(this.ruleCopy)
+      console.log(this.ruleCopy);
     },
     updateConditions(conditions) {
       this.ruleCopy.conditions = conditions;
@@ -478,6 +564,7 @@ export default {
         this.isRegexOpen = true;
       } else if (option === "Slobodni tekst") {
         this.ruleCopy.response_type = "Slobodni tekst";
+        this.$emit("updateRule", this.ruleCopy);
       }
       this.optionsResponseVisible = false;
     },

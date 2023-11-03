@@ -5,7 +5,7 @@
     @close="$emit('close-dialog')"
     :isSubmitDisabled="isImageNull"
     :isDisabledClass="isImageNull"
-    :buttonText="'Umetni'"
+    :rightButtonText="'Umetni'"
   >
     <h3>Uključite sliku u svoj odgovor</h3>
     <p>Umetnite sliku s računala</p>

@@ -3,7 +3,7 @@
     :show="show"
     @click-submit="insertLink"
     @close="$emit('close-dialog')"
-    :buttonText="'Umetni'"
+    :rightButtonText="'Umetni'"
     :isSubmitDisabled="!validUrl"
     :isDisabledClass="!validUrl"
   >

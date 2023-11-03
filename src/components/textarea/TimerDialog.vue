@@ -3,12 +3,19 @@
     :show="show"
     @close="$emit('close-dialog')"
     @click-submit="setTimer"
-    :buttonText="'Primijeni'"
+    :rightButtonText="'Primijeni'"
   >
     <div class="main-content">
       <h3>Dodajte odgovor s pauzom</h3>
       <p>Umetnite pauzu prije slanja sljedeće poruke na kanal</p>
-      <div style="display:flex;margin-bottom: 3rem;justify-content: space-around;gap:2rem">
+      <div
+        style="
+          display: flex;
+          margin-bottom: 3rem;
+          justify-content: space-around;
+          gap: 2rem;
+        "
+      >
         <div class="form-control">
           <label for="duration">Trajanje (sekunde)</label>
           <div class="input-group">
@@ -21,8 +28,8 @@
               @keydown="checkValidKey"
               @input="checkValue"
             />
-            <input type="button"  value="-" @click="decrement" />
-            <input type="button"  value="+" @click="increment" />
+            <input type="button" value="-" @click="decrement" />
+            <input type="button" value="+" @click="increment" />
           </div>
           <p v-if="!isValid" style="color: red">
             "Too high,maximum duration is 5 seconds."
@@ -48,12 +55,20 @@
             </button>
           </header>
           <div class="preview-container">
-            <section style="display:flex;margin-bottom:8px">
-              <div style="width:3px;border-radius:2px;background-color: var(--main__color);height:16px;margin-right:8px"/>
+            <section style="display: flex; margin-bottom: 8px">
+              <div
+                style="
+                  width: 3px;
+                  border-radius: 2px;
+                  background-color: var(--main__color);
+                  height: 16px;
+                  margin-right: 8px;
+                "
+              />
               <p>Pozdrav! Ovako će izgledati pauza.</p>
             </section>
             <base-typing-indicator v-if="isTyping"></base-typing-indicator>
-            <p style="margin-left:12px" v-else>Poruka nakon pauze</p>
+            <p style="margin-left: 12px" v-else>Poruka nakon pauze</p>
           </div>
         </div>
       </div>
@@ -63,7 +78,7 @@
 
 <script>
 export default {
-  props: ["show", "insertTimer",],
+  props: ["show", "insertTimer"],
   emits: ["close-dialog", "get-duration"],
   data() {
     return {
@@ -150,18 +165,17 @@ label {
   margin: 0;
 }
 
-.input-group{
+.input-group {
   border-bottom: 1px solid #161616;
 }
 
-input[type=button]{
+input[type="button"] {
   margin-left: 3px;
   height: 100%;
   color: #161616;
   border: none;
-  padding-left:10px;
+  padding-left: 10px;
   padding-right: 10px;
-
 }
 
 input[type="number"] {
@@ -185,7 +199,7 @@ input[type="number"] {
 .preview-card {
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   background-color: #f5f7f7;
   margin-top: 20px;
   height: fit-content;
@@ -197,7 +211,7 @@ input[type="number"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 9.5px 12.7px 0 rgba(0,0,0,.05);
+  box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   background-color: #fff;
