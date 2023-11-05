@@ -23,7 +23,7 @@ export default {
 
 <style scoped>
 .content-wrapper {
-  width: 40vw;
+  width: 25vw;
   margin-bottom: 40px;
 }
 </style>

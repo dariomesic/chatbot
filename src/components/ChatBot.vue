@@ -289,11 +289,13 @@ export default{
       this.$nextTick(() => {
         // Use this.$refs to access the chat container element
         const chatContainer = this.$refs.chatContainer;
-      
-        // Scroll to the bottom with smooth behavior
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        chatContainer.lastElementChild.scrollIntoView({ behavior: 'smooth' });
-      })
+
+        if (chatContainer) {
+          // Check if chatContainer is defined
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          chatContainer.lastElementChild.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
     },
 
     async handleFeedback(value){
