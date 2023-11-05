@@ -265,7 +265,7 @@
         <div class="chat" @click="toggleChatbot">
           <transition name="fade" mode="out-in">
             <svg
-              style="fill:white"
+              style="fill:white;margin-top:3px"
               v-if="!showChatbot"
               xmlns="http://www.w3.org/2000/svg"
               width="20"
