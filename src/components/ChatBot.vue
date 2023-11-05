@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" :class="{ minimized: minimized }">
         <div class="top">
             <div class="AvatarBot">
                 <img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot">
@@ -8,7 +8,19 @@
                 <p class="TitleBot">ChatBot</p>
                 <p class="status">Na vezi</p>
             </div>
-            <button @click="$emit('exit')" tabindex="0" type="button" class="exit-button"><svg xmlns="http://www.w3.org/2000/svg" focusable="false" preserveAspectRatio="xMidYMid meet" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"/></svg></button>
+            <div style="display: flex;right: 0;position: absolute;padding-right: 16px;">
+              <button type="button" class="controls" @click="refresh">
+                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,18A10,10,0,1,1,16,8h6.1821l-3.5844,3.5854L20,13l6-6L20,1,18.5977,2.414,22.1851,6H16A12,12,0,1,0,28,18Z"></path></svg>
+              </button>
+              <button type="button" class="controls" @click="toggleMinimized">
+                <template v-if="minimized">
+                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="24" height="24" viewBox="0 0 32 32" class="bx--btn__icon"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path></svg>
+                </template>
+                <template v-else>
+                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 15H24V17H8z"></path></svg>
+                </template>
+              </button>
+            </div>
         </div>
         <div class="ContentChat" ref="chatContainer">
           <div
@@ -64,6 +76,7 @@ export default{
       showFeedbackButtons: false,
       selectedFeedbackButton: false,
       responseApi: {},
+      minimized: false,
     }
   },
   mounted() {
@@ -384,7 +397,18 @@ export default{
       const beforeSubstring = inputString.slice(0, lastIndex);
       const afterSubstring = inputString.slice(lastIndex + '</div>'.length);
       return beforeSubstring + afterSubstring + update + '</div>';
-    }
+    },
+
+    toggleMinimized() {
+      this.minimized = !this.minimized;
+    },
+
+    refresh() {
+      this.messages = []; // Clear messages
+      this.responseApi = {}; // Reset responseApi
+      this.showFeedbackButtons = false; // Reset feedback buttons
+      this.initializeBot(); // Restart the chatbot
+    },
 
   },
 }
@@ -605,7 +629,7 @@ a {
 .top {
   display: flex;
   align-items: center;
-  height: 65px;
+  height: 60px;
   padding-left: 13px;
   -webkit-box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
   box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
@@ -620,6 +644,15 @@ a {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   border-radius: 15px;
   z-index: 2;
+  transition: height 0.3s ease;
+}
+
+.minimized .ContentChat{
+  display: none; /* Hide chat content when minimized */
+}
+
+.minimized .BoxSentMSG{
+  display: none; /* Hide chat content when minimized */
 }
 
 .InputMSG:valid ~ .send-icon svg path {
@@ -666,5 +699,15 @@ a {
 .loading-dots {
   text-align: center;
   z-index: 5;
+}
+
+.controls{
+  height: 32px;
+  width: 32px;
+}
+
+.controls:hover{
+  background: var(--hover__color);
+  transition: .2s;
 }
 </style>
