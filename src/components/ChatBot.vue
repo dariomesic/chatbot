@@ -184,8 +184,11 @@ export default{
                   this.intent_id = response.intent_id;  //NEEDED FOR FEEDBACK BUTTONS
                   this.addBotMessage(response);
                 }
-                else{
+                else if(Array.isArray(response)){
                   this.addPossibleIntents(response)
+                }
+                else{
+                  this.addBotMessage({ assistant_answer: response });
                 }
             }
             // Clear the input field after sending the message.
