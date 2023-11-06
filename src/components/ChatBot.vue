@@ -98,7 +98,9 @@ export default{
 
     chatContainer.addEventListener('click', async (event) => {
       if (event.target.classList.contains('bot-option')) {
+        this.addUserMessage(event.target.getAttribute('data-text'))
         const intentId = event.target.getAttribute('data-intent-id');
+        this.intent_id = intentId;  //NEEDED FOR FEEDBACK BUTTONS
         let response = await JSON.parse(await DataService.getRulesForIntent(intentId))[0]
         response.intent_id = intentId
         this.selectedFeedbackButton = false;
@@ -179,6 +181,7 @@ export default{
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id);
                 if(response.intent_id){ //if response has confidence > 0.8
                   this.selectedFeedbackButton = false;
+                  this.intent_id = response.intent_id;  //NEEDED FOR FEEDBACK BUTTONS
                   this.addBotMessage(response);
                 }
                 else{
@@ -273,8 +276,8 @@ export default{
         dataUser: false,
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
-      message.forEach((option) => {
-        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}">${option.intent_name}</button>`;
+      message.filter((v,i,a)=>a.findIndex(v2=>(v2.intent_id===v.intent_id))===i).forEach((option) => {
+        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}">${option.intent_name}</button>`;
       });
       messageText += '</div></div>'
       this.messages.push({
@@ -348,7 +351,7 @@ export default{
 
     async handleFeedback(value){
       try {
-        value ? (await DataService.thumbsUp(this.responseApi.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.responseApi.intent_id),this.selectedFeedbackButton = 'down')
+        value ? (await DataService.thumbsUp(this.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.intent_id),this.selectedFeedbackButton = 'down')
       } catch (error) {
         console.error(error);
       }
