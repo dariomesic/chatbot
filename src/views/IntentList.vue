@@ -1,124 +1,406 @@
 <template>
-  <Navbar/>
-  <span @click="$router.push('/')" style="position: absolute;left: 0.7rem;top: 4.5rem;display:flex;cursor:pointer"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="16" height="16"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#0f62fe" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path><path fill="#0f62fe" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path></g></svg><a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a></span>
+  <Navbar />
+  <span
+    @click="$router.push('/')"
+    style="
+      position: absolute;
+      left: 0.7rem;
+      top: 4.5rem;
+      display: flex;
+      cursor: pointer;
+    "
+    ><svg
+      viewBox="0 0 1024 1024"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+    >
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g
+        id="SVGRepo_tracerCarrier"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></g>
+      <g id="SVGRepo_iconCarrier">
+        <path
+          fill="#0f62fe"
+          d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+        ></path>
+        <path
+          fill="#0f62fe"
+          d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+        ></path>
+      </g>
+    </svg>
+    <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a></span
+  >
   <div class="actions">
     <h3>Namjera korisnika u komunikaciji s virtualnim asistentom</h3>
     <section>
-      <div style="display:flex;width:100%">
+      <div style="display: flex; width: 100%">
         <div class="search-container">
-          <input v-model="searchQuery" type="text" style="width:100%" placeholder="Filtriraj po imenu...">
-          <button class="search-button" type="submit" :disabled="true">Pretraži</button>
+          <input
+            v-model="searchQuery"
+            type="text"
+            style="width: 100%"
+            placeholder="Filtriraj po imenu..."
+          />
+          <button class="search-button" type="submit" :disabled="true">
+            Pretraži
+          </button>
         </div>
         <transition name="fade_main" mode="out-in">
-          <button v-if="!selectedIntents.length" @click="newAction" class="background-button" tabindex="0" type="button">Nova namjera
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="New action" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
-              <path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"></path>
+          <button
+            v-if="!selectedIntents.length"
+            @click="newAction"
+            class="background-button"
+            tabindex="0"
+            type="button"
+          >
+            Nova namjera
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="New action"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              class="svg"
+            >
+              <path
+                d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"
+              ></path>
             </svg>
           </button>
-          <button v-else @click="deleteSelectedIntents" class="background-button" style="background:#ff0404">Izbriši odabrane
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="svg">
+          <button
+            v-else
+            @click="deleteSelectedIntents"
+            class="background-button"
+            style="background: #ff0404"
+          >
+            Izbriši odabrane
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Delete"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              class="svg"
+            >
               <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
-              <path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path>
+              <path
+                d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"
+              ></path>
             </svg>
           </button>
         </transition>
       </div>
     </section>
     <table>
-        <thead>
-            <tr>
-              <th scope="col">
-                <input type="checkbox" v-model="selectAll">
-              </th>
-              <th>Naziv</th>
-              <th>Zadnje uređivanje</th>
-              <th>Broj pitanja</th>
-              <th>Broj pravila</th>
-              <th>Status</th>
-              <th>Opcije</th>
-            </tr>
-        </thead>
-        <TransitionGroup name="list" tag="tbody">
-          <tr v-for="(intent,index) in filteredIntents" :key="intent.id">
-            <td>
-                <input type="checkbox" v-model="selectedIntents" :value="intent.id" number>
-            </td>
-            <td>
-              <div>
-                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" style="float: left;margin-right: .25rem;position:relative;top: .125rem;">
-                  <path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"></path>
-                  <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
-                </svg>
-                <a @click="navigateToDetail(intent)">{{intent.name ? intent.name : 'Bez naslova'}}</a>
-              </div>
-            </td>
-            <td>{{ intent.last_edited_formatted }}</td>
-            <td>
-              <span>{{intent.examples_count}}</span>
-            </td>
-            <td>
-              <span>{{intent.steps_count}}</span>
-            </td>
-            <td>
+      <thead>
+        <tr>
+          <th scope="col">
+            <input type="checkbox" v-model="selectAll" />
+          </th>
+          <th
+            @mouseenter="setSortIcon(0, true)"
+            @mouseleave="setSortIcon(0, false)"
+            @click="toggleSortIcon(0, 'name')"
+            :class="{ active: sortIcon[0] === 2 || sortIcon[0] === 3 }"
+          >
+            <div class="span-wrapper">
+              <span> Naziv </span>
               <span>
-                <button style="cursor: default;" type="button" aria-describedby="icon-tooltip-41">
-                  <svg style="fill: #42be65;" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" class="CollectionsDataTable__status-icon-no-error">
-                    <path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z"></path>
-                    <path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0"></path>
-                  </svg>
-                </button>
+                <SortingIcon
+                  :sortIcon="sortIcon[0]"
+                  :isVisible="isVisible[0]"
+                />
               </span>
-            </td>
-            <td>
-              <div style="position:relative">
-                <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options" @click="showOptionsFor(index)">
-                  <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Options" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--overflow-menu__icon">
-                    <circle cx="16" cy="8" r="2"></circle>
-                    <circle cx="16" cy="16" r="2"></circle>
-                    <circle cx="16" cy="24" r="2"></circle>
-                    <title>Options</title>
-                  </svg>
-                </button>
-                <!-- Popup menu -->
-              <div v-if="showOptionsForIntent[index]" class="options-popup" :id="index" tabindex="0" @focusout="focusOut($event, index)">
+            </div>
+          </th>
+          <th
+            @mouseenter="setSortIcon(1, true)"
+            @mouseleave="setSortIcon(1, false)"
+            @click="toggleSortIcon(1, 'lastEdit')"
+            :class="{ active: sortIcon[1] === 2 || sortIcon[1] === 3 }"
+          >
+            <div class="span-wrapper">
+              <span> Zadnje uređivanje</span>
+              <span>
+                <SortingIcon
+                  :sortIcon="sortIcon[1]"
+                  :isVisible="isVisible[1]"
+                />
+              </span>
+            </div>
+          </th>
+          <th
+            @mouseenter="setSortIcon(2, true)"
+            @mouseleave="setSortIcon(2, false)"
+            @click="toggleSortIcon(2, 'numOfQuestions')"
+            :class="{ active: sortIcon[2] === 2 || sortIcon[2] === 3 }"
+          >
+            <div class="span-wrapper">
+              <span> Broj pitanja </span>
+              <span>
+                <SortingIcon
+                  :sortIcon="sortIcon[2]"
+                  :isVisible="isVisible[2]"
+                />
+              </span>
+            </div>
+          </th>
+          <th
+            @mouseenter="setSortIcon(3, true)"
+            @mouseleave="setSortIcon(3, false)"
+            @click="toggleSortIcon(3, 'numOfRules')"
+            :class="{ active: sortIcon[3] === 2 || sortIcon[3] === 3 }"
+          >
+            <div class="span-wrapper">
+              <span> Broj pravila </span>
+              <span>
+                <SortingIcon
+                  :sortIcon="sortIcon[3]"
+                  :isVisible="isVisible[3]"
+                />
+              </span>
+            </div>
+          </th>
+          <th>Status</th>
+          <th>Opcije</th>
+        </tr>
+      </thead>
+      <TransitionGroup name="list" tag="tbody">
+        <tr v-for="(intent, index) in filteredIntents" :key="intent.id">
+          <td>
+            <input
+              type="checkbox"
+              v-model="selectedIntents"
+              :value="intent.id"
+              number
+            />
+          </td>
+          <td>
+            <div>
+              <svg
+                focusable="false"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                width="16"
+                height="16"
+                viewBox="0 0 32 32"
+                aria-hidden="true"
+                style="
+                  float: left;
+                  margin-right: 0.25rem;
+                  position: relative;
+                  top: 0.125rem;
+                "
+              >
+                <path
+                  d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"
+                ></path>
+                <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
+              </svg>
+              <a @click="navigateToDetail(intent)">{{
+                intent.name ? intent.name : "Bez naslova"
+              }}</a>
+            </div>
+          </td>
+          <td>{{ intent.last_edited_formatted }}</td>
+          <td>
+            <span>{{ intent.examples_count }}</span>
+          </td>
+          <td>
+            <span>{{ intent.steps_count }}</span>
+          </td>
+          <td>
+            <span>
+              <button
+                style="cursor: default"
+                type="button"
+                aria-describedby="icon-tooltip-41"
+              >
+                <svg
+                  style="fill: #42be65"
+                  focusable="false"
+                  preserveAspectRatio="xMidYMid meet"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  class="CollectionsDataTable__status-icon-no-error"
+                >
+                  <path
+                    d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z"
+                  ></path>
+                  <path
+                    d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z"
+                    data-icon-path="inner-path"
+                    opacity="0"
+                  ></path>
+                </svg>
+              </button>
+            </span>
+          </td>
+          <td>
+            <div style="position: relative">
+              <button
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-label="Options"
+                @click="showOptionsFor(index)"
+              >
+                <svg
+                  focusable="false"
+                  preserveAspectRatio="xMidYMid meet"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  aria-label="Options"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 32 32"
+                  role="img"
+                  class="bx--overflow-menu__icon"
+                >
+                  <circle cx="16" cy="8" r="2"></circle>
+                  <circle cx="16" cy="16" r="2"></circle>
+                  <circle cx="16" cy="24" r="2"></circle>
+                  <title>Options</title>
+                </svg>
+              </button>
+              <!-- Popup menu -->
+              <div
+                v-if="showOptionsForIntent[index]"
+                class="options-popup"
+                :id="index"
+                tabindex="0"
+                @focusout="focusOut($event, index)"
+              >
                 <button @click="navigateToDetail(intent)">Uredi</button>
-                <hr/>
-                <button @click="deleteIntent(intent.id, 'true')">Izbriši</button>
+                <hr />
+                <button @click="deleteIntent(intent.id, 'true')">
+                  Izbriši
+                </button>
               </div>
-              </div>
-            </td>
-          </tr>
-        </TransitionGroup>
+            </div>
+          </td>
+        </tr>
+      </TransitionGroup>
     </table>
     <!-- Pagination Controls -->
-    <div style="border: 1px solid #e0e0e0;display: flex;font-weight: 400;justify-content: space-between;letter-spacing: .16px;line-height: 1.28572;min-height: 2.5rem;align-items: center;">
-      <div style="padding: 0 1rem;align-items: center;display: flex;height: 100%;">
+    <div
+      style="
+        border: 1px solid #e0e0e0;
+        display: flex;
+        font-weight: 400;
+        justify-content: space-between;
+        letter-spacing: 0.16px;
+        line-height: 1.28572;
+        min-height: 2.5rem;
+        align-items: center;
+      "
+    >
+      <div
+        style="
+          padding: 0 1rem;
+          align-items: center;
+          display: flex;
+          height: 100%;
+        "
+      >
         <div>
-          <div class="items-per-page" style="display:flex;align-items: center;">
+          <div
+            class="items-per-page"
+            style="display: flex; align-items: center"
+          >
             <label for="itemsPerPage">Stavki po stranici:</label>
-            <CustomSelect :options="[2,5,10,25,100]" :value="itemsPerPage" @update:value="itemsPerPage = $event"/>
+            <CustomSelect
+              :options="[2, 5, 10, 25, 100]"
+              :value="itemsPerPage"
+              @update:value="itemsPerPage = $event"
+            />
           </div>
         </div>
-        <span style="margin-left:1.235rem">Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, intents.length) }} od {{ intents.length }} stavki</span>
+        <span style="margin-left: 1.235rem"
+          >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
+          {{ Math.min(currentPage * itemsPerPage, intents.length) }} od
+          {{ intents.length }} stavki</span
+        >
       </div>
-      <div style="align-items: center;display: flex;height: 100%;">
-        <span style="margin-left: .0625rem;margin-right: 1rem;">{{currentPage}} od {{totalPages}} stranica</span>
-        <div style="display: flex;">
+      <div style="align-items: center; display: flex; height: 100%">
+        <span style="margin-left: 0.0625rem; margin-right: 1rem"
+          >{{ currentPage }} od {{ totalPages }} stranica</span
+        >
+        <div style="display: flex">
           <button
             @click="currentPage > 1 ? currentPage-- : null"
             :disabled="currentPage === 1"
-            style="border-left: 1px solid #e0e0e0;height: 2.5rem;margin: 0; min-height: 2rem;  transition: outline .11s cubic-bezier(.2,0,.38,.9),background-color .11s cubic-bezier(.2,0,.38,.9); width: 2.5rem;"
+            style="
+              border-left: 1px solid #e0e0e0;
+              height: 2.5rem;
+              margin: 0;
+              min-height: 2rem;
+              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+              width: 2.5rem;
+            "
           >
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Previous page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" style="margin-top:5px">
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Previous page"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              style="margin-top: 5px"
+            >
               <path d="M20 24L10 16 20 8z"></path>
             </svg>
           </button>
           <button
             @click="currentPage < totalPages ? currentPage++ : null"
             :disabled="currentPage === totalPages"
-            style="border-left: 1px solid #e0e0e0;height: 2.5rem;margin: 0; min-height: 2rem;  transition: outline .11s cubic-bezier(.2,0,.38,.9),background-color .11s cubic-bezier(.2,0,.38,.9); width: 2.5rem;"
+            style="
+              border-left: 1px solid #e0e0e0;
+              height: 2.5rem;
+              margin: 0;
+              min-height: 2rem;
+              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+              width: 2.5rem;
+            "
           >
-            <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Next page" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" style="margin-top:5px">
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Next page"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              style="margin-top: 5px"
+            >
               <path d="M12 8L22 16 12 24z"></path>
             </svg>
           </button>
@@ -129,23 +411,28 @@
 </template>
 
 <script>
-import Navbar from '../components/AppNavbar.vue';
-import CustomSelect from '../components/CustomSelect.vue'
-import DataService from '../services/data.services'
+import Navbar from "../components/AppNavbar.vue";
+import CustomSelect from "../components/CustomSelect.vue";
+import DataService from "../services/data.services";
+import SortingIcon from "../views/ui/SortingIcon.vue";
 export default {
-  components: {Navbar, CustomSelect},
+  components: { Navbar, CustomSelect, SortingIcon },
   data() {
     return {
       intents: [],
-      searchQuery: '',
+      initialIntents: [],
+      searchQuery: "",
       currentPage: 1,
       itemsPerPage: 10,
       selectedIntents: [],
       showOptionsForIntent: [],
+      sortIcon: [1, 1, 1, 1],
+      isVisible: [false, false, false, false],
     };
   },
-  created(){
-    this.getIntents()
+  async created() {
+    await this.getIntents();
+    this.initialIntents = [...this.intents];
   },
   computed: {
     filteredIntents() {
@@ -165,47 +452,59 @@ export default {
       return Math.ceil(this.intents.length / this.itemsPerPage);
     },
     selectAll: {
-        get: function () {
-            return this.intents ? this.selectedIntents.length == this.intents.length : false;
-        },
-        set: function (value) {
-            var selectedIntents = [];
+      get: function () {
+        return this.intents
+          ? this.selectedIntents.length == this.intents.length
+          : false;
+      },
+      set: function (value) {
+        var selectedIntents = [];
 
-            if (value) {
-                this.intents.forEach(function (intent) {
-                    selectedIntents.push(intent.id.toString());
-                });
-            }
-
-            this.selectedIntents = selectedIntents;
+        if (value) {
+          this.intents.forEach(function (intent) {
+            selectedIntents.push(intent.id.toString());
+          });
         }
-    }
+
+        this.selectedIntents = selectedIntents;
+      },
+    },
   },
   methods: {
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
-      this.$router.push({ name: 'IntentRules', query: { system_id: this.$route.query.system_id, intent_id: intent.id } });
+      this.$router.push({
+        name: "IntentRules",
+        query: { system_id: this.$route.query.system_id, intent_id: intent.id },
+      });
     },
-    async newAction(){
-      let id = JSON.parse(JSON.stringify(await DataService.addIntentForSystem(this.$route.query.system_id))).intent_id
-      console.log(id)
-      await DataService.addRuleForIntent(id)
-      this.$router.push({ name: 'IntentRules', query: { system_id: this.$route.query.system_id, intent_id: id } });
-  },
+    async newAction() {
+      let id = JSON.parse(
+        JSON.stringify(
+          await DataService.addIntentForSystem(this.$route.query.system_id)
+        )
+      ).intent_id;
+      console.log(id);
+      await DataService.addRuleForIntent(id);
+      this.$router.push({
+        name: "IntentRules",
+        query: { system_id: this.$route.query.system_id, intent_id: id },
+      });
+    },
     async deleteIntent(id, once) {
-        try {
-          await DataService.deleteStep(id)
-          await DataService.deleteQuestionsById(id)
-          await DataService.deleteIntent(id, this.$route.query.system_id);
-          if(once){
-            this.getIntents()
-          }
-        } catch (error) {
-          console.error(error);
+      try {
+        await DataService.deleteStep(id);
+        await DataService.deleteQuestionsById(id);
+        await DataService.deleteIntent(id, this.$route.query.system_id);
+        if (once) {
+          this.getIntents();
         }
+      } catch (error) {
+        console.error(error);
+      }
     },
     showOptionsFor(index) {
-      this.showOptionsForIntent[index] = true
+      this.showOptionsForIntent[index] = true;
       this.$nextTick(() => {
         document.getElementById(index).focus();
       });
@@ -215,27 +514,31 @@ export default {
       for (const intent of this.selectedIntents) {
         await this.deleteIntent(intent);
       }
-      this.getIntents()
+      this.getIntents();
       // Clear the selectedIntents array after deleting
       this.selectedIntents = [];
     },
     focusOut(event, index) {
-      !event.relatedTarget ? this.showOptionsForIntent[index] = false : ''
+      !event.relatedTarget ? (this.showOptionsForIntent[index] = false) : "";
     },
     async getIntents() {
       if (this.$route.query.system_id !== undefined) {
         try {
-          let tmp = await DataService.getIntentsForSystem(this.$route.query.system_id);
+          let tmp = await DataService.getIntentsForSystem(
+            this.$route.query.system_id
+          );
 
           // Sort by the original date objects
-          tmp = tmp.sort((objA, objB) =>
-            new Date(objB.last_edited) - new Date(objA.last_edited)
+          tmp = tmp.sort(
+            (objA, objB) =>
+              new Date(objB.last_edited) - new Date(objA.last_edited)
           );
 
           // Format the date strings
           const formattedIntents = tmp.map((obj) => {
             const lastEditedDate = new Date(obj.last_edited);
-            const formattedTimeDifference = this.formatTimeDifference(lastEditedDate);
+            const formattedTimeDifference =
+              this.formatTimeDifference(lastEditedDate);
             return { ...obj, last_edited_formatted: formattedTimeDifference };
           });
 
@@ -247,8 +550,12 @@ export default {
       }
     },
     formatTimeDifference(lastEditedDate) {
+      // Assuming lastEditedDate is provided in a specific time zone (e.g., UTC)
+      // Create a new Date object for the current time in the CET time zone
       const currentDate = new Date();
-      const timeDifference = currentDate - lastEditedDate;
+      const offsetCET = -60; // CET is UTC+1, accounting for daylight saving time
+      currentDate.setMinutes(currentDate.getMinutes() - offsetCET);
+      const timeDifference = currentDate - new Date(lastEditedDate);
 
       // Define time intervals in milliseconds
       const minute = 60 * 1000;
@@ -257,26 +564,99 @@ export default {
 
       if (timeDifference < minute) {
         const seconds = Math.floor(timeDifference / 1000);
-        return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+        return `${seconds} second${seconds !== 1 ? "s" : ""} ago`;
       } else if (timeDifference < hour) {
         const minutes = Math.floor(timeDifference / minute);
-        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
       } else if (timeDifference < day) {
         const hours = Math.floor(timeDifference / hour);
-        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+        return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
       } else {
         const days = Math.floor(timeDifference / day);
-        return `${days} day${days !== 1 ? 's' : ''} ago`;
+        return `${days} day${days !== 1 ? "s" : ""} ago`;
       }
-    }
-  }
+    },
+    parseFormattedTime(timeString) {
+      const currentTime = new Date();
+
+      if (timeString.includes("second" || "seconds")) {
+        const seconds = parseInt(timeString);
+        return currentTime - new Date(currentTime - seconds * 1000);
+      } else if (timeString.includes("minute" || "minutes")) {
+        const minutes = parseInt(timeString);
+        return currentTime - new Date(currentTime - minutes * 60 * 1000);
+      } else if (timeString.includes("hour" || "hours")) {
+        const hours = parseInt(timeString);
+        return currentTime - new Date(currentTime - hours * 60 * 60 * 1000);
+      } else if (timeString.includes("day" || "days")) {
+        const days = parseInt(timeString);
+        return currentTime - new Date(currentTime - days * 24 * 60 * 60 * 1000);
+      } else if (timeString.includes("year" || "years")) {
+        const years = parseInt(timeString);
+        return (
+          currentTime -
+          new Date(currentTime - years * 365 * 24 * 60 * 60 * 1000)
+        );
+      }
+    },
+    setSortIcon(index, isHovered) {
+      if (isHovered && this.sortIcon[index] === 1) {
+        this.sortIcon[index] = 1;
+        this.isVisible[index] = true;
+      } else if (!isHovered && this.sortIcon[index] === 1) {
+        this.isVisible[index] = false;
+      }
+    },
+    toggleSortIcon(index, sortSubject) {
+      if (this.sortIcon[index] === 1) {
+        this.sortIcon[index] = 2;
+        for (let i = 0; i < this.sortIcon.length; i++) {
+          if (i !== index && this.sortIcon[i] > 1) {
+            this.sortIcon[i] = 1;
+            this.isVisible[i] = false;
+          }
+        }
+        if (sortSubject === "name") {
+          this.intents.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortSubject === "lastEdit") {
+          this.intents.sort((a, b) => {
+            const timestampA = this.parseFormattedTime(a.last_edited_formatted);
+            const timestampB = this.parseFormattedTime(b.last_edited_formatted);
+            return timestampA - timestampB;
+          });
+        } else if (sortSubject === "numOfQuestions") {
+          this.intents.sort((a, b) => a.examples_count - b.examples_count);
+        } else if (sortSubject === "numOfRules") {
+          this.intents.sort((a, b) => a.steps_count - b.steps_count);
+        }
+      } else if (this.sortIcon[index] === 2) {
+        this.sortIcon[index] = 3;
+        if (sortSubject === "name") {
+          this.intents.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (sortSubject === "lastEdit") {
+          this.intents.sort((a, b) => {
+            const timestampA = this.parseFormattedTime(a.last_edited_formatted);
+            const timestampB = this.parseFormattedTime(b.last_edited_formatted);
+            return timestampB - timestampA;
+          });
+        } else if (sortSubject === "numOfQuestions") {
+          this.intents.sort((a, b) => b.examples_count - a.examples_count);
+        } else if (sortSubject === "numOfRules") {
+          this.intents.sort((a, b) => b.steps_count - a.steps_count);
+        }
+      } else if (this.sortIcon[index] === 3) {
+        this.sortIcon[index] = 1;
+        this.intents = [...this.initialIntents];
+      }
+    },
+  },
 };
 </script>
 <style scoped>
-.actions{
+.actions {
   padding: 2rem 2rem;
 }
-.actions section{
+.actions section {
   background-color: #fff;
   display: flex;
   min-height: 3rem;
@@ -284,27 +664,30 @@ export default {
   width: 100%;
 }
 
-.search-container{
-  width:100%;
+.search-container {
+  width: 100%;
   color: #555;
   display: flex;
   padding: 2px;
   border: 1px solid #d3d3d3;
   border-radius: 5px;
-  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em,
+    rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
 }
 
-.search-button{
-    text-indent: -999px;
-    overflow: hidden;
-    width: 40px;
-    padding: 0;
-    margin: 0;
-    border: 1px solid transparent;
-    border-radius: inherit;
-    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
-    cursor: pointer;
-    opacity: 0.7;
+.search-button {
+  text-indent: -999px;
+  overflow: hidden;
+  width: 40px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
+    no-repeat center;
+  cursor: pointer;
+  opacity: 0.7;
 }
 
 table {
@@ -314,20 +697,26 @@ table {
   border-collapse: collapse;
 }
 
-thead{
-  background: var(--background);
-}
-
-tr, th{
+tr,
+th {
   border-top: none;
   border-bottom: none !important;
 }
-th{
+
+.span-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+th {
+  background: var(--background);
   vertical-align: bottom;
   text-align: left;
 }
 
-th,td{
+th,
+td {
   padding: 0.75rem;
   vertical-align: middle;
   border-top: 1px solid #dee2e6;
@@ -344,19 +733,23 @@ th,td{
   background: transparent;
 }
 
-
-table tbody tr th, table tbody tr td {
+table tbody tr th,
+table tbody tr td {
   vertical-align: middle;
   position: relative;
-  transition: .3s all ease;
+  transition: 0.3s all ease;
 }
 
-table tbody tr th::before, table tbody tr td::before {
+table tbody tr th::before,
+table tbody tr td::before {
   top: -1px;
 }
 
-table tbody tr th::before, table tbody tr th::after, table tbody tr td::before, table tbody tr td::after {
-  transition: .3s all ease;
+table tbody tr th::before,
+table tbody tr th::after,
+table tbody tr td::before,
+table tbody tr td::after {
+  transition: 0.3s all ease;
   content: "";
   left: 0;
   right: 0;
@@ -368,21 +761,21 @@ table tbody tr th::before, table tbody tr th::after, table tbody tr td::before, 
   visibility: hidden;
 }
 
-table input{
+table input {
   height: 20px;
   width: 20px;
 }
 
-a{
+a {
   color: #0f62fe;
   display: inline-flex;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 400;
-  letter-spacing: .16px;
+  letter-spacing: 0.16px;
   line-height: 1.28572;
   outline: none;
   text-decoration: none;
-  transition: color 70ms cubic-bezier(.2,0,.38,.9);
+  transition: color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   cursor: pointer;
 }
 
@@ -390,11 +783,21 @@ a:hover {
   text-decoration: underline;
 }
 
+th:not(:first-child):not(:nth-child(6)):not(:last-child):hover {
+  user-select: none;
+  filter: brightness(80%);
+  cursor: pointer;
+}
+
+.active {
+  border: 2px solid #022f5d !important;
+}
+
 .options-popup {
   background: #fff;
   border: 1px solid #c5c5c5;
   border-radius: 6px;
-  box-shadow: 0 1px 14px rgba(0,0,0,.2);
+  box-shadow: 0 1px 14px rgba(0, 0, 0, 0.2);
   color: #616161;
   width: max-content;
   display: inline-grid;
@@ -405,16 +808,16 @@ a:hover {
   margin-left: 25px;
 }
 
-hr{
+hr {
   margin: unset;
 }
 
-.options-popup button{
-    cursor: pointer;
-    padding: 10px 30px 10px 30px;
+.options-popup button {
+  cursor: pointer;
+  padding: 10px 30px 10px 30px;
 }
 
-.options-popup button:hover{
-    background: var(--hover__color);
+.options-popup button:hover {
+  background: var(--hover__color);
 }
 </style>
