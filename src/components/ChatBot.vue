@@ -79,11 +79,11 @@ export default{
       minimized: false,
     }
   },
-  mounted() {
+  async mounted() {
     // Automatically send an initial message from the bot
     this.initializeBot();
 
-    //Event for button click
+    //Event for button clicks
     const responseContainer = this.$refs.messageBox;
 
     responseContainer.addEventListener('click', (event) => {
@@ -91,6 +91,18 @@ export default{
         const optionText = event.target.innerText;
         const text = event.target.getAttribute('data-text');
         this.handleUserResponse(optionText, text);
+      }
+    });
+
+    const chatContainer = this.$refs.chatContainer;
+
+    chatContainer.addEventListener('click', async (event) => {
+      if (event.target.classList.contains('bot-option')) {
+        const intentId = event.target.getAttribute('data-intent-id');
+        let response = await JSON.parse(await DataService.getRulesForIntent(intentId))[0]
+        response.intent_id = intentId
+        this.selectedFeedbackButton = false;
+        this.addBotMessage(response);
       }
     });
   },
@@ -165,9 +177,13 @@ export default{
             } else {
                 // For other response types, use the default DataService.sendMessage
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id);
-                this.intent_id = response.intent_id;
-                this.selectedFeedbackButton = false;
-                this.addBotMessage(response);
+                if(response.intent_id){ //if response has confidence > 0.8
+                  this.selectedFeedbackButton = false;
+                  this.addBotMessage(response);
+                }
+                else{
+                  this.addPossibleIntents(response)
+                }
             }
             // Clear the input field after sending the message.
             this.inputValue = '';
@@ -250,6 +266,25 @@ export default{
       this.scrollChatToBottom();
     },
 
+    addPossibleIntents(message){
+      this.messages.push({
+        text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
+        classes: ['captionBot', 'msgCaption'],
+        dataUser: false,
+      });
+      let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
+      message.forEach((option) => {
+        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}">${option.intent_name}</button>`;
+      });
+      messageText += '</div></div>'
+      this.messages.push({
+        text: messageText,
+        classes: ['message'],
+        dataUser: false,
+      });
+      this.scrollChatToBottom();
+    },
+
     renderOptions(message) {
       let optionsHtml = '';
       message.customer_response.forEach((option) => {
@@ -313,7 +348,7 @@ export default{
 
     async handleFeedback(value){
       try {
-        value ? (await DataService.thumbsUp(this.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.intent_id),this.selectedFeedbackButton = 'down')
+        value ? (await DataService.thumbsUp(this.responseApi.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.responseApi.intent_id),this.selectedFeedbackButton = 'down')
       } catch (error) {
         console.error(error);
       }
