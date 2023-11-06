@@ -10,14 +10,64 @@
       />
     </div>
     <div class="content-container">
-      <div :class="['left-panel', { collapsed: isLeftPanelCollapsed }]">
-        <button
-          style="position: absolute; bottom: 10px; left: 10px"
-          @click="toggleLeftPanel"
-        >
-          {{ "<< Sakrij" }}
-        </button>
-        <transition name="card-slide" mode="out-in">
+      <button @click="toggleLeftPanel" class="show-hide-button">
+        <span>
+          {{ isLeftPanelCollapsed ? "Prikaži" : "Sakrij" }}
+        </span>
+        <span v-if="!isLeftPanelCollapsed">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#F4F4F4"
+            transform="translate(0, 1)"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path d="M0 0h48v48H0z" fill="none"></path>
+              <g id="Shopicon">
+                <path
+                  d="M11.957,33.214L7.171,38L10,40.828l5.305-5.305C17.867,36.992,20.788,38,24,38c12,0,20-14,20-14s-2.953-5.159-7.957-9.214 L40.829,10L38,7.172l-5.305,5.305C30.133,11.008,27.212,10,24,10C12,10,4,24,4,24S6.953,29.159,11.957,33.214z M16,24 c0-4.418,3.582-8,8-8c1.483,0,2.867,0.411,4.058,1.114l-3.035,3.035C24.694,20.062,24.356,20,24,20c-2.206,0-4,1.794-4,4 c0,0.356,0.062,0.694,0.149,1.023l-3.035,3.035C16.411,26.867,16,25.483,16,24z M32,24c0,4.418-3.582,8-8,8 c-1.483,0-2.867-0.411-4.058-1.114l3.035-3.035C23.306,27.938,23.644,28,24,28c2.206,0,4-1.794,4-4 c0-0.356-0.062-0.694-0.149-1.023l3.035-3.035C31.589,21.133,32,22.517,32,24z"
+                ></path>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span v-else>
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#F4F4F4"
+            transform="translate(0, 1)"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path d="M0 0h48v48H0z" fill="none"></path>
+              <g id="Shopicon">
+                <circle cx="24" cy="24" r="4"></circle>
+                <path
+                  d="M24,38c12,0,20-14,20-14s-8-14-20-14S4,24,4,24S12,38,24,38z M24,16c4.418,0,8,3.582,8,8s-3.582,8-8,8s-8-3.582-8-8 S19.582,16,24,16z"
+                ></path>
+              </g>
+            </g>
+          </svg>
+        </span>
+      </button>
+      <div class="left-panel" :class="{ collapsed: isLeftPanelCollapsed }">
+        <transition name="card-slide" mode="in-out-left">
           <section class="left-cards-container" v-show="!isLeftPanelCollapsed">
             <div class="left-cards">
               <!--CUSTOMER CARD-->
@@ -255,47 +305,33 @@
             </div>
           </div>
         </TransitionGroup>
-        <button
-          class="expand-button"
-          v-if="isLeftPanelCollapsed"
-          @click="toggleLeftPanel"
-        >
-          {{ ">> Prikaži" }}
-        </button>
         <div class="chat" @click="toggleChatbot">
-          <svg
-            height="50px"
-            width="50px"
-            version="1.1"
-            id="Capa_1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 58 58"
-            xml:space="preserve"
-            fill="#000000"
-          >
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              <g>
-                <path
-                  style="fill: #3ba58b"
-                  d="M25,9.586C11.193,9.586,0,19.621,0,32c0,4.562,1.524,8.803,4.135,12.343 C3.792,48.433,2.805,54.194,0,57c0,0,8.571-1.203,14.377-4.709c3.225,1.359,6.824,2.123,10.623,2.123c13.807,0,25-10.035,25-22.414 S38.807,9.586,25,9.586z"
-                ></path>
-                <path
-                  style="fill: #226bac"
-                  d="M58,23.414C58,11.035,46.807,1,33,1c-9.97,0-18.575,5.234-22.589,12.804 C14.518,11.153,19.553,9.586,25,9.586c13.807,0,25,10.035,25,22.414c0,4.735-1.642,9.124-4.437,12.743 C51.162,47.448,58,48.414,58,48.414c-2.805-2.805-3.792-8.566-4.135-12.657C56.476,32.217,58,27.976,58,23.414z"
-                ></path>
-                <circle style="fill: #ffffff" cx="12" cy="32" r="3"></circle>
-                <circle style="fill: #ffffff" cx="25" cy="32" r="3"></circle>
-                <circle style="fill: #ffffff" cx="38" cy="32" r="3"></circle>
-              </g>
-            </g>
-          </svg>
+          <transition name="fade" mode="out-in">
+            <svg
+              style="fill: white; margin-top: 3px"
+              v-if="!showChatbot"
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+            >
+              <!-- Chat SVG -->
+              <path d="M3 3h18v12H7l-4 4z" />
+            </svg>
+            <svg
+              style="fill: white"
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+            >
+              <!-- Exit SVG -->
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </transition>
         </div>
         <Transition name="fade">
           <div v-if="showChatbot" class="chatbot-container">
@@ -651,7 +687,7 @@ export default {
         if (this.addedQuestions.length > 0) {
           apiRequests.push(
             ...this.addedQuestions.map((question) =>
-              DataService.postQuestion(question.question, intentId)
+              DataService.postQuestion(question.question, intentId, this.$route.query.system_id)
             )
           );
         }
@@ -740,16 +776,20 @@ export default {
 .left-panel {
   background-color: var(--background);
   flex: 0 0 25%;
-  transition: flex 0.2s ease-in-out;
+  transition: flex 0.2s, opacity 0.4s linear;
+  opacity: 1;
   position: sticky;
   top: calc(3rem + 60px); /* Keep the left panel fixed at the top */
   overflow-y: auto;
+
   /*max-height: calc(100vh - 72px - (3rem + 60px));  Adjust to fit the viewport height minus header height */
   max-height: calc(100vh - 60px - 3rem);
 }
 
 .left-panel.collapsed {
+  transition: flex 0.3s linear, opacity 0.4s ease-out 0.4s;
   flex: 0 0 0;
+  opacity: 0;
 }
 
 .right-side {
@@ -757,20 +797,42 @@ export default {
   flex: 1;
 }
 
-.expand-button {
+.show-hide-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 3;
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  bottom: 1rem;
+  left: 1rem;
+  background-color: var(--main__color);
+  border: 1px solid #000;
+  outline: 1px solid #fff;
+  outline-offset: -3px;
+  padding: 0.4rem 1rem;
+  color: #f4f4f4;
+  vertical-align: center;
+  white-space: nowrap;
+  width: 90px;
+}
+
+.show-hide-button span:last-child {
+  padding: 0.1rem;
 }
 
 .chat {
   z-index: 2;
   position: fixed;
   right: 1rem;
-  color: #b4bcc1;
-  bottom: 1rem;
+  width: 50px;
+  height: 50px;
+  background-color: var(--main__color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  bottom: 1rem;
 }
 
 .start-editor {
@@ -817,27 +879,43 @@ export default {
 }
 
 /* Left-to-right animation */
-.card-slide-enter-active,
-.card-slide-leave-active {
-  transition: transform 0.2s, opacity 0.2s;
+.card-slide-enter-active {
+  transition: transform 0.3s, opacity 0.6s ease-in;
 }
-
+.card-slide-leave-active {
+  transition: transform 0.3s ease-in, opacity 0.2s ease-out;
+}
 .card-slide-enter-from,
 .card-slide-leave-to {
   opacity: 0;
   transform: translateX(-100%);
 }
 
+.card-slide-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.card-slide-leave-from {
+  opacity: 0.4;
+  transform: translateX(0);
+}
+
 /* Right-to-left animation */
 .card-slide-reverse-enter-active,
 .card-slide-reverse-leave-active {
-  transition: transform 0.2s, opacity 0.2s;
+  transition: transform 0.5s, opacity 0.5s linear;
 }
 
 .card-slide-reverse-enter-from,
 .card-slide-reverse-leave-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.card-slide-reverse-enter-to,
+.card-slide-reverse-leave-from {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(-100%);
 }
 /* Transition classes appear */
 /* ---------------------------------- */
