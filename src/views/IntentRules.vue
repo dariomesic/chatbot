@@ -427,7 +427,6 @@ export default {
       newPhrase: "",
       selectedCardIndex: 0,
       isLeftPanelCollapsed: false,
-      openingChatBot: false,
       showChatbot: false,
       intentTextCopy: "",
       intentText: "",
