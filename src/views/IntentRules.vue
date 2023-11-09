@@ -93,11 +93,13 @@
                 <TransitionGroup name="list" tag="ul">
                   <div v-for="(card, index) in rules_copy" :key="card.id">
                     <Card
+                      :key="componentKey"
                       :card="card"
                       :index="index"
                       @click="scrollToCard(index)"
                       @remove="removeRule"
                       @duplicate="duplicateRule"
+                      @cardCopy="fillWithCopies"
                       :isSelected="selectedCardIndex === index"
                       :style="{
                         backgroundColor:
@@ -117,7 +119,11 @@
 
       <div class="right-side" ref="rightSide">
         <!--CUSTOMER QUESTIONS-->
-        <div class="content">
+        <div
+          class="content"
+          :class="{ 'content-collapsed': isLeftPanelCollapsed }"
+          :style="{ transition: isZooming ? 'none' : 'width 0.3s ease' }"
+        >
           <div
             style="
               background-color: #f4f4f4;
@@ -150,8 +156,8 @@
                 s čim korisnik treba pomoć.
               </p>
             </div>
-            <div>
-              <ul>
+            <div style="position: relative; width: 100%">
+              <ul style="width: 100%">
                 <li>
                   <label
                     style="
@@ -240,6 +246,8 @@
                             width: 100%;
                             padding: 1rem 1rem;
                             line-height: 17px;
+                            box-sizing: border-box;
+                            word-break: break-all;
                           "
                           @blur="handleBlur($event, index)"
                         >
@@ -288,7 +296,7 @@
           </div>
         </div>
 
-        <TransitionGroup name="list" tag="ul">
+        <TransitionGroup>
           <div v-for="(rule, index) in rules_copy" :key="rule.id">
             <div :ref="'scrollableCard_' + index">
               <Rule
@@ -297,6 +305,8 @@
                 :rules_answers="distinctAnswers"
                 :rules="rules_copy"
                 :triggerDeleteOptions="triggerDeleteOptions"
+                :isLeftPanelCollapsed="isLeftPanelCollapsed"
+                :isZooming="isZooming"
                 @add="addRule"
                 @updateRule="updateRule(index, $event)"
                 @updateShowDeleteRule="updateShowDeleteRule"
@@ -335,7 +345,7 @@
         </div>
         <Transition name="fade">
           <div v-if="showChatbot" class="chatbot-container">
-            <Chatbot/>
+            <Chatbot @exit="showChatbot = false" />
           </div>
         </Transition>
       </div>
@@ -427,7 +437,6 @@ export default {
       newPhrase: "",
       selectedCardIndex: 0,
       isLeftPanelCollapsed: false,
-      openingChatBot: false,
       showChatbot: false,
       intentTextCopy: "",
       intentText: "",
@@ -439,6 +448,9 @@ export default {
       intendedRoute: null,
       selectedRuleIndex: 0,
       rule_copy: null,
+      cards_copy: [],
+      isZooming: false,
+      componentKey: 0,
     };
   },
   watch: {
@@ -534,6 +546,7 @@ export default {
   },
   async mounted() {
     window.addEventListener("beforeunload", this.showConfirmationDialog);
+    window.addEventListener("resize", this.handleResize);
     let intentId = this.$route.query.intent_id;
     if (this.$route.query.system_id !== undefined) {
       await this.loadQuestionsAndRules(
@@ -544,6 +557,7 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener("beforeunload", this.showConfirmationDialog);
+    window.removeEventListener("resize", this.handleResize);
   },
   beforeRouteLeave(to, __, next) {
     this.intendedRoute = to;
@@ -579,6 +593,12 @@ export default {
         behavior: "smooth",
       });
     },
+    handleResize() {
+      this.isZooming = true;
+      setTimeout(() => {
+        this.isZooming = false;
+      }, 500);
+    },
     toggleLeftPanel() {
       this.isLeftPanelCollapsed = !this.isLeftPanelCollapsed;
     },
@@ -602,22 +622,15 @@ export default {
         }
       }
     },
-    duplicateRule(id) {
-      // Find the index of the rule to duplicate based on its id
-      const indexToDuplicate = this.rules_copy.findIndex(
-        (rule) => rule.id === id
-      );
-      // Make sure we found the rule to duplicate
-      if (indexToDuplicate !== -1) {
-        const duplicatedRule = JSON.parse(
-          JSON.stringify(this.rules_copy[indexToDuplicate])
-        );
-        duplicatedRule.id = this.rules_copy[this.rules_copy.length - 1].id + 1;
-        this.rules_copy.splice(indexToDuplicate + 1, 0, duplicatedRule);
-        for (let i = 0; i < this.rules_copy.length; i++) {
-          this.rules_copy[i].id = i + 1;
-        }
-      }
+    duplicateRule(id, card) {
+      this.rules_copy.splice(id, 0, {
+        id: this.rules_copy.length + 1,
+        conditions: card.conditions,
+        assistant_answer: card.assistant_answer,
+        response_type: card.response_type,
+        customer_response: card.customer_response,
+        continuation: card.continuation,
+      });
     },
     updateRule(index, updatedRule) {
       this.rules_copy[index] = updatedRule;
@@ -643,7 +656,7 @@ export default {
     async deletePhrase(index) {
       this.questions.splice(index, 1);
     },
-    onSaveButtonClicked() {
+    async onSaveButtonClicked() {
       this.loading = true;
       const intentId = this.$route.query.intent_id;
       if (this.intentTextCopy !== this.intentText) {
@@ -656,6 +669,10 @@ export default {
           });
       }
       this.performAPIRequests(intentId);
+      setTimeout(() => {
+        this.cards_copy = [];
+        this.componentKey++;
+      }, 2000);
     },
     toggleChatbot() {
       if (!this.showChatbot && this.isSaveButtonDisabled) {
@@ -687,7 +704,11 @@ export default {
         if (this.addedQuestions.length > 0) {
           apiRequests.push(
             ...this.addedQuestions.map((question) =>
-              DataService.postQuestion(question.question, intentId, this.$route.query.system_id)
+              DataService.postQuestion(
+                question.question,
+                intentId,
+                this.$route.query.system_id
+              )
             )
           );
         }
@@ -746,10 +767,17 @@ export default {
       this.selectedRuleIndex = index;
       this.rule_copy = ruleCopy;
     },
+    fillWithCopies(card) {
+      this.cards_copy.push(card);
+    },
     removeOptions() {
       this.rule_copy.customer_response = [];
       this.rule_copy.response_type = "";
-      this.$emit("updateRule", this.rule_copy);
+      const savedCard = this.cards_copy.find(
+        (card) => card.id === this.rule_copy.id
+      );
+      savedCard.customer_response = [];
+      savedCard.response_type = "";
       this.showDeleteOptionsDialog = false;
     },
   },
@@ -811,8 +839,6 @@ export default {
   outline-offset: -3px;
   padding: 0.4rem 1rem;
   color: #f4f4f4;
-  vertical-align: center;
-  white-space: nowrap;
   width: 90px;
 }
 
