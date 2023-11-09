@@ -11,6 +11,18 @@
     });
   }
 
+  getNameForSystem(system_id){
+    return fetch('/getNameForSystem?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   getIntentsForSystem(system_id) {
     return fetch('getIntentsForSystem?system_id=' + system_id, {
       method: "GET",
@@ -224,6 +236,7 @@
         if (!response.ok) {
             throw new Error(response.error)
         }
+        console.log(response.json())
         return response.json();
     })
   }
@@ -257,14 +270,14 @@
     })
   }
 
-  userResponse(conditions, intent_id){
+  userResponse(conditions, intent_id, id){
     return fetch('/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({conditions: conditions, intent_id: intent_id})
+      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -310,6 +323,18 @@ class DataService {
       }
       return response.json();
     });
+  }
+
+  getNameForSystem(system_id){
+    return fetch('/api/getNameForSystem?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
   }
 
   getIntentsForSystem(system_id) {
@@ -525,6 +550,7 @@ class DataService {
         if (!response.ok) {
             throw new Error(response.error)
         }
+        console.log(response.json())
         return response.json();
     })
   }
@@ -558,14 +584,14 @@ class DataService {
     })
   }
 
-  userResponse(conditions, intent_id){
+  userResponse(conditions, intent_id, id){
     return fetch('/api/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({conditions: conditions, intent_id: intent_id})
+      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id})
     })
     .then((response) => {
         if (!response.ok) {

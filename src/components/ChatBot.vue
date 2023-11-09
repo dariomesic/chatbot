@@ -65,6 +65,7 @@
 
 <script>
 import DataService from '../services/data.services'
+import { v4 as uuidv4 } from 'uuid';
 export default{
   data(){
     return{
@@ -77,9 +78,17 @@ export default{
       selectedFeedbackButton: false,
       responseApi: {},
       minimized: false,
+
+      conditions: {},
+      sessionUUID: '',
     }
   },
   async mounted() {
+    // Generate a session UUID when the component is mounted
+    this.sessionUUID = uuidv4();
+    this.conditions[this.sessionUUID] = [];
+    console.log(this.sessionUUID)
+
     // Automatically send an initial message from the bot
     this.initializeBot();
 
@@ -109,14 +118,13 @@ export default{
     });
   },
   methods: {
-    initializeBot() {
+    async initializeBot() {
       // Simulate a delayed bot response after initial greeting
-      setTimeout(() => {
-        const responseMessage = {
-          assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ePredmet. Postavite pitanje vezano uz sustav`
-        }
-        this.addBotMessage(responseMessage);
-      }, 1000);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const responseMessage = {
+        assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ` + await DataService.getNameForIntent(this.$route.query.system_id) + `. Postavite pitanje vezano uz sustav.`
+      };
+      this.addBotMessage(responseMessage);
     },
     
     async sendMessage() {
@@ -138,7 +146,10 @@ export default{
                   predicate: 'je',
                   object: "defined",
                 }
-                const response = await DataService.userResponse(condition, this.responseApi.intent_id);
+                // Push the condition into the session's conditions array
+                this.conditions[this.sessionUUID].push(condition);
+
+                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id)
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
@@ -163,7 +174,10 @@ export default{
                       predicate: 'je',
                       object: "defined",
                     }
-                    const response = await DataService.userResponse(condition, this.responseApi.intent_id);
+                    // Push the condition into the session's conditions array
+                    this.conditions[this.sessionUUID].push(condition);
+
+                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id)
                     response.intent_id = this.responseApi.intent_id
                     this.addBotMessage(response);
                   }
@@ -215,6 +229,7 @@ export default{
 
     async addBotMessage(message) {
       this.responseApi = message
+      console.log(this.responseApi)
       this.messages.push({
         text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
         classes: ['captionBot', 'msgCaption'],
@@ -257,7 +272,7 @@ export default{
         this.addBotMessage(response)
       }
       else if(message.continuation === 'Nastavite na idući korak'){
-        const response = await DataService.nextStep(message);
+        const response = await DataService.nextStep(message); //ovo popraviti, tu ide jos i conditions
         response.intent_id = message.intent_id
         this.showOptions = false
         this.chatbotOptions = ''
@@ -303,7 +318,6 @@ export default{
       this.addUserMessage(selectedOption)
       try {
         // Iterate through all options to build conditions
-        let conditions = []
         this.responseApi.customer_response.forEach((option) => {
           const conditionLog = {
             subject: text,
@@ -311,8 +325,9 @@ export default{
             object: option,
           };
           // Add the condition log to the array
-          conditions.push(conditionLog);
+          this.conditions[this.sessionUUID].push(conditionLog);
         });
+        console.log(this.conditions[this.sessionUUID])
 
         // Disable all options after the user makes a selection and change the style of the selected button
         const allOptions = document.querySelectorAll(`.bot-option[data-intent-id="${this.responseApi.intent_id}"]`);
@@ -327,7 +342,7 @@ export default{
         });
 
         // Make an API call to send the user's selected option.
-        const response = await DataService.userResponse(conditions, this.responseApi.intent_id);
+        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id);
         response.intent_id = this.responseApi.intent_id
         this.responseApi = response
         this.showOptions = false

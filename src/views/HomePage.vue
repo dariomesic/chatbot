@@ -282,7 +282,4 @@ a {
 a:hover {
   text-decoration: underline;
 }
-.active {
-  border: 2px solid #022f5d !important;
-}
 </style>
