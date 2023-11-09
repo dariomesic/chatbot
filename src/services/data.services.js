@@ -253,14 +253,15 @@
     })
   }
 
-  sendMessage(question, systemID){
+  sendMessage(question, systemID, uuid){
+    console.log(question, systemID, uuid)
     return fetch('/chatbotSentMessage', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({question: question, systemID: systemID})
+      body: JSON.stringify({question: question, systemID: systemID, uuid: uuid})
     })
     .then((response) => {
         if (!response.ok) {
@@ -270,14 +271,14 @@
     })
   }
 
-  userResponse(conditions, intent_id, id){
+  userResponse(conditions, intent_id, id, uuid, systemID, answer){
     return fetch('/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id})
+      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id, uuid: uuid, systemID: systemID, answer: answer})
     })
     .then((response) => {
         if (!response.ok) {
@@ -287,8 +288,8 @@
     })
   }
 
-  thumbsUp(intent_id){
-    return fetch('/thumbsUp?intent_id=' + intent_id, {
+  thumbsUp(){
+    return fetch('/thumbsUp', {
       method : "GET",
     })
     .then((response) => {
@@ -299,8 +300,8 @@
     })
   }
 
-  thumbsDown(intent_id){
-    return fetch('/thumbsDown?intent_id=' + intent_id, {
+  thumbsDown(){
+    return fetch('/thumbsDown', {
       method : "GET",
     })
     .then((response) => {
@@ -567,14 +568,14 @@ class DataService {
     })
   }
 
-  sendMessage(question, systemID){
+  sendMessage(question, systemID, uuid){
     return fetch('/api/chatbotSentMessage', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({question: question, systemID: systemID})
+      body: JSON.stringify({question: question, systemID: systemID, uuid: uuid})
     })
     .then((response) => {
         if (!response.ok) {
@@ -584,14 +585,14 @@ class DataService {
     })
   }
 
-  userResponse(conditions, intent_id, id){
+  userResponse(conditions, intent_id, id, uuid, systemID, answer){
     return fetch('/api/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id})
+      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id, uuid: uuid, systemID: systemID, answer: answer})
     })
     .then((response) => {
         if (!response.ok) {
@@ -601,8 +602,8 @@ class DataService {
     })
   }
 
-  thumbsUp(intent_id){
-    return fetch('/api/thumbsUp?intent_id=' + intent_id, {
+  thumbsUp(){
+    return fetch('/api/thumbsUp', {
       method : "GET",
     })
     .then((response) => {
@@ -613,8 +614,8 @@ class DataService {
     })
   }
 
-  thumbsDown(intent_id){
-    return fetch('/api/thumbsDown?intent_id=' + intent_id, {
+  thumbsDown(){
+    return fetch('/api/thumbsDown', {
       method : "GET",
     })
     .then((response) => {

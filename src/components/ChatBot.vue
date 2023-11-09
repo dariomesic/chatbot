@@ -109,7 +109,6 @@ export default{
       if (event.target.classList.contains('bot-option')) {
         this.addUserMessage(event.target.getAttribute('data-text'))
         const intentId = event.target.getAttribute('data-intent-id');
-        this.intent_id = intentId;  //NEEDED FOR FEEDBACK BUTTONS
         let response = await JSON.parse(await DataService.getRulesForIntent(intentId))[0]
         response.intent_id = intentId
         this.selectedFeedbackButton = false;
@@ -149,7 +148,7 @@ export default{
                 // Push the condition into the session's conditions array
                 this.conditions[this.sessionUUID].push(condition);
 
-                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id)
+                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, this.inputValue)
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
@@ -177,7 +176,7 @@ export default{
                     // Push the condition into the session's conditions array
                     this.conditions[this.sessionUUID].push(condition);
 
-                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id)
+                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, this.inputValue)
                     response.intent_id = this.responseApi.intent_id
                     this.addBotMessage(response);
                   }
@@ -192,10 +191,10 @@ export default{
                 }
             } else {
                 // For other response types, use the default DataService.sendMessage
-                const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id);
+                const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id, this.sessionUUID);
+                this.conditions[this.sessionUUID] = []
                 if(response.intent_id){ //if response has confidence > 0.8
                   this.selectedFeedbackButton = false;
-                  this.intent_id = response.intent_id;  //NEEDED FOR FEEDBACK BUTTONS
                   this.addBotMessage(response);
                 }
                 else if(Array.isArray(response)){
@@ -342,7 +341,7 @@ export default{
         });
 
         // Make an API call to send the user's selected option.
-        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id);
+        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, selectedOption);
         response.intent_id = this.responseApi.intent_id
         this.responseApi = response
         this.showOptions = false
@@ -369,7 +368,7 @@ export default{
 
     async handleFeedback(value){
       try {
-        value ? (await DataService.thumbsUp(this.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.intent_id),this.selectedFeedbackButton = 'down')
+        value ? (await DataService.thumbsUp(),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(),this.selectedFeedbackButton = 'down')
       } catch (error) {
         console.error(error);
       }
