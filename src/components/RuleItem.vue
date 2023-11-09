@@ -1,5 +1,9 @@
 <template>
-  <div class="content">
+  <div
+    :class="{ 'content-collapsed': isLeftPanelCollapsed }"
+    class="content"
+    :style="{ transition: isZooming ? 'none' : 'width 0.3s ease' }"
+  >
     <h4 style="margin-top: unset">Korak {{ index + 1 }}</h4>
     <div
       style="
@@ -383,6 +387,7 @@
   <h2 class="plus-separator">
     <button @click="$emit('add', this.index + 1)" class="line-center">+</button>
   </h2>
+
   <Teleport to="body">
     <Popup
       :show_modal="show_modal"
@@ -426,6 +431,8 @@ export default {
     rules_answers: Array,
     index: Number,
     rules: Object,
+    isLeftPanelCollapsed: Boolean,
+    isZooming: Boolean,
   },
   data() {
     return {
@@ -460,13 +467,19 @@ export default {
       ruleCopy: { ...this.rule },
     };
   },
+
   methods: {
     emitDeleteRuleEvents() {
       this.$emit("remove", this.index);
       this.$emit("updateShowDeleteRule", true, this.index + 1);
     },
     emitDeleteOptionsEvents() {
-      this.$emit("updateShowDeleteOptions", true,this.ruleCopy, this.index + 1);
+      this.$emit(
+        "updateShowDeleteOptions",
+        true,
+        this.ruleCopy,
+        this.index + 1
+      );
     },
     conditionTypeChanged(event) {
       this.selected_option = event;
@@ -596,6 +609,11 @@ export default {
     rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
   border-radius: 3px;
   position: relative;
+  width: 56vw;
+}
+
+.content-collapsed {
+  width: 75vw;
 }
 .res-val {
   margin-top: 2%;

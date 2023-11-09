@@ -505,9 +505,9 @@ export default {
     this.isActive();
     const editorWrapper = document.querySelector(".textarea");
     editorWrapper.addEventListener("click", (event) => {
-      if (event.target.classList.contains('edit')) {
+      if (event.target.classList.contains("edit")) {
         this.editTimer(event);
-      } else if (event.target.classList.contains('delete')) {
+      } else if (event.target.classList.contains("delete")) {
         this.deleteTimer(event);
       }
     });
@@ -597,10 +597,12 @@ export default {
   background: var(--background);
   border: none;
   border-top: 1px solid #e0e0e0;
-  width: 100%;
+  max-width: 100%;
   font-size: 0.9rem;
   font-weight: 400;
   letter-spacing: 0.32px;
   font-family: "Gill Sans", sans-serif;
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 </style>
