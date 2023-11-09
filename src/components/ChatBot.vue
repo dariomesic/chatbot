@@ -122,7 +122,7 @@ export default{
       // Simulate a delayed bot response after initial greeting
       await new Promise(resolve => setTimeout(resolve, 1000));
       const responseMessage = {
-        assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ` + await DataService.getNameForIntent(this.$route.query.system_id) + `. Postavite pitanje vezano uz sustav.`
+        assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ` + await DataService.getNameForSystem(this.$route.query.system_id) + `. Postavite pitanje vezano uz sustav.`
       };
       this.addBotMessage(responseMessage);
     },
