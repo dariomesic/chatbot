@@ -78,7 +78,7 @@ export default{
       selectedFeedbackButton: false,
       responseApi: {},
       minimized: false,
-
+      intent_id: '',
       conditions: {},
       sessionUUID: '',
     }
@@ -111,6 +111,7 @@ export default{
         const intentId = event.target.getAttribute('data-intent-id');
         let response = await JSON.parse(await DataService.getRulesForIntent(intentId))[0]
         response.intent_id = intentId
+        this.intent_id = intentId
         this.selectedFeedbackButton = false;
         this.addBotMessage(response);
       }
@@ -195,6 +196,7 @@ export default{
                 this.conditions[this.sessionUUID] = []
                 if(response.intent_id){ //if response has confidence > 0.8
                   this.selectedFeedbackButton = false;
+                  this.intent_id = response.intent_id
                   this.addBotMessage(response);
                 }
                 else if(Array.isArray(response)){
@@ -368,7 +370,7 @@ export default{
 
     async handleFeedback(value){
       try {
-        value ? (await DataService.thumbsUp(),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(),this.selectedFeedbackButton = 'down')
+        value ? (await DataService.thumbsUp(this.sessionUUID, this.$route.query.system_id, this.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.sessionUUID, this.$route.query.system_id, this.intent_id),this.selectedFeedbackButton = 'down')
       } catch (error) {
         console.error(error);
       }
@@ -525,6 +527,7 @@ input[type="text"]:focus {
     padding: 15px 17px;
     border-bottom-right-radius: 5px;
     white-space: normal;
+    word-wrap: break-word;
 }
 
 .message {

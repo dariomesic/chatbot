@@ -288,8 +288,8 @@
     })
   }
 
-  thumbsUp(){
-    return fetch('/thumbsUp', {
+  thumbsUp(uuid, intent_id, system_id){
+    return fetch('/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -300,8 +300,8 @@
     })
   }
 
-  thumbsDown(){
-    return fetch('/thumbsDown', {
+  thumbsDown(uuid, intent_id, system_id){
+    return fetch('/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -602,8 +602,8 @@ class DataService {
     })
   }
 
-  thumbsUp(){
-    return fetch('/api/thumbsUp', {
+  thumbsUp(uuid, intent_id, system_id){
+    return fetch('/api/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -614,8 +614,8 @@ class DataService {
     })
   }
 
-  thumbsDown(){
-    return fetch('/api/thumbsDown', {
+  thumbsDown(uuid, intent_id, system_id){
+    return fetch('/api/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {

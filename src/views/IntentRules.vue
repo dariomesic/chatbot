@@ -174,7 +174,7 @@
                   >
                     <span
                       >Unesite pitanje u obliku u kojem bi ga unio
-                      korisnik:</span
+                      korisnik te stisnite enter:</span
                     >
                     <span>Ukupno: {{ questions.length }}</span>
                   </label>
