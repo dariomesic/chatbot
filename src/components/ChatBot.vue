@@ -149,7 +149,7 @@ export default{
                 // Push the condition into the session's conditions array
                 this.conditions[this.sessionUUID].push(condition);
 
-                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, this.inputValue)
+                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id)
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
@@ -177,7 +177,7 @@ export default{
                     // Push the condition into the session's conditions array
                     this.conditions[this.sessionUUID].push(condition);
 
-                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, this.inputValue)
+                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id)
                     response.intent_id = this.responseApi.intent_id
                     this.addBotMessage(response);
                   }
@@ -214,7 +214,8 @@ export default{
       }
     },
 
-    addUserMessage(message) {
+    async addUserMessage(message) {
+      await DataService.updateConversation(this.$route.query.system_id, this.responseApi.intent_id, this.sessionUUID, message)
       this.messages.push({
         text: `<div class="captionUser">You</div>`,
         classes: ['message', 'msgCaption'],
@@ -229,6 +230,7 @@ export default{
     },
 
     async addBotMessage(message) {
+      await DataService.updateConversation(this.$route.query.system_id, this.responseApi.intent_id, this.sessionUUID, message)
       this.responseApi = message
       console.log(this.responseApi)
       this.messages.push({
@@ -283,8 +285,6 @@ export default{
         this.responseApi = {}
         this.showFeedbackButtons = true
       }
-
-
       this.scrollChatToBottom();
     },
 
@@ -343,7 +343,7 @@ export default{
         });
 
         // Make an API call to send the user's selected option.
-        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, selectedOption);
+        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id);
         response.intent_id = this.responseApi.intent_id
         this.responseApi = response
         this.showOptions = false

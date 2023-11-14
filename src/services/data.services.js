@@ -271,14 +271,14 @@
     })
   }
 
-  userResponse(conditions, intent_id, id, uuid, systemID, answer){
+  userResponse(conditions, intent_id, id){
     return fetch('/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id, uuid: uuid, systemID: systemID, answer: answer})
+      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -303,6 +303,23 @@
   thumbsDown(uuid, intent_id, system_id){
     return fetch('/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateConversation(systemID, intent_id, uuid, text){
+    return fetch('/updateConversation', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({systemID: systemID, intent_id: intent_id, uuid: uuid, text: text})
     })
     .then((response) => {
         if (!response.ok) {
@@ -585,14 +602,14 @@ class DataService {
     })
   }
 
-  userResponse(conditions, intent_id, id, uuid, systemID, answer){
+  userResponse(conditions, intent_id, id){
     return fetch('/api/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id, uuid: uuid, systemID: systemID, answer: answer})
+      body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id})
     })
     .then((response) => {
         if (!response.ok) {
@@ -617,6 +634,23 @@ class DataService {
   thumbsDown(uuid, intent_id, system_id){
     return fetch('/api/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateConversation(systemID, intent_id, uuid, text){
+    return fetch('/api/updateConversation', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({systemID: systemID, intent_id: intent_id, uuid: uuid, text: text})
     })
     .then((response) => {
         if (!response.ok) {
