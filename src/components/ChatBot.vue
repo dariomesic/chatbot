@@ -230,7 +230,7 @@ export default{
     },
 
     async addBotMessage(message) {
-      await DataService.updateConversation(this.$route.query.system_id, this.responseApi.intent_id, this.sessionUUID, message)
+      message != `Pozdrav 👋 ! Ja sam chatbot sustava ` + await DataService.getNameForSystem(this.$route.query.system_id) + `. Postavite pitanje vezano uz sustav.` ? await DataService.updateConversation(this.$route.query.system_id, this.responseApi.intent_id, this.sessionUUID, message) : ''
       this.responseApi = message
       console.log(this.responseApi)
       this.messages.push({
