@@ -111,6 +111,11 @@ export default {
       imgElement.src = this.image;
       imgElement.alt = this.altText;
       imgElement.title = this.imageTitle;
+
+      // Add the styling to the img element
+      imgElement.style.width = "100%";
+      imgElement.style.height = "auto";
+
       if (this.getSelection) {
         this.getSelection.collapse(false);
         this.getSelection.insertNode(imgElement);
@@ -224,9 +229,8 @@ input[type="text"]{
 }
 
 img {
-  height: fit-content;
-  max-width: 100%;
-  min-width: 100%;
+  width: 100%;
+  height: auto;
 }
 
 .disable {
