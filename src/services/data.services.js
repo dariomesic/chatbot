@@ -300,7 +300,7 @@
     })
   }
 
-  thumbsDown(uuid, intent_id, system_id){
+  thumbsDown(uuid, system_id, intent_id){
     return fetch('/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
@@ -614,7 +614,7 @@ class DataService {
     })
   }
 
-  thumbsDown(uuid, intent_id, system_id){
+  thumbsDown(uuid, system_id, intent_id){
     return fetch('/api/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
