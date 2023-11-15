@@ -46,6 +46,18 @@
         return response.json();
     })
   }
+
+  getConversationsForSystem(system_id){
+    return fetch('/getConversationsForSystem?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
   
   getQuestionsForIntent(intent_id){
     return fetch('/getQuestionsForIntent?intent_id=' + intent_id, {
@@ -348,6 +360,18 @@ class DataService {
       }
       return response.json();
     });
+  }
+
+  getConversationsForSystem(system_id){
+    return fetch('/api/getConversationsForSystem?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
   }
 
   getNameForIntent(intent_id){
