@@ -300,7 +300,7 @@
     })
   }
 
-  thumbsUp(uuid, intent_id, system_id){
+  thumbsUp(uuid, system_id, intent_id){
     return fetch('/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
@@ -314,6 +314,18 @@
 
   thumbsDown(uuid, system_id, intent_id){
     return fetch('/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateConversationTmp(uuid, system_id, intent_id, question){
+    return fetch('/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question, {
       method : "GET",
     })
     .then((response) => {
@@ -626,7 +638,7 @@ class DataService {
     })
   }
 
-  thumbsUp(uuid, intent_id, system_id){
+  thumbsUp(uuid, system_id, intent_id){
     return fetch('/api/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
@@ -640,6 +652,18 @@ class DataService {
 
   thumbsDown(uuid, system_id, intent_id){
     return fetch('/api/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateConversationTmp(uuid, system_id, intent_id, question){
+    return fetch('/api/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question, {
       method : "GET",
     })
     .then((response) => {

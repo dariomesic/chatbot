@@ -116,6 +116,7 @@ export default{
         this.intent_id = intentId
         this.selectedFeedbackButton = false;
         this.addBotMessage(response);
+        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, intentId, event.target.getAttribute('data-question'))
       }
     });
   },
@@ -196,7 +197,7 @@ export default{
                 // For other response types, use the default DataService.sendMessage
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id, this.sessionUUID);
                 this.conditions[this.sessionUUID] = []
-                if(response.intent_id){ //if response has confidence > 0.8
+                if(response.intent_id){ //if response has confidence > 0.9
                   this.selectedFeedbackButton = false;
                   this.intent_id = response.intent_id
                   this.addBotMessage(response);
@@ -299,7 +300,7 @@ export default{
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
       message.filter((v,i,a)=>a.findIndex(v2=>(v2.intent_id===v.intent_id))===i).forEach((option) => {
-        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}">${option.intent_name}</button>`;
+        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}">${option.intent_name}</button>`;
       });
       messageText += '</div></div>'
       this.messages.push({
