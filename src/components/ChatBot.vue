@@ -588,6 +588,7 @@ a {
 }
 
 .InputMSG {
+  font-family: "Gill Sans",sans-serif;
   outline: none;
   border: none;
   width: 100%;
