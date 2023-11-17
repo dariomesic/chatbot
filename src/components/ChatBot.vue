@@ -210,6 +210,7 @@ export default{
             }
             // Clear the input field after sending the message.
             this.inputValue = '';
+            this.$refs.textarea.style.height = '44px'
         } catch (error) {
             console.error('Error sending message:', error);
         }
