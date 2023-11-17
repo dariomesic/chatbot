@@ -602,7 +602,7 @@ export default {
   font-weight: 400;
   letter-spacing: 0.32px;
   font-family: "Gill Sans", sans-serif;
-  word-break: break-all;
+  word-wrap: break-word;
   white-space: pre-wrap;
 }
 </style>
