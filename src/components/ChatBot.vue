@@ -45,15 +45,17 @@
           </div>
         </div>
         <div class="BoxSentMSG " ref="messageBox">
-            <input
-              type="text"
+            <textarea
+              ref="textarea"
+              v-if="!showOptions"
               placeholder="Napišite poruku..."
               class="InputMSG"
+              @input="adjustTextareaHeight"
               v-model="inputValue"
               @keydown.enter="sendMessage"
               required
-              v-if="!showOptions"
-            >
+              maxlength="200"
+            />
             <div v-else>
               <!-- Render chatbot options here when showOptions is true -->
               <div v-html="chatbotOptions"></div>
@@ -466,7 +468,11 @@ export default{
       this.showFeedbackButtons = false; // Reset feedback buttons
       this.initializeBot(); // Restart the chatbot
     },
-
+    adjustTextareaHeight() {
+      const textarea = this.$refs.textarea;
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    },
   },
 }
 </script>
@@ -585,9 +591,9 @@ a {
   outline: none;
   border: none;
   width: 100%;
-  height: 45px;
   margin-left: 15px;
   font-size: 1.1rem;
+  resize: none;
 }
 
 .InputMSG::placeholder {
