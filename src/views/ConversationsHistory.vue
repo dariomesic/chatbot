@@ -273,7 +273,7 @@
             :class="{ active: sortIcon[2] === 2 || sortIcon[2] === 3 }"
           >
             <div class="span-wrapper">
-              <span>Zahtjevi</span>
+              <span>Unosi</span>
               <span>
                 <SortingIcon
                   :sortIcon="sortIcon[2]"
@@ -378,7 +378,7 @@
               </svg>
             </template>
             <template v-else>
-              {{ conversation.text }}
+              <span :innerHTML="conversation.text" />
             </template>
           </span>
         </td>

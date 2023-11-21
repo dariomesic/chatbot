@@ -1,5 +1,6 @@
 <template>
   <div class="main-block">
+    <Navbar />
     <div class="content-container">
       <div class="left-part">
         <ul>
@@ -31,10 +32,12 @@
 </template>
 
 <script>
+import Navbar from "../components/AppNavbar.vue";
 import IntentList from "./IntentList.vue";
 import ConversationsHistory from "./ConversationsHistory.vue";
 export default {
   components: {
+    Navbar,
     IntentList,
     ConversationsHistory,
   },
@@ -64,7 +67,6 @@ export default {
 .content-container {
   display: flex;
   flex-direction: row;
-  height: 90vh;
 }
 
 .left-part {
