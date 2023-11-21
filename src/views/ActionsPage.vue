@@ -1,6 +1,6 @@
 <template>
   <div class="main-block">
-    <Navbar />
+    <Navbar style="position: sticky;top: 0;z-index: 2;"/>
     <div class="content-container">
       <div class="left-part">
         <ul>
@@ -25,9 +25,9 @@
         <template v-else-if="activeTab === 'Razgovori'">
           <ConversationsHistory :intents="intents" />
         </template>
+        <div class="footer"/>
       </div>
     </div>
-    <div class="footer"></div>
   </div>
 </template>
 
@@ -72,6 +72,9 @@ export default {
 .left-part {
   background: var(--background);
   flex-basis: 15%;
+  position: sticky;
+  top: 60px;
+  max-height: calc(100vh - 60px);
 }
 
 li {
