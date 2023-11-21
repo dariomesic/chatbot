@@ -157,7 +157,7 @@ export default {
       }
     },
     route(chatbot) {
-      this.$router.push({ name: "Intents", query: { system_id: chatbot.id } });
+      this.$router.push({ name: "IntentsAndConversations", query: { system_id: chatbot.id } });
     },
     setSortIcon(index, isHovered) {
       if (isHovered && this.sortIcon[index] === 1) {

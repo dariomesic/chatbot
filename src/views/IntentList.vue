@@ -1,11 +1,10 @@
 <template>
-  <Navbar />
   <span
     @click="$router.push('/')"
     style="
       position: absolute;
       left: 0.7rem;
-      top: 4.5rem;
+      top: 1rem;
       display: flex;
       cursor: pointer;
     "
@@ -407,7 +406,7 @@
         </div>
       </div>
     </div>
-    <div class="chat" @click="showChatbot = !showChatbot;">
+    <div class="chat" @click="showChatbot = !showChatbot">
       <transition name="fade" mode="out-in">
         <svg
           style="fill: white; margin-top: 3px"
@@ -437,20 +436,19 @@
     </div>
     <Transition name="fade">
       <div v-if="showChatbot" class="chatbot-container">
-        <Chatbot/>
+        <Chatbot />
       </div>
     </Transition>
   </div>
 </template>
 
 <script>
-import Navbar from "../components/AppNavbar.vue";
 import CustomSelect from "../components/CustomSelect.vue";
 import DataService from "../services/data.services";
 import SortingIcon from "../views/ui/SortingIcon.vue";
 import Chatbot from "../components/ChatBot.vue";
 export default {
-  components: { Navbar, CustomSelect, SortingIcon, Chatbot },
+  components: { CustomSelect, SortingIcon, Chatbot },
   data() {
     return {
       intents: [],
@@ -468,6 +466,7 @@ export default {
   async created() {
     await this.getIntents();
     this.initialIntents = [...this.intents];
+    this.$emit("getIntents", this.intents);
   },
   computed: {
     filteredIntents() {
@@ -892,5 +891,4 @@ hr {
   opacity: 0;
   transform: scale(0.3) translateY(-50%);
 }
-
 </style>
