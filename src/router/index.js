@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 const HomePage = () => import("../views/HomePage.vue");
-const IntentList = () => import("../views/IntentList.vue");
 const IntentRules = () => import("../views/IntentRules.vue");
-const IntentsAndConversations = () =>
-  import("../views/IntentsAndConversations.vue");
+const Actions = () =>
+  import("../views/ActionsPage.vue");
 
 const routes = [
   {
@@ -11,12 +10,7 @@ const routes = [
     component: HomePage,
   },
   {
-    name: "Intents",
-    path: "/intents",
-    component: IntentList,
-  },
-  {
-    path: "/intents/intent",
+    path: "/actions/intent",
     name: "IntentRules",
     component: IntentRules,
   },
@@ -25,9 +19,9 @@ const routes = [
     name: "NotFound",
   },
   {
-    path: "/intentsandconversations",
-    name: "IntentsAndConversations",
-    component: IntentsAndConversations,
+    path: "/actions",
+    name: "Actions",
+    component: Actions,
   },
 ];
 const router = createRouter({

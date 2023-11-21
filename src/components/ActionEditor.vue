@@ -28,7 +28,7 @@ export default {
     emits: ['save'],
     methods:{
       route(){
-        this.$router.push({ name: "IntentsAndConversations", query: { system_id: this.$route.query.system_id } });
+        this.$router.push({ name: "Actions", query: { system_id: this.$route.query.system_id } });
       }
     }
 }
