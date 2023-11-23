@@ -116,7 +116,7 @@ export default{
         this.intent_id = intentId
         this.selectedFeedbackButton = false;
         this.addBotMessage(response);
-        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, intentId, event.target.getAttribute('data-question'))
+        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, intentId, event.target.getAttribute('data-question'), event.target.getAttribute('data-threshold'))
       }
     });
   },
@@ -300,7 +300,7 @@ export default{
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
       message.filter((v,i,a)=>a.findIndex(v2=>(v2.intent_id===v.intent_id))===i).forEach((option) => {
-        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}">${option.intent_name}</button>`;
+        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}" data-threshold="${option.threshold}">${option.intent_name}</button>`;
       });
       messageText += '</div></div>'
       this.messages.push({
