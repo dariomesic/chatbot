@@ -292,6 +292,7 @@ export default {
   display: flex;
   list-style: none;
   max-height: 235px;
+  
   min-height: 3rem;
   padding: 0.5rem 1rem;
   position: relative;
@@ -342,6 +343,7 @@ label {
   background: white;
   width: 100%;
   overflow: hidden;
+  overflow-y:auto;
   font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.32px;

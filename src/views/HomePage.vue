@@ -12,7 +12,7 @@
             :class="{ active: sortIcon[0] === 2 || sortIcon[0] === 3 }"
           >
             <div class="span-wrapper">
-              <span> Naziv </span>
+              <span>Naziv</span>
               <span>
                 <SortingIcon
                   :sortIcon="sortIcon[0]"
@@ -42,7 +42,7 @@
       </thead>
       <tr v-for="chatbot in chatbots" :key="chatbot.id">
         <td>
-          <div>
+          <div style="display: flex; flex-wrap: wrap">
             <svg
               viewBox="0 0 24 24"
               version="1.1"
@@ -157,7 +157,10 @@ export default {
       }
     },
     route(chatbot) {
-      this.$router.push({ name: "IntentsAndConversations", query: { system_id: chatbot.id } });
+      this.$router.push({
+        name: "IntentsAndConversations",
+        query: { system_id: chatbot.id },
+      });
     },
     setSortIcon(index, isHovered) {
       if (isHovered && this.sortIcon[index] === 1) {
@@ -214,7 +217,7 @@ th {
 }
 .span-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 }
@@ -277,6 +280,7 @@ a {
   text-decoration: none;
   transition: color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   cursor: pointer;
+  word-break: break-word;
 }
 
 a:hover {

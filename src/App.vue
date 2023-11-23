@@ -176,6 +176,10 @@ input[type="number"]:focus {
   font-weight: normal;
 }
 
+.option-text > .pause-wrapper{
+  display:none;
+}
+
 .pause {
   display: flex;
 }
@@ -198,6 +202,11 @@ input[type="number"]:focus {
 
 .timer-buttons > button:nth-child(1) {
   margin-right: 12px;
+}
+
+.input-control .custom-select {
+  box-sizing: border-box;
+  width: 100% !important;
 }
 
 .new-editor:empty:before {

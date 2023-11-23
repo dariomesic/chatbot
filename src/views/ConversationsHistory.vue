@@ -14,6 +14,7 @@
           ]"
           :value="SelectedDateRange"
           @update:value="SelectedDateRange = $event"
+          style="box-sizing: border-box"
         />
       </div>
       <div class="input-control" style="width: 20vw">
@@ -152,11 +153,6 @@
             </div>
           </div>
         </div>
-        <!-- <input type="date" />
-        <span class="datepicker-toggle" @click="showDatePicker()">
-          <span class="datepicker-toggle-button"></span>
-          <input type="date" ref="datePicker" class="datepicker-input" />
-        </span> -->
       </div>
       <div class="input-control" style="width: 20vw">
         <label>Filtriraj prema session ID-u</label>
@@ -173,7 +169,15 @@
         <label>Filtriraj prema namjerama</label>
         <div class="custom-checkbox-select" tabindex="1">
           <div class="selected-items" @click="toggleDropdown">
-            <span v-if="selectedIntents.length === 0"
+            <span
+              v-if="selectedIntents.length === 0"
+              style="
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                color: #757575;
+                min-width: 1rem;
+              "
               >Odaberite namjere...</span
             >
             <span
@@ -181,6 +185,7 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                min-width: 1rem;
               "
               v-else
               >{{ selectedIntents.join(", ") }}</span
@@ -191,6 +196,12 @@
             </svg>
           </div>
           <div v-show="isDropdownOpen" class="dropdown">
+            <button
+              style="display: block; padding: 8px; color: var(--main__color)"
+              @click="removeChosenIntents"
+            >
+              Ukloni sve...
+            </button>
             <label
               v-for="intent in uniqueIntents"
               :key="intent"
@@ -271,9 +282,10 @@
             @mouseleave="setSortIcon(2, false)"
             @click="toggleSortIcon(2, 'requests')"
             :class="{ active: sortIcon[2] === 2 || sortIcon[2] === 3 }"
+            style="width: 25vw"
           >
             <div class="span-wrapper">
-              <span>Zahtjevi</span>
+              <span>Unosi</span>
               <span>
                 <SortingIcon
                   :sortIcon="sortIcon[2]"
@@ -282,112 +294,121 @@
               </span>
             </div>
           </th>
+          <th>
+            <div class="span-wrapper">
+              <span>Prag</span>
+            </div>
+          </th>
         </tr>
       </thead>
-      <tr
-        v-for="conversation in filteredConversations"
-        :key="conversation.conversation_id"
-      >
-        <td>
-          <div style="display: flex; flex-direction: column">
-            <span style="margin-bottom: 0.5rem; color: var(--main__color)">{{
-              formatTime(conversation)
-            }}</span>
-            <span style="font-size: 14px">{{ conversation.session_id }}</span>
-          </div>
-        </td>
-        <td>{{ getIntentName(conversation) }}</td>
-        <td>
-          <span>
-            <template v-if="conversation.thumbs_up === 1">
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M3 10C3 9.44772 3.44772 9 4 9H7V21H4C3.44772 21 3 20.5523 3 20V10Z"
-                    stroke="#000000"
-                    stroke-width="2"
+      <TransitionGroup name="list" tag="tbody">
+        <tr
+          v-for="conversation in filteredConversations"
+          :key="conversation.conversation_id"
+        >
+          <td>
+            <div style="display: flex; flex-direction: column">
+              <span style="margin-bottom: 0.5rem; color: var(--main__color)">{{
+                formatTime(conversation)
+              }}</span>
+              <span style="font-size: 14px">{{ conversation.session_id }}</span>
+            </div>
+          </td>
+          <td>{{ getIntentName(conversation) }}</td>
+          <td>
+            <span style="word-break: break-all">
+              <template v-if="conversation.thumbs_up === 1">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M7 11V19L8.9923 20.3282C9.64937 20.7662 10.4214 21 11.2111 21H16.4586C17.9251 21 19.1767 19.9398 19.4178 18.4932L20.6119 11.3288C20.815 10.1097 19.875 9 18.6391 9H14"
-                    stroke="#000000"
-                    stroke-width="2"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M3 10C3 9.44772 3.44772 9 4 9H7V21H4C3.44772 21 3 20.5523 3 20V10Z"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                    <path
+                      d="M7 11V19L8.9923 20.3282C9.64937 20.7662 10.4214 21 11.2111 21H16.4586C17.9251 21 19.1767 19.9398 19.4178 18.4932L20.6119 11.3288C20.815 10.1097 19.875 9 18.6391 9H14"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                    <path
+                      d="M14 9L14.6872 5.56415C14.8659 4.67057 14.3512 3.78375 13.4867 3.49558V3.49558C12.6336 3.21122 11.7013 3.59741 11.2992 4.4017L8 11H7"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </template>
+              <template v-else-if="conversation.thumbs_down === 1">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M14 9L14.6872 5.56415C14.8659 4.67057 14.3512 3.78375 13.4867 3.49558V3.49558C12.6336 3.21122 11.7013 3.59741 11.2992 4.4017L8 11H7"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
-              </svg>
-            </template>
-            <template v-else-if="conversation.thumbs_down === 1">
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M21 14C21 14.5523 20.5523 15 20 15H17V3H20C20.5523 3 21 3.44772 21 4V14Z"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M17 13V5L15.0077 3.6718C14.3506 3.23375 13.5786 3 12.7889 3H7.54138C6.07486 3 4.82329 4.06024 4.5822 5.5068L3.38813 12.6712C3.18496 13.8903 4.12504 15 5.36092 15H10"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                  <path
-                    d="M10 15L9.31283 18.4358C9.13411 19.3294 9.64876 20.2163 10.5133 20.5044V20.5044C11.3664 20.7888 12.2987 20.4026 12.7008 19.5983L16 13H17"
-                    stroke="#000000"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
-              </svg>
-            </template>
-            <template v-else>
-              {{ conversation.text }}
-            </template>
-          </span>
-        </td>
-      </tr>
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M21 14C21 14.5523 20.5523 15 20 15H17V3H20C20.5523 3 21 3.44772 21 4V14Z"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                    <path
+                      d="M17 13V5L15.0077 3.6718C14.3506 3.23375 13.5786 3 12.7889 3H7.54138C6.07486 3 4.82329 4.06024 4.5822 5.5068L3.38813 12.6712C3.18496 13.8903 4.12504 15 5.36092 15H10"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                    <path
+                      d="M10 15L9.31283 18.4358C9.13411 19.3294 9.64876 20.2163 10.5133 20.5044V20.5044C11.3664 20.7888 12.2987 20.4026 12.7008 19.5983L16 13H17"
+                      stroke="#000000"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </template>
+              <template v-else>
+                <span :innerHTML="conversation.text" />
+              </template>
+            </span>
+          </td>
+          <td>{{ formatThreshold(conversation) }}</td>
+        </tr>
+      </TransitionGroup>
     </table>
     <div
       style="
         border: 1px solid #e0e0e0;
         display: flex;
+        flex-wrap: wrap;
         font-weight: 400;
         justify-content: space-between;
         letter-spacing: 0.16px;
@@ -401,13 +422,14 @@
           padding: 0 1rem;
           align-items: center;
           display: flex;
+          flex-wrap: wrap;
           height: 100%;
         "
       >
         <div>
           <div
             class="items-per-page"
-            style="display: flex; align-items: center"
+            style="display: flex; align-items: center; flex-wrap: wrap"
           >
             <label for="itemsPerPage">Stavki po stranici:</label>
             <CustomSelect
@@ -417,17 +439,24 @@
             />
           </div>
         </div>
-        <span style="margin-left: 1.235rem"
+        <span style="margin-left: 1.235rem; word-break: break-all"
           >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
           {{ Math.min(currentPage * itemsPerPage, conversations.length) }} od
           {{ conversations.length }} stavki</span
         >
       </div>
-      <div style="align-items: center; display: flex; height: 100%">
+      <div
+        style="
+          align-items: center;
+          display: flex;
+          height: 100%;
+          flex-wrap: wrap;
+        "
+      >
         <span style="margin-left: 0.0625rem; margin-right: 1rem"
           >{{ currentPage }} od {{ totalPages }} stranica</span
         >
-        <div style="display: flex">
+        <div style="display: flex; flex-wrap: wrap">
           <button
             @click="currentPage > 1 ? currentPage-- : null"
             :disabled="currentPage === 1"
@@ -622,8 +651,6 @@ export default {
   computed: {
     filteredConversations() {
       let filtered = this.conversations;
-      const startDate = new Date(this.selectedStartDate);
-
       if (this.filterThumbsUp && this.filterThumbsDown) {
         filtered = filtered.filter(
           (conversation) =>
@@ -678,8 +705,8 @@ export default {
         filtered = filtered.filter((conversation) => {
           const conversationDate = new Date(conversation.time);
           return (
-            conversationDate >= startDate &&
-            conversationDate <= new Date(this.endMaxDate)
+            conversationDate.toISOString().split("T")[0] >=
+            this.selectedStartDate
           );
         });
       } else if (!this.selectedStartDate && this.selectedEndDate) {
@@ -820,8 +847,14 @@ export default {
         document.removeEventListener("click", this.closeDropdownOnOutsideClick);
       }
     },
+    removeChosenIntents() {
+      this.selectedIntents = [];
+      this.isDropdownOpen = false;
+    },
     formatTime(conversation) {
       const time = new Date(conversation.time);
+
+      time.setHours(time.getHours() - 1);
 
       const day = time.toLocaleString("hr-HR", { day: "numeric" });
       const month = time.toLocaleString("hr-HR", { month: "short" });
@@ -833,6 +866,13 @@ export default {
 
       const formattedTime = `${day} ${capitalizedMonth} u ${hoursAndMinutes}`;
       return formattedTime;
+    },
+    formatThreshold(conversation) {
+      if (conversation.threshold) {
+        return `${parseInt(conversation.threshold) * 100}%`;
+      } else {
+        return "";
+      }
     },
     showDatePicker(datePicker) {
       if (datePicker === "start") {
@@ -857,21 +897,24 @@ export default {
   margin-bottom: 2rem;
 }
 
-.input-control label {
+.input-control > label,
+.input-dates-container label {
   display: block;
   font: inherit;
   color: #555353;
   margin-bottom: 6px;
   font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .search-icon {
-  width: 20px;
+  padding: 0.8rem;
   background: #f4f4f4
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E")
     no-repeat center;
   border-bottom: 1px solid #161616;
-  padding: 0.2rem;
 }
 
 input[type="text"] {
@@ -882,20 +925,22 @@ input[type="text"] {
   border-left: none;
   border-bottom: 1px solid #161616;
   width: -webkit-fill-available;
-  width: -moz-available;
   height: 2rem;
   max-height: 2rem;
   position: relative;
+  box-sizing: border-box;
 }
 
 .thumbs-container {
   display: flex;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 table {
   width: 100%;
   margin-bottom: 1rem;
+  word-break: break-word;
   color: #212529;
   border-collapse: collapse;
 }
@@ -907,6 +952,7 @@ th {
 }
 .span-wrapper {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -977,7 +1023,7 @@ table tbody tr td::after {
 .selected-items,
 .selected-date {
   width: -webkit-fill-available;
-  width: -moz-available;
+  width: 100%;
   position: relative;
   display: flex;
   align-items: center;
@@ -987,6 +1033,11 @@ table tbody tr td::after {
   height: 2rem;
   max-height: 2rem;
   cursor: pointer;
+  box-sizing: border-box;
+}
+
+.selected-date {
+  padding: 0 1rem 0 1rem;
 }
 
 .input-dates-container {
@@ -995,7 +1046,10 @@ table tbody tr td::after {
 }
 
 .date {
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 }
 
 .selected-items:hover {
@@ -1027,6 +1081,11 @@ table tbody tr td::after {
   display: block;
   padding: 8px;
   user-select: none;
+  word-break: break-word;
+}
+
+.dropdown .checkbox-label:first-of-type {
+  border-top: 1px solid #ccc;
 }
 
 .checkbox-label:hover {
@@ -1046,6 +1105,5 @@ input[type="date"] {
   height: 100%;
   opacity: 0;
   cursor: pointer;
-  box-sizing: border-box;
 }
 </style>

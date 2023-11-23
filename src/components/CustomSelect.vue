@@ -125,19 +125,19 @@ export default {
   background-color: #fff;
   border: 1px solid #0f62fe;
   border-top: none;
-  z-index: 3;
-  overflow: hidden;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .option {
   background: white;
+  display: block;
   padding: 8px;
   border-bottom: 1px solid #ccc;
   transition: background-color 0.2s;
   cursor: pointer;
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .option-text {

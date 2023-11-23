@@ -603,6 +603,5 @@ export default {
   letter-spacing: 0.32px;
   font-family: "Gill Sans", sans-serif;
   word-break: break-all;
-  white-space: pre-wrap;
 }
 </style>
