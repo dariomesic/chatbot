@@ -325,7 +325,7 @@
   }
 
   updateConversationTmp(uuid, system_id, intent_id, question, threshold){
-    return fetch('/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question, '&threshold=' + threshold, {
+    return fetch('/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question + '&threshold=' + threshold, {
       method : "GET",
     })
     .then((response) => {
@@ -663,7 +663,7 @@ class DataService {
   }
 
   updateConversationTmp(uuid, system_id, intent_id, question, threshold){
-    return fetch('/api/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question, '&threshold=' + threshold, {
+    return fetch('/api/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question + '&threshold=' + threshold, {
       method : "GET",
     })
     .then((response) => {
