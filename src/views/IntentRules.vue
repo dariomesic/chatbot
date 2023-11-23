@@ -247,7 +247,7 @@
                             padding: 1rem 1rem;
                             line-height: 17px;
                             box-sizing: border-box;
-                            word-break: break-all;
+                            word-wrap: break-word;
                           "
                           @blur="handleBlur($event, index)"
                         >

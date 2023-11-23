@@ -45,15 +45,17 @@
           </div>
         </div>
         <div class="BoxSentMSG " ref="messageBox">
-            <input
-              type="text"
+            <textarea
+              ref="textarea"
+              v-if="!showOptions"
               placeholder="Napišite poruku..."
               class="InputMSG"
+              @input="adjustTextareaHeight"
               v-model="inputValue"
               @keydown.enter="sendMessage"
               required
-              v-if="!showOptions"
-            >
+              maxlength="200"
+            />
             <div v-else>
               <!-- Render chatbot options here when showOptions is true -->
               <div v-html="chatbotOptions"></div>
@@ -114,6 +116,7 @@ export default{
         this.intent_id = intentId
         this.selectedFeedbackButton = false;
         this.addBotMessage(response);
+        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, intentId, event.target.getAttribute('data-question'), event.target.getAttribute('data-threshold'), response)
       }
     });
   },
@@ -194,7 +197,7 @@ export default{
                 // For other response types, use the default DataService.sendMessage
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id, this.sessionUUID);
                 this.conditions[this.sessionUUID] = []
-                if(response.intent_id){ //if response has confidence > 0.8
+                if(response.intent_id){ //if response has confidence > 0.9
                   this.selectedFeedbackButton = false;
                   this.intent_id = response.intent_id
                   this.addBotMessage(response);
@@ -208,6 +211,7 @@ export default{
             }
             // Clear the input field after sending the message.
             this.inputValue = '';
+            this.$refs.textarea.style.height = '44px'
         } catch (error) {
             console.error('Error sending message:', error);
         }
@@ -296,7 +300,7 @@ export default{
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
       message.filter((v,i,a)=>a.findIndex(v2=>(v2.intent_id===v.intent_id))===i).forEach((option) => {
-        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}">${option.intent_name}</button>`;
+        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}" data-threshold="${option.threshold}">${option.intent_name}</button>`;
       });
       messageText += '</div></div>'
       this.messages.push({
@@ -466,7 +470,11 @@ export default{
       this.showFeedbackButtons = false; // Reset feedback buttons
       this.initializeBot(); // Restart the chatbot
     },
-
+    adjustTextareaHeight() {
+      const textarea = this.$refs.textarea;
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    },
   },
 }
 </script>
@@ -582,12 +590,13 @@ a {
 }
 
 .InputMSG {
+  font-family: "Gill Sans",sans-serif;
   outline: none;
   border: none;
   width: 100%;
-  height: 45px;
   margin-left: 15px;
   font-size: 1.1rem;
+  resize: none;
 }
 
 .InputMSG::placeholder {
