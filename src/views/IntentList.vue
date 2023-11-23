@@ -106,7 +106,7 @@
     </section>
     <table>
       <thead>
-        <tr>
+        <tr style="width: 70vw">
           <th scope="col">
             <input type="checkbox" v-model="selectAll" />
           </th>
@@ -305,6 +305,7 @@
       style="
         border: 1px solid #e0e0e0;
         display: flex;
+        flex-wrap: wrap;
         font-weight: 400;
         justify-content: space-between;
         letter-spacing: 0.16px;
@@ -318,13 +319,14 @@
           padding: 0 1rem;
           align-items: center;
           display: flex;
+          flex-wrap: wrap;
           height: 100%;
         "
       >
         <div>
           <div
             class="items-per-page"
-            style="display: flex; align-items: center"
+            style="display: flex; align-items: center; flex-wrap: wrap"
           >
             <label for="itemsPerPage">Stavki po stranici:</label>
             <CustomSelect
@@ -334,17 +336,24 @@
             />
           </div>
         </div>
-        <span style="margin-left: 1.235rem"
+        <span style="margin-left: 1.235rem; word-break: break-all"
           >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
           {{ Math.min(currentPage * itemsPerPage, intents.length) }} od
           {{ intents.length }} stavki</span
         >
       </div>
-      <div style="align-items: center; display: flex; height: 100%">
+      <div
+        style="
+          align-items: center;
+          display: flex;
+          height: 100%;
+          flex-wrap: wrap;
+        "
+      >
         <span style="margin-left: 0.0625rem; margin-right: 1rem"
           >{{ currentPage }} od {{ totalPages }} stranica</span
         >
-        <div style="display: flex">
+        <div style="display: flex; flex-wrap: wrap">
           <button
             @click="currentPage > 1 ? currentPage-- : null"
             :disabled="currentPage === 1"
@@ -729,6 +738,7 @@ table {
   margin-bottom: 1rem;
   color: #212529;
   border-collapse: collapse;
+  word-break: break-word;
 }
 
 tr,
@@ -740,6 +750,7 @@ th {
 .span-wrapper {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 }
@@ -833,13 +844,10 @@ th:not(:first-child):not(:nth-child(6)):not(:last-child):hover {
   border-radius: 6px;
   box-shadow: 0 1px 14px rgba(0, 0, 0, 0.2);
   color: #616161;
-  width: max-content;
-  display: inline-grid;
   position: absolute;
   z-index: 1;
-  margin-top: 4px;
-  left: 0;
-  margin-left: 25px;
+  top: 100%;
+  right: 0;
 }
 
 hr {
@@ -848,7 +856,9 @@ hr {
 
 .options-popup button {
   cursor: pointer;
-  padding: 10px 30px 10px 30px;
+  white-space: nowrap;
+  padding: 0.5rem 0.8rem;
+  width: 100%;
 }
 
 .options-popup button:hover {
@@ -874,6 +884,7 @@ hr {
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s linear;
+
 }
 
 .fade-enter-from,
@@ -884,6 +895,7 @@ hr {
 .pop-enter-active,
 .pop-leave-active {
   transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
+
 }
 
 .pop-enter-from,

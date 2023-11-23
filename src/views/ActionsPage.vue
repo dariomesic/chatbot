@@ -1,6 +1,6 @@
 <template>
   <div class="main-block">
-    <Navbar style="position: sticky;top: 0;z-index: 2;"/>
+    <Navbar style="position: sticky; top: 0; z-index: 2" />
     <div class="content-container">
       <div class="left-part">
         <ul>
@@ -25,9 +25,9 @@
         <template v-else-if="activeTab === 'Razgovori'">
           <ConversationsHistory :intents="intents" />
         </template>
-        <div class="footer"/>
       </div>
     </div>
+    <div class="footer"/>
   </div>
 </template>
 

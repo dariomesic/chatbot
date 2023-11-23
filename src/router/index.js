@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 const HomePage = () => import("../views/HomePage.vue");
 const IntentRules = () => import("../views/IntentRules.vue");
-const Actions = () =>
-  import("../views/ActionsPage.vue");
+const Actions = () => import("../views/ActionsPage.vue");
 
 const routes = [
   {
