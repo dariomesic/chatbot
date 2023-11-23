@@ -324,9 +324,14 @@
     })
   }
 
-  updateConversationTmp(uuid, system_id, intent_id, question, threshold){
-    return fetch('/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question + '&threshold=' + threshold, {
-      method : "GET",
+  updateConversationTmp(uuid, system_id, intent_id, question, threshold, response){
+    return fetch('/updateConversationTmp', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({uuid: uuid, system_id: system_id, intent_id: intent_id, question: question, threshold: threshold, response: response})
     })
     .then((response) => {
         if (!response.ok) {
@@ -662,9 +667,14 @@ class DataService {
     })
   }
 
-  updateConversationTmp(uuid, system_id, intent_id, question, threshold){
-    return fetch('/api/updateConversationTmp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id + '&question=' + question + '&threshold=' + threshold, {
-      method : "GET",
+  updateConversationTmp(uuid, system_id, intent_id, question, threshold, response){
+    return fetch('/api/updateConversationTmp', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({uuid: uuid, system_id: system_id, intent_id: intent_id, question: question, threshold: threshold, response: response})
     })
     .then((response) => {
         if (!response.ok) {

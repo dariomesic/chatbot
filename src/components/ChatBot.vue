@@ -116,7 +116,7 @@ export default{
         this.intent_id = intentId
         this.selectedFeedbackButton = false;
         this.addBotMessage(response);
-        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, intentId, event.target.getAttribute('data-question'), event.target.getAttribute('data-threshold'))
+        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, intentId, event.target.getAttribute('data-question'), event.target.getAttribute('data-threshold'), response)
       }
     });
   },
