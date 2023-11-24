@@ -869,7 +869,9 @@ export default {
     },
     formatThreshold(conversation) {
       if (conversation.threshold) {
-        return `${parseFloat(conversation.threshold) * 100}%`;
+        const percentage = parseFloat(conversation.threshold) * 100;
+        const roundedPercentage = Math.round(percentage);
+        return `${roundedPercentage}%`;
       } else {
         return "";
       }
