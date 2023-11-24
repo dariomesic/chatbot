@@ -131,6 +131,23 @@ input[type="number"]:focus {
   outline: 2px solid #0f62fe;
 }
 
+a {
+  color: #0f62fe;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  line-height: 1.28572;
+  outline: none;
+  text-decoration: none;
+  transition: color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .svg {
   height: 1rem;
   position: absolute;
@@ -174,6 +191,7 @@ input[type="number"]:focus {
   border-radius: 5px;
   font-style: normal;
   font-weight: normal;
+  white-space: initial;
 }
 
 .option-text > .pause-wrapper{

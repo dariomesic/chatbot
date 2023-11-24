@@ -248,7 +248,35 @@
         if (!response.ok) {
             throw new Error(response.error)
         }
-        console.log(response.json())
+        return response.json();
+    })
+  }
+
+  getSynonyms(system_id){
+    return fetch('/getSynonyms?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateSynonyms(system_id, synonyms){
+    return fetch('/updateSynonyms', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({system_id: system_id, synonyms: synonyms})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
         return response.json();
     })
   }
@@ -592,7 +620,18 @@ class DataService {
         if (!response.ok) {
             throw new Error(response.error)
         }
-        console.log(response.json())
+        return response.json();
+    })
+  }
+
+  getSynonyms(system_id){
+    return fetch('/api/getSynonyms?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
         return response.json();
     })
   }

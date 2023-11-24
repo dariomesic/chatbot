@@ -16,14 +16,58 @@
           >
             Razgovori
           </li>
+          <li
+            :class="{ active: activeTab === 'Postavke' }"
+            @click="setActiveTab('Postavke')"
+          >
+            Postavke
+          </li>
         </ul>
       </div>
       <div class="right-part">
+        <span
+          @click="$router.push('/')"
+          style="
+            position: absolute;
+            left: 0.7rem;
+            top: 1rem;
+            display: flex;
+            cursor: pointer;
+            z-index:1
+          "
+          ><svg
+            viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                fill="#0f62fe"
+                d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+              ></path>
+              <path
+                fill="#0f62fe"
+                d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+              ></path>
+            </g>
+          </svg>
+          <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a></span
+        >
         <template v-if="activeTab === 'Namjere'">
           <IntentList @getIntents="getIntents" />
         </template>
         <template v-else-if="activeTab === 'Razgovori'">
           <ConversationsHistory :intents="intents" />
+        </template>
+        <template v-else-if="activeTab === 'Postavke'">
+          <SettingsPage />
         </template>
       </div>
     </div>
@@ -35,11 +79,13 @@
 import Navbar from "../components/AppNavbar.vue";
 import IntentList from "./IntentList.vue";
 import ConversationsHistory from "./ConversationsHistory.vue";
+import SettingsPage from "./SettingsPage.vue";
 export default {
   components: {
     Navbar,
     IntentList,
     ConversationsHistory,
+    SettingsPage
   },
   data() {
     return {
