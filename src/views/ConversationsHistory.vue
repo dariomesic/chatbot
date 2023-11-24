@@ -869,7 +869,7 @@ export default {
     },
     formatThreshold(conversation) {
       if (conversation.threshold) {
-        return `${parseInt(conversation.threshold) * 100}%`;
+        return `${parseFloat(conversation.threshold) * 100}%`;
       } else {
         return "";
       }
