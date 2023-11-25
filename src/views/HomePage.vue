@@ -158,7 +158,7 @@ export default {
     },
     route(chatbot) {
       this.$router.push({
-        name: "IntentsAndConversations",
+        name: "Actions",
         query: { system_id: chatbot.id },
       });
     },
