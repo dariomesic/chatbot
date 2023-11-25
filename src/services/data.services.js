@@ -328,7 +328,7 @@
     })
   }
 
-  thumbsUp(uuid, intent_id, system_id){
+  thumbsUp(uuid, system_id, intent_id){
     return fetch('/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
@@ -665,7 +665,7 @@ class DataService {
     })
   }
 
-  thumbsUp(uuid, intent_id, system_id){
+  thumbsUp(uuid, system_id, intent_id){
     return fetch('/api/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
