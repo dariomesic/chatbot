@@ -328,7 +328,7 @@
     })
   }
 
-  thumbsUp(uuid, system_id, intent_id){
+  thumbsUp(uuid, intent_id, system_id){
     return fetch('/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
@@ -343,23 +343,6 @@
   thumbsDown(uuid, system_id, intent_id){
     return fetch('/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.error)
-        }
-        return response.json();
-    })
-  }
-
-  updateConversationTmp(uuid, system_id, intent_id, question, threshold, response){
-    return fetch('/updateConversationTmp', {
-      method : "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({uuid: uuid, system_id: system_id, intent_id: intent_id, question: question, threshold: threshold, response: response})
     })
     .then((response) => {
         if (!response.ok) {
@@ -682,7 +665,7 @@ class DataService {
     })
   }
 
-  thumbsUp(uuid, system_id, intent_id){
+  thumbsUp(uuid, intent_id, system_id){
     return fetch('/api/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
     })
@@ -697,23 +680,6 @@ class DataService {
   thumbsDown(uuid, system_id, intent_id){
     return fetch('/api/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.error)
-        }
-        return response.json();
-    })
-  }
-
-  updateConversationTmp(uuid, system_id, intent_id, question, threshold, response){
-    return fetch('/api/updateConversationTmp', {
-      method : "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({uuid: uuid, system_id: system_id, intent_id: intent_id, question: question, threshold: threshold, response: response})
     })
     .then((response) => {
         if (!response.ok) {

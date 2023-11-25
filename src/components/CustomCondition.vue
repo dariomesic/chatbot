@@ -200,14 +200,14 @@ export default {
           container.innerHTML = selectedAnswerObject.answer;
 
           container.querySelectorAll("img").forEach((img) => {
-            img.replaceWith(document.createTextNode("SLIKA"));
+            img.replaceWith(document.createTextNode("SLIKA "));
           });
 
           container.querySelectorAll(".pause-wrapper").forEach((div) => {
             const paragraphTag = div.querySelector("p[data-duration]");
             const timerDuration = `PAUSE ${paragraphTag.getAttribute(
               "data-duration"
-            )}s`;
+            )}s `;
             div.replaceWith(document.createTextNode(timerDuration));
           });
 

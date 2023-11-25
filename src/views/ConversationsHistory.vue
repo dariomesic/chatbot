@@ -966,7 +966,7 @@ th {
   text-align: left;
 }
 
-th:hover {
+th:not(:last-child):hover {
   user-select: none;
   filter: brightness(80%);
   cursor: pointer;

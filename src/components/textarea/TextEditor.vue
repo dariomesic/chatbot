@@ -232,7 +232,8 @@ export default {
                 ></path>
               </svg>
             </button>
-            <button id="delete">
+            <button id="delete"
+            >
               <svg
                 focusable="false"
                 preserveAspectRatio="xMidYMid meet"
@@ -290,6 +291,7 @@ export default {
       setTimeout(() => {
         const editButton = tempContainer.querySelector("#edit");
         const deleteButton = tempContainer.querySelector("#delete");
+
         editButton.addEventListener("click", (event) => {
           this.editTimer(event);
         });
@@ -503,12 +505,20 @@ export default {
   },
   mounted() {
     this.isActive();
-    const editorWrapper = document.querySelector(".textarea");
-    editorWrapper.addEventListener("click", (event) => {
-      if (event.target.classList.contains("edit")) {
-        this.editTimer(event);
-      } else if (event.target.classList.contains("delete")) {
-        this.deleteTimer(event);
+    this.$nextTick(() => {
+      const editButton = this.$refs.editor.querySelectorAll("#edit");
+      const deleteButton = this.$refs.editor.querySelectorAll("#delete");
+      if (editButton && deleteButton) {
+        editButton.forEach((edit) => {
+          edit.addEventListener("click", (event) => {
+            this.editTimer(event);
+          });
+        });
+        deleteButton.forEach((del) => {
+          del.addEventListener("click", (event) => {
+            this.deleteTimer(event);
+          });
+        });
       }
     });
   },
