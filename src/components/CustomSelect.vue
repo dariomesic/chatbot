@@ -145,6 +145,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+  max-height: 1.1rem;
 }
 
 .option:last-child {
