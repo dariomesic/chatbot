@@ -314,7 +314,7 @@ export default{
     renderOptions(message) {
       let optionsHtml = '';
       message.customer_response.forEach((option) => {
-        optionsHtml += `<button class="bot-option" data-text="${message.assistant_answer}")">${option}</button>`;
+        optionsHtml += `<button class="bot-option" data-text='${message.assistant_answer})'>${option}</button>`;
       });
       return optionsHtml;
     },
