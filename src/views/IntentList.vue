@@ -441,7 +441,6 @@ export default {
   async created() {
     await this.getIntents();
     this.initialIntents = [...this.intents];
-    this.$emit("getIntents", this.intents);
   },
   computed: {
     filteredIntents() {

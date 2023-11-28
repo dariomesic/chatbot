@@ -314,7 +314,7 @@
               <span style="font-size: 14px">{{ conversation.session_id }}</span>
             </div>
           </td>
-          <td>{{ getIntentName(conversation) }}</td>
+          <td>{{ conversation.intent_name }}</td>
           <td>
             <span style="word-break: break-all">
               <template v-if="conversation.thumbs_up === 1">
@@ -530,7 +530,6 @@ export default {
     CustomSelect,
     SortingIcon,
   },
-  props: ["intents"],
   data() {
     return {
       conversations: [],
@@ -558,11 +557,6 @@ export default {
   },
   async created() {
     await this.getConversations();
-    this.intents.forEach((intent) => {
-      if (!this.uniqueIntents.includes(intent.name)) {
-        this.uniqueIntents.push(intent.name);
-      }
-    });
     const today = new Date().toISOString().split("T")[0];
     this.startMaxDate = today;
     this.endMaxDate = today;
@@ -674,10 +668,7 @@ export default {
       }
       if (this.selectedIntents.length > 0) {
         filtered = filtered.filter((conversation) => {
-          const intent = this.intents.find(
-            (int) => int.id === conversation.intent_id
-          );
-          return this.selectedIntents.includes(intent.name);
+          return this.selectedIntents.includes(conversation.intent_name);
         });
       }
 
@@ -753,11 +744,14 @@ export default {
     async getConversations() {
       if (this.$route.query.system_id !== undefined) {
         try {
-          console.log(this.$route.query.system_id);
           this.conversations = await DataService.getConversationsForSystem(
             this.$route.query.system_id
           );
-          console.log(this.conversations);
+          this.conversations.forEach((conversation) => {
+            if (!this.uniqueIntents.includes(conversation.intent_name)) {
+              this.uniqueIntents.push(conversation.intent_name);
+            }
+          });
           this.initialConversationsOrder = [...this.conversations];
         } catch (error) {
           console.error(error);
@@ -789,9 +783,9 @@ export default {
           });
         } else if (sortSubject === "intents") {
           this.conversations.sort((a, b) => {
-            const intentA = this.intents.find((int) => int.id === a.intent_id);
-            const intentB = this.intents.find((int) => int.id === b.intent_id);
-            return intentA.name.localeCompare(intentB.name);
+            const intentA = this.uniqueIntents.find((int) => int === a.intent_name);
+            const intentB = this.uniqueIntents.find((int) => int === b.intent_name);
+            return intentA.localeCompare(intentB);
           });
         } else if (sortSubject === "requests") {
           this.conversations.sort((a, b) => a.text.localeCompare(b.text));
@@ -806,9 +800,9 @@ export default {
           });
         } else if (sortSubject === "intents") {
           this.conversations.sort((a, b) => {
-            const intentA = this.intents.find((int) => int.id === a.intent_id);
-            const intentB = this.intents.find((int) => int.id === b.intent_id);
-            return intentB.name.localeCompare(intentA.name);
+            const intentA = this.uniqueIntents.find((int) => int === a.intent_name);
+            const intentB = this.uniqueIntents.find((int) => int === b.intent_name);
+            return intentB.localeCompare(intentA);
           });
         } else if (sortSubject === "requests") {
           this.conversations.sort((a, b) => b.text.localeCompare(a.text));
@@ -816,16 +810,6 @@ export default {
       } else if (this.sortIcon[index] === 3) {
         this.sortIcon[index] = 1;
         this.conversations = [...this.initialConversationsOrder];
-      }
-    },
-    getIntentName(conversation) {
-      const intent = this.intents.find(
-        (int) => int.id === conversation.intent_id
-      );
-      if (!intent) {
-        return "nedefinirano";
-      } else {
-        return intent.name;
       }
     },
     toggleDropdown() {

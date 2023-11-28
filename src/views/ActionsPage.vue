@@ -61,10 +61,10 @@
           <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a></span
         >
         <template v-if="activeTab === 'Namjere'">
-          <IntentList @getIntents="getIntents" />
+          <IntentList />
         </template>
         <template v-else-if="activeTab === 'Razgovori'">
-          <ConversationsHistory :intents="intents" />
+          <ConversationsHistory />
         </template>
         <template v-else-if="activeTab === 'Postavke'">
           <SettingsPage />
@@ -90,15 +90,11 @@ export default {
   data() {
     return {
       activeTab: "Namjere",
-      intents: [],
     };
   },
   methods: {
     setActiveTab(tab) {
       this.activeTab = tab;
-    },
-    getIntents(int) {
-      this.intents = int;
     },
   },
 };
