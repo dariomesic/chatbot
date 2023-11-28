@@ -278,7 +278,7 @@ export default{
       }
       else if(message.continuation === 'Nastavite na idući korak'){
         try {
-          const response = await DataService.nextStep(message); //ovo popraviti, tu ide jos i conditions
+          const response = await DataService.nextStep(message, this.conditions[this.sessionUUID]); //ovo popraviti, tu ide jos i conditions
           response.intent_id = message.intent_id
           this.showOptions = false
           this.chatbotOptions = ''

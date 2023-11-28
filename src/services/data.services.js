@@ -223,14 +223,14 @@
     })
   }
 
-  nextStep(response){
+  nextStep(response, conditions){
     return fetch('/nextStep', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({response: response})
+      body: JSON.stringify({response: response, conditions: conditions})
     })
     .then((response) => {
         if (!response.ok) {
@@ -578,14 +578,14 @@ class DataService {
     })
   }
 
-  nextStep(response){
+  nextStep(response, conditions){
     return fetch('/api/nextStep', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({response: response})
+      body: JSON.stringify({response: response, conditions: conditions})
     })
     .then((response) => {
         if (!response.ok) {
