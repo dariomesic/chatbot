@@ -200,7 +200,7 @@ export default {
           container.innerHTML = selectedAnswerObject.answer;
 
           container.querySelectorAll("img").forEach((img) => {
-            img.replaceWith(document.createTextNode("SLIKA "));
+            img.replaceWith(document.createTextNode("SLIKA"));
           });
 
           container.querySelectorAll(".pause-wrapper").forEach((div) => {

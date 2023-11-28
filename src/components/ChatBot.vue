@@ -277,11 +277,20 @@ export default{
         this.addBotMessage(response)
       }
       else if(message.continuation === 'Nastavite na idući korak'){
-        const response = await DataService.nextStep(message); //ovo popraviti, tu ide jos i conditions
-        response.intent_id = message.intent_id
-        this.showOptions = false
-        this.chatbotOptions = ''
-        this.addBotMessage(response);
+        try {
+          const response = await DataService.nextStep(message); //ovo popraviti, tu ide jos i conditions
+          response.intent_id = message.intent_id
+          this.showOptions = false
+          this.chatbotOptions = ''
+          this.addBotMessage(response);
+        } catch (error) {
+          const response = 
+          {
+            assistant_answer: `Završetak radnje`,
+            continuation: 'Završetak radnje'
+          }
+          this.addBotMessage(response);
+        }
       }
       else if(message.continuation === 'Završetak radnje'){
         this.responseApi = {}
@@ -312,10 +321,35 @@ export default{
     },
 
     renderOptions(message) {
-      let optionsHtml = '';
-      message.customer_response.forEach((option) => {
-        optionsHtml += `<button class="bot-option" data-text='${message.assistant_answer}'>${option}</button>`;
+      // Clone the message object to avoid modifying the original data
+      const modifiedMessage = { ...message };
+
+      // Replace img elements with "SLIKA"
+      const container = document.createElement('div');
+      container.innerHTML = modifiedMessage.assistant_answer;
+      container.querySelectorAll('img').forEach((img) => {
+        img.replaceWith(document.createTextNode('SLIKA'));
       });
+
+      // Replace pause elements with "PAUSE {duration}s"
+      container.querySelectorAll('.pause-wrapper').forEach((div) => {
+        const paragraphTag = div.querySelector('p[data-duration]');
+        if (paragraphTag) {
+          const timerDuration = `PAUSE ${paragraphTag.getAttribute('data-duration')}s `;
+          div.replaceWith(document.createTextNode(timerDuration));
+        }
+      });
+
+      // Update the modified message with the replaced HTML
+      modifiedMessage.assistant_answer = container.innerHTML;
+
+      // Generate HTML for options using the modified message
+      let optionsHtml = '';
+      modifiedMessage.customer_response.forEach((option) => {
+        optionsHtml += `<button class="bot-option" data-text='${modifiedMessage.assistant_answer}'>${option}</button>`;
+      });
+
+      // Remove extra white spaces from the generated HTML
       return optionsHtml;
     },
 
