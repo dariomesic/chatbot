@@ -1,5 +1,6 @@
 <template>
   <div class="main-block">
+    <h3>Popis razgovora od strane chatbota i korisnika</h3>
     <div class="filters-container">
       <div class="input-control" style="width: 15vw">
         <label>Odaberite vremenski raspon</label>
@@ -873,7 +874,7 @@ export default {
 
 <style scoped>
 .main-block {
-  padding: 2rem;
+  padding: 2rem 2rem;
 }
 .filters-container {
   display: flex;

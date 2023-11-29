@@ -31,33 +31,27 @@
           <span>1. Odaberite gornji prag u kojem chatbot direktno vraća odgovor: </span>
           <CustomSelect
             :options="Array.from({ length: 100 }, (_, index) => index + 1)"
-            :value="93"
+            :value="upperThreshold"
+            @update:value="upperThreshold = $event"
           />
         </div>
 
-        <!-- Second Part: < Odaberite prag između > -->
-        <div style="align-items: center;display: flex;display:flex;flex-wrap:wrap">
-          <span>2. Odaberite prag između u kojem chatbot nudi teme za korisnika: </span>
-          <CustomSelect
-            :options="Array.from({ length: 100 }, (_, index) => index + 1)"
-            :value="80"
-          />
-          do
-          <CustomSelect
-            :options="Array.from({ length: 100 }, (_, index) => index + 1)"
-            :value="93"
-          />
-        </div>
 
         <!-- Third Part: Odaberite donji prag < -->
         <div style="align-items: center;flex-wrap: wrap;display:flex;flex-wrap:wrap">
           <span>3. Odaberite donji prag u kojem chatbot traži korisnika da ponovno pita pitanje: </span>
             <CustomSelect
               :options="Array.from({ length: 100 }, (_, index) => index + 1)"
-              :value="80"
+              :value="lowerThreshold"
+              @update:value="lowerThreshold = $event"
             />
         </div>
       </div>
+
+      <div style="margin-top:2em;font-style: italic;font-weight:bold;font-size:12px">
+        <p>Napomena: Prag između gornjeg i donjeg bit će odabran korisniku da odabere temu na koji želi svoj odgovor</p>
+      </div>
+
     </section>
     <button @click="saveContent" class="background-button" tabindex="0" type="button" style="margin-top:2rem"> Spremi 
       <svg class="svg" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Saved" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" role="img">
@@ -83,8 +77,15 @@ export default {
       lowerThreshold: null,
     };
   },
-  created() {
+  async created() {
     this.filterOldValues();
+    try {
+      let res = await DataService.getThresholdsBySystemId(this.$route.query.system_id)
+      this.upperThreshold = res[0].percentage_upper
+      this.lowerThreshold = res[0].percentage_lower
+    } catch (error) {
+      console.error('Error fetching thresholds:', error);
+    }
   },
   methods: {
     async filterOldValues() {
@@ -163,6 +164,7 @@ export default {
         });
 
         await DataService.updateSynonyms(this.$route.query.system_id, synonymsObject);
+        await DataService.updateThresholdsBySystemId(this.$route.query.system_id, this.upperThreshold, this.lowerThreshold)
       } catch (error) {
         console.error("Error saving content:", error);
       }

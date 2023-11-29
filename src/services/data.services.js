@@ -88,6 +88,30 @@
     })
   }
 
+  getThresholdsBySystemId(system_id){
+    return fetch('/getThresholdsBySystemId?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateThresholdsBySystemId(system_id, percentage_upper, percentage_lower){
+    return fetch('/updateThresholdsBySystemId?system_id=' + system_id + '&percentage_upper=' + percentage_upper + '&percentage_lower=' + percentage_lower, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   postQuestion(question, intent_id, system_id){
     return fetch('/postQuestion', {
       method : "POST",
@@ -450,6 +474,30 @@ class DataService {
   
   getQuestionsForIntent(intent_id){
     return fetch('/api/getQuestionsForIntent?intent_id=' + intent_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  getThresholdsBySystemId(system_id){
+    return fetch('/api/getThresholdsBySystemId?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateThresholdsBySystemId(system_id, percentage_upper, percentage_lower){
+    return fetch('/api/updateThresholdsBySystemId?system_id=' + system_id + '&percentage_upper=' + percentage_upper + '&percentage_lower=' + percentage_lower, {
       method : "GET",
     })
     .then((response) => {
