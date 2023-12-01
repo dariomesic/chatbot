@@ -701,6 +701,23 @@ class DataService {
     })
   }
 
+  updateSynonyms(system_id, synonyms){
+    return fetch('/api/updateSynonyms', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({system_id: system_id, synonyms: synonyms})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   sendQuestions(questions, intent_id, system_id){
     return fetch('/api/sendQuestions?questions=' + questions + '&intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "GET",
