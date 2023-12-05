@@ -333,7 +333,7 @@
                   margin: auto;
                 "
                 :innerHTML="
-                  ruleCopy.previous_response.id +
+                  ruleCopy.previous_response.id + 1 +
                   '. ' +
                   ruleCopy.previous_response.name
                 "
