@@ -36,12 +36,12 @@ export default {
   methods:{
     applyResponse(){
       var foundId = ''
-      this.rules.forEach((item) => {
-        if (item.assistant_answer === this.selected) {
-          foundId = item.id;
-          return;
-        }
-      })
+      this.rules.forEach((item, index) => {
+          if (item.assistant_answer === this.selected) {
+              foundIndex = index;
+              return;  // Use 'return' to exit the loop early once a match is found
+          }
+      });
       this.$emit("addResponse", {name: this.selected, id: foundId});
       this.$emit('close')
     }

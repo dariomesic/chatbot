@@ -191,8 +191,17 @@ export default{
                   //OVDJE SE SAD SPREMA VRIJEDNOST U TABLICU LOGOVA
                 } else {
                     const errorMessage = "Unijeli ste netočan regularni izraz. Molim Vas pokušajte ponovno.";
-                    this.addBotMessage({ assistant_answer: errorMessage });
-                }
+                    let messageText = `<div class="bot-response text" text-first="true">` + errorMessage + '</div>'
+                    this.messages.push({
+                      text: '<img src="https://raw.githubusercontent.com/emnatkins/cdn-codepen/main/wvjGzXp/6569264.png" alt="ChatBot"> <span>ChatBot</span>',
+                      classes: ['captionBot', 'msgCaption'],
+                      dataUser: false,
+                    },
+                    {
+                      text: messageText,
+                      classes: ['message'],
+                      dataUser: false});
+                    }
             } else {
                 // For other response types, use the default DataService.sendMessage
                 const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id, this.sessionUUID);
@@ -278,7 +287,7 @@ export default{
       }
       else if(message.continuation === 'Nastavite na idući korak'){
         try {
-          const response = await DataService.nextStep(message, this.conditions[this.sessionUUID]); //ovo popraviti, tu ide jos i conditions
+          const response = await DataService.nextStep(message, this.conditions[this.sessionUUID]);
           response.intent_id = message.intent_id
           this.showOptions = false
           this.chatbotOptions = ''
