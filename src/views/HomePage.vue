@@ -88,7 +88,7 @@
                 </g>
               </g>
             </svg>
-            <a @click="route(chatbot)">{{ chatbot.name }}</a>
+            <a style="margin-top:2px" @click="route(chatbot)">{{ chatbot.name }}</a>
           </div>
         </td>
         <td>

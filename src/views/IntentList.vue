@@ -177,7 +177,7 @@
                 ></path>
                 <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
               </svg>
-              <a @click="navigateToDetail(intent)">{{
+              <a style="margin-top:2px" @click="navigateToDetail(intent)">{{
                 intent.name ? intent.name : "Bez naslova"
               }}</a>
             </div>
