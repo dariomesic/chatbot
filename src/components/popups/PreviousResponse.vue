@@ -35,10 +35,10 @@ export default {
   },
   methods:{
     applyResponse(){
-      var foundId = ''
+      var foundId = -1
       this.rules.forEach((item, index) => {
           if (item.assistant_answer === this.selected) {
-              foundIndex = index;
+              foundId = index;
               return;  // Use 'return' to exit the loop early once a match is found
           }
       });
