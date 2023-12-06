@@ -81,6 +81,7 @@
             @mouseleave="setSortIcon(0, false)"
             @click="toggleSortIcon(0, 'name')"
             :class="{ active: sortIcon[0] === 2 || sortIcon[0] === 3 }"
+            style="width:25vw"
           >
             <div class="span-wrapper">
               <span> Naziv </span>
@@ -97,6 +98,7 @@
             @mouseleave="setSortIcon(1, false)"
             @click="toggleSortIcon(1, 'lastEdit')"
             :class="{ active: sortIcon[1] === 2 || sortIcon[1] === 3 }"
+            style="width:15vw"
           >
             <div class="span-wrapper">
               <span> Zadnje uređivanje</span>
@@ -113,6 +115,7 @@
             @mouseleave="setSortIcon(2, false)"
             @click="toggleSortIcon(2, 'numOfQuestions')"
             :class="{ active: sortIcon[2] === 2 || sortIcon[2] === 3 }"
+            style="width:10vw"
           >
             <div class="span-wrapper">
               <span> Broj pitanja </span>
@@ -144,8 +147,8 @@
           <th>Opcije</th>
         </tr>
       </thead>
-      <TransitionGroup name="list" tag="tbody">
-        <tr v-for="(intent, index) in filteredIntents" :key="intent.id">
+      <TransitionGroup name="table-list" tag="tbody" mode="out-in">
+        <tr v-for="(intent, index) in filteredIntents" :key="index">
           <td>
             <input
               type="checkbox"
@@ -177,7 +180,7 @@
                 ></path>
                 <path d="M10 22H22V24H10zM10 16H22V18H10z"></path>
               </svg>
-              <a style="margin-top:2px" @click="navigateToDetail(intent)">{{
+              <a style="margin-top: 2px" @click="navigateToDetail(intent)">{{
                 intent.name ? intent.name : "Bez naslova"
               }}</a>
             </div>
@@ -441,6 +444,11 @@ export default {
   async created() {
     await this.getIntents();
     this.initialIntents = [...this.intents];
+  },
+  watch: {
+    itemsPerPage() {
+      this.currentPage = 1;
+    },
   },
   computed: {
     filteredIntents() {
@@ -832,7 +840,6 @@ hr {
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s linear;
-
 }
 
 .fade-enter-from,
@@ -843,7 +850,6 @@ hr {
 .pop-enter-active,
 .pop-leave-active {
   transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
-
 }
 
 .pop-enter-from,

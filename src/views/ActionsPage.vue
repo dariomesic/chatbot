@@ -33,7 +33,7 @@
             top: 1rem;
             display: flex;
             cursor: pointer;
-            z-index:1
+            z-index: 1;
           "
           ><svg
             viewBox="0 0 1024 1024"
@@ -71,7 +71,7 @@
         </template>
       </div>
     </div>
-    <div class="footer"/>
+    <div class="footer" />
   </div>
 </template>
 
@@ -85,7 +85,7 @@ export default {
     Navbar,
     IntentList,
     ConversationsHistory,
-    SettingsPage
+    SettingsPage,
   },
   data() {
     return {
@@ -101,14 +101,17 @@ export default {
 </script>
 
 <style scoped>
+
 .main-block {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .content-container {
   display: flex;
   flex-direction: row;
+  flex-grow: 1;
 }
 
 .left-part {
@@ -141,5 +144,6 @@ li {
 .footer {
   background: var(--background);
   height: 10vh;
+  margin-top: auto;
 }
 </style>

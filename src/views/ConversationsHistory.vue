@@ -1,5 +1,5 @@
 <template>
-  <div class="main-block">
+  <div class="conversations-main-block">
     <h3>Popis razgovora od strane chatbota i korisnika</h3>
     <div class="filters-container">
       <div class="input-control" style="width: 15vw">
@@ -302,11 +302,8 @@
           </th>
         </tr>
       </thead>
-      <TransitionGroup name="list" tag="tbody">
-        <tr
-          v-for="conversation in filteredConversations"
-          :key="conversation.conversation_id"
-        >
+      <TransitionGroup name="table-list" tag="tbody" mode="out-in">
+        <tr v-for="(conversation, index) in filteredConversations" :key="index">
           <td>
             <div style="display: flex; flex-direction: column">
               <span style="margin-bottom: 0.5rem; color: var(--main__color)">{{
@@ -642,6 +639,9 @@ export default {
         this.SelectedDateRange = "Danas";
       }
     },
+    itemsPerPage() {
+      this.currentPage = 1;
+    },
   },
   computed: {
     filteredConversations() {
@@ -748,6 +748,11 @@ export default {
           this.conversations = await DataService.getConversationsForSystem(
             this.$route.query.system_id
           );
+          this.conversations.sort((a, b) => {
+            const timeA = new Date(a.time);
+            const timeB = new Date(b.time);
+            return timeB - timeA;
+          });
           this.conversations.forEach((conversation) => {
             if (!this.uniqueIntents.includes(conversation.intent_name)) {
               this.uniqueIntents.push(conversation.intent_name);
@@ -784,8 +789,12 @@ export default {
           });
         } else if (sortSubject === "intents") {
           this.conversations.sort((a, b) => {
-            const intentA = this.uniqueIntents.find((int) => int === a.intent_name);
-            const intentB = this.uniqueIntents.find((int) => int === b.intent_name);
+            const intentA = this.uniqueIntents.find(
+              (int) => int === a.intent_name
+            );
+            const intentB = this.uniqueIntents.find(
+              (int) => int === b.intent_name
+            );
             return intentA.localeCompare(intentB);
           });
         } else if (sortSubject === "requests") {
@@ -801,8 +810,12 @@ export default {
           });
         } else if (sortSubject === "intents") {
           this.conversations.sort((a, b) => {
-            const intentA = this.uniqueIntents.find((int) => int === a.intent_name);
-            const intentB = this.uniqueIntents.find((int) => int === b.intent_name);
+            const intentA = this.uniqueIntents.find(
+              (int) => int === a.intent_name
+            );
+            const intentB = this.uniqueIntents.find(
+              (int) => int === b.intent_name
+            );
             return intentB.localeCompare(intentA);
           });
         } else if (sortSubject === "requests") {
@@ -873,7 +886,7 @@ export default {
 </script>
 
 <style scoped>
-.main-block {
+.conversations-main-block {
   padding: 2rem 2rem;
 }
 .filters-container {
@@ -890,7 +903,7 @@ export default {
   font: inherit;
   color: #555353;
   margin-bottom: 6px;
-  font-size: 10px;
+  font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
