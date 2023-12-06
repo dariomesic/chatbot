@@ -42,7 +42,7 @@ export default {
               return;  // Use 'return' to exit the loop early once a match is found
           }
       });
-      this.$emit("addResponse", {name: this.selected, id: foundId});
+      this.$emit("addResponse", {name: this.selected, id: foundId + 1});
       this.$emit('close')
     }
   }
