@@ -28,28 +28,22 @@
         <div>
         <!-- First Part: Odaberite gornji prag > -->
         <div style="align-items: center;display:flex;flex-wrap:wrap">
-          <span>1. Odaberite gornji prag u kojem chatbot direktno vraća odgovor: </span>
-          <CustomSelect
-            :options="Array.from({ length: 100 }, (_, index) => index + 1)"
-            :value="upperThreshold"
-            @update:value="upperThreshold = $event"
-          />
+          <span>1. Unesite gornji prag za koji chatbot direktno vraća odgovor: </span>
+          <div contenteditable="true" @blur="upperThreshold = $event.target.innerText" style="background: var(--background);padding-right: 2rem;scroll-margin-bottom: 2rem;padding: 8px 15px 8px 15px;line-height: 17px;box-sizing: border-box;word-wrap: break-word;margin: 0px 7px 0px 7px">
+            {{ upperThreshold }}
+          </div>
+          <p style="font-size:9px">(0.0 - 100.0)</p>
         </div>
 
 
         <!-- Third Part: Odaberite donji prag < -->
         <div style="align-items: center;flex-wrap: wrap;display:flex;flex-wrap:wrap">
-          <span>3. Odaberite donji prag u kojem chatbot traži korisnika da ponovno pita pitanje: </span>
-            <CustomSelect
-              :options="Array.from({ length: 100 }, (_, index) => index + 1)"
-              :value="lowerThreshold"
-              @update:value="lowerThreshold = $event"
-            />
+          <span>2. Unesite donji prag za koji chatbot traži korisnika da ponovno pita pitanje: </span>
+          <div contenteditable="true" @blur="lowerThreshold = $event.target.innerText" style="background: var(--background);padding-right: 2rem;scroll-margin-bottom: 2rem;padding: 8px 15px 8px 15px;line-height: 17px;box-sizing: border-box;word-wrap: break-word;margin: 0px 7px 0px 7px">
+            {{ lowerThreshold }}
+          </div>
+          <p style="font-size:9px">(0.0 - 100.0)</p>
         </div>
-      </div>
-
-      <div style="margin-top:2em;font-style: italic;font-weight:bold;font-size:12px">
-        <p>Napomena: Prag između gornjeg i donjeg bit će odabran korisniku da odabere temu na koji želi svoj odgovor</p>
       </div>
 
     </section>
@@ -63,9 +57,7 @@
 
 <script>
 import DataService from "../services/data.services";
-import CustomSelect from "../components/CustomSelect.vue";
 export default {
-  components:{CustomSelect},
   data() {
     return {
       editing: false,
