@@ -7,6 +7,15 @@
 <script>
 export default {
   name: "App",
+  watch: {
+    $route(to) {
+      if (to.path === "/actions") {
+        document.documentElement.style.overflowY = "scroll";
+      } else {
+        document.documentElement.style.overflowY = "unset";
+      }
+    },
+  },
 };
 </script>
 
@@ -108,7 +117,8 @@ p {
   margin: unset;
 }
 
-input[type="text"], .custom-input {
+input[type="text"],
+.custom-input {
   background-color: #fff;
   border: none;
   color: #161616;
@@ -123,7 +133,8 @@ input[type="text"], .custom-input {
   width: 100%;
 }
 
-input[type="text"]:focus, .custom-input:focus {
+input[type="text"]:focus,
+.custom-input:focus {
   outline: 2px solid #0f62fe;
 }
 
@@ -194,8 +205,8 @@ a:hover {
   white-space: initial;
 }
 
-.option-text > .pause-wrapper{
-  display:none;
+.option-text > .pause-wrapper {
+  display: none;
 }
 
 .pause {
@@ -239,5 +250,14 @@ a:hover {
 .fade_main-enter-from,
 .fade_main-leave-to {
   opacity: 0;
+}
+.table-list-enter-active,
+.table-list-leave-active {
+  transition: all 0.5s ease;
+}
+.table-list-enter-from,
+.table-list-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
 }
 </style>
