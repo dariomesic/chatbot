@@ -8,7 +8,7 @@
           <title>Open menu</title>
         </svg>
       </div>
-      <div v-show="optionsVisible" class="options">
+      <div v-show="optionsVisible" class="options" :style="position === 'up' ? { bottom: '100%', top: 'unset', borderTop: '1px solid #0f62fe' } : {}">
         <div
           class="option"
           v-for="option in options"
@@ -28,6 +28,7 @@ export default {
     options: Array,
     value: Number, // The value prop for v-model
     placeholder: String,
+    position: String,
   },
   emits: ["update:value"], // Event for v-model
   data() {
