@@ -6,7 +6,7 @@
             </div>
             <div class="InfoBot">
                 <p class="TitleBot">ChatBot</p>
-                <p class="status">Na vezi</p>
+                <p class="status">Na vezii</p>
             </div>
             <div style="display: flex;right: 0;position: absolute;padding-right: 16px;">
               <button type="button" class="controls" @click="refresh">
