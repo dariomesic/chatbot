@@ -291,6 +291,9 @@
               option === 'Vrati se na pod-akciju'
                 ? (isPreviousResponseOpen = true)
                 : '';
+              option === 'Kontaktirajte agenta'
+                ? (isMailResponseOpen = true)
+                : '';
             "
           >
             {{ option }}
@@ -305,6 +308,8 @@
           </div>
         </div>
       </div>
+
+      <!--VRATI SE NA AKCIJU POPUP -->
       <div
         v-if="
           ruleCopy.continuation === 'Vrati se na pod-akciju' &&
@@ -355,6 +360,35 @@
           </button>
         </div>
       </div>
+
+      <!--MAIL POPUP-->
+      <div
+        v-else-if="
+          ruleCopy.continuation === 'Kontaktirajte agenta' &&
+          ruleCopy.mail_options
+        "
+        style="background-color: #f4f4f4; margin-top: 1%; position: relative"
+      >
+        <div style="padding:10px">
+          <div v-for="(value, key) in ruleCopy.mail_options" :key="key" class="key-value-pair">
+            <p><strong>{{ key }}:</strong> {{ value }}</p>
+          </div>
+        </div>
+        <div
+          style="border-top: 1px solid #e0e0e0; display: flex; flex-wrap: wrap"
+        >
+          <button
+            class="color-button"
+            style="padding: calc(0.375rem - 3px) 16px"
+            tabindex="0"
+            type="button"
+            @click="isMailResponseOpen = true"
+          >
+            Uredi odgovor
+          </button>
+        </div>
+      </div>
+
     </div>
     <button
       @click="emitDeleteRuleEvents"
@@ -408,6 +442,12 @@
       @addResponse="addResponse"
       @close="isPreviousResponseOpen = false"
     />
+    <MailResponse
+      :isMailResponseOpen="isMailResponseOpen"
+      :mail="ruleCopy.mail_options"
+      @applyResponse="applyResponse"
+      @close="isMailResponseOpen = false"
+    />
   </Teleport>
 </template>
 <script>
@@ -417,6 +457,7 @@ import CustomSelect from "./CustomSelect.vue";
 import Popup from "./popups/OptionResponse.vue";
 import RegexPopup from "./popups/RegexResponse.vue";
 import PreviousResponse from "./popups/PreviousResponse.vue";
+import MailResponse from "./popups/MailResponse.vue"
 export default {
   components: {
     TextEditor,
@@ -425,6 +466,7 @@ export default {
     Popup,
     RegexPopup,
     PreviousResponse,
+    MailResponse
   },
   props: {
     rule: Object,
@@ -454,16 +496,19 @@ export default {
         "Nastavite na idući korak",
         "Vrati se na pod-akciju",
         "Završetak radnje",
+        "Kontaktirajte agenta"
       ],
       step_details: [
         "Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.",
         "Vrati se na pod-akciju za obavljanje određenog zadatka.",
         "Neka ovo bude posljednji korak koji dovršava radnju.",
+        "Prenesite klijenta nekome iz vašeg tima za podršku."
       ],
       step_selected: this.rule.continuation,
       show_modal: false,
       isRegexOpen: false,
       isPreviousResponseOpen: false,
+      isMailResponseOpen: false,
       ruleCopy: { ...this.rule },
     };
   },
@@ -510,7 +555,10 @@ export default {
     addResponse(obj) {
       this.ruleCopy.previous_response = obj;
       this.$emit("updateRule", this.ruleCopy);
-      console.log(this.ruleCopy);
+    },
+    applyResponse(obj) {
+      this.ruleCopy.mail_options = obj;
+      this.$emit("updateRule", this.ruleCopy);
     },
     updateConditions(conditions) {
       this.ruleCopy.conditions = conditions;
@@ -782,5 +830,18 @@ h2[class="plus-separator"]:after {
   max-width: 100%;
   vertical-align: middle;
   border-radius: 0.9375rem;
+}
+
+.key-value-pair {
+  margin-bottom: 8px;
+}
+
+.key-value-pair p {
+  display: flex;
+  gap: 1rem;
+}
+
+.key-value-pair strong {
+  font-weight: bold;
 }
 </style>

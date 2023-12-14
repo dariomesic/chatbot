@@ -301,6 +301,7 @@
             <CustomSelect
               :options="[2, 5, 10, 25, 100]"
               :value="itemsPerPage"
+              :position="'up'"
               @update:value="itemsPerPage = $event"
             />
           </div>

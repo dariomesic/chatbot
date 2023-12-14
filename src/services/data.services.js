@@ -335,8 +335,7 @@ class DataService {
   }
 
   sendMessage(question, systemID, uuid){
-    console.log(question, systemID, uuid)
-    return fetch('/chatbotSentMessage', {
+    return fetch('http://18.194.27.183:8080/chatbotSentMessage', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
