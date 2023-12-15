@@ -391,5 +391,22 @@ class DataService {
         return response.json();
     })
   }
+
+  sendMail(response, session_id, data, conditions, system_id){
+    return fetch('http://18.194.27.183:8080/sendMail', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({response: response, session_id: session_id, data: data, conditions: conditions, systemID: system_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
 }
 export default new DataService()

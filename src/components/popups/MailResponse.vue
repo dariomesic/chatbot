@@ -99,12 +99,12 @@ export default {
     mail: {
       handler(newVal) {
         if (newVal && typeof newVal === "object") {
-          this.to = newVal.to || '';
-          this.copy = newVal.copy || '';
-          this.name = newVal.name || '';
-          this.beggining = newVal.beggining || '';
-          this.end = newVal.end || '';
-          this.attached = newVal.attached || false;
+          this.to = newVal.Prima || '';
+          this.copy = newVal.Kopija || '';
+          this.name = newVal.Naslov || '';
+          this.beggining = newVal['Početak maila'] || '';
+          this.end = newVal['Kraj maila'] || '';
+          this.attached = newVal.Privitak || false;
         }
       },
       immediate: true
@@ -112,7 +112,7 @@ export default {
   },
   methods:{
     applyResponse(){
-      this.$emit("applyResponse", {to: this.to, copy: this.copy, name: this.name, beggining: this.beggining, end: this.end, attached: this.attached});
+      this.$emit("applyResponse", {'Prima': this.to, 'Kopija': this.copy, 'Naslov': this.name, 'Početak maila': this.beggining, 'Kraj maila': this.end, 'Privitak': this.attached});
       this.$emit('close')
     }
   }

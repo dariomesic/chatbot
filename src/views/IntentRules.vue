@@ -731,22 +731,23 @@ export default {
             )
           );
         }
-        if (apiRequests.length) {
-          apiRequests.push(
-            DataService.sendQuestions(
-              this.questions.length,
-              intentId,
-              this.$route.query.system_id
-            )
-          );
-        }
 
         if (!(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))) {
           apiRequests.push(DataService.updateRule(this.rules_copy, intentId));
         }
 
-        // Execute all API requests in parallel
+        // Execute parallel processes and wait for them to complete
         Promise.all(apiRequests)
+          .then(() => {
+            // After the parallel processes are complete, send questions
+            if (this.questions.length > 0) {
+              return DataService.sendQuestions(
+                this.questions.length,
+                intentId,
+                this.$route.query.system_id
+              );
+            }
+          })
           .then(() => {
             // Reload questions and rules after the batch operations
             this.loadQuestionsAndRules(this.intentTextCopy, intentId);
@@ -758,6 +759,7 @@ export default {
         console.error(error);
       }
     },
+
     updateShowDeleteRule(val, index) {
       this.showDeleteRuleDialog = val;
       this.selectedRuleIndex = index;
