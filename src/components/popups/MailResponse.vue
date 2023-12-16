@@ -92,8 +92,8 @@ export default {
   },
   computed: {
     isSubmitDisabled() {
-      return !(this.to && this.name && this.emailRegex.test(this.to));
-    }
+      return !(this.to.length > 0 && this.name && this.validateEmails(this.to));
+    },
   },
   watch: {
     mail: {
@@ -114,7 +114,10 @@ export default {
     applyResponse(){
       this.$emit("applyResponse", {'Prima': this.to, 'Kopija': this.copy, 'Naslov': this.name, 'Početak maila': this.beggining, 'Kraj maila': this.end, 'Privitak': this.attached});
       this.$emit('close')
-    }
+    },
+    validateEmails(emails) {
+      return emails.every((email) => this.emailRegex.test(email));
+    },
   }
 };
 </script>
