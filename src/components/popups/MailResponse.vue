@@ -13,7 +13,7 @@
         <input
           type="text"
           id="to-text"
-          placeholder="Primatelj maila"
+          placeholder="Primatelj maila (npr: petar@gmail.com, marko@hotmail.com...)"
           v-model="to"
         />
       </div>
@@ -23,7 +23,7 @@
         <input
           type="text"
           id="copy-text"
-          placeholder="Kopija"
+          placeholder="Kopija (npr: ivana@gmail.com, ana@hotmail.com...)"
           v-model="copy"
         />
       </div>
