@@ -577,6 +577,8 @@ export default{
       this.messages = []; // Clear messages
       this.responseApi = {}; // Reset responseApi
       this.showFeedbackButtons = false; // Reset feedback buttons
+      this.inputValue = "";//Reset input
+      this.$refs.textarea.style.height = '44px'
       this.initializeBot(); // Restart the chatbot
     },
     adjustTextareaHeight() {
