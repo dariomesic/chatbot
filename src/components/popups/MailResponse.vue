@@ -67,9 +67,6 @@
         <p>Priložene konverzacije (opcionalno)</p>
       </div>
 
-      <div style="margin:2em 0 2em 0;font-style: italic;font-weight:bold;font-size:12px">
-        <p>Napomena: Kontakt kojeg je unio korisnik uzima se u ovom koraku unutar razgovora</p>
-      </div>
     </div>
   </base-dialog>
 </template>

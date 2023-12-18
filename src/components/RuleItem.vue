@@ -502,7 +502,7 @@ export default {
         "Slijedite tijek radnji do bilo kojeg koraka koji je sljedeći.",
         "Vrati se na pod-akciju za obavljanje određenog zadatka.",
         "Neka ovo bude posljednji korak koji dovršava radnju.",
-        "Prenesite klijenta nekome iz vašeg tima za podršku."
+        "Omogućite korisniku da kontaktira korisničku podršku e-mailom."
       ],
       step_selected: this.rule.continuation,
       show_modal: false,
