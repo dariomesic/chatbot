@@ -40,8 +40,7 @@
 
       <div class="form-control">
         <label for="link-url">Početak maila (opcionalno)</label>
-        <input
-          type="text"
+        <textarea
           id="beggining-url"
           placeholder="Početak maila"
           v-model="beggining"
@@ -50,8 +49,7 @@
 
       <div class="form-control">
         <label for="link-url">Završetak radnje (opcionalno)</label>
-        <input
-          type="text"
+        <textarea
           id="end-url"
           placeholder="Završetak radnje"
           v-model="end"
@@ -158,5 +156,22 @@ input[type="checkbox" i] {
     border: initial;
     height: 20px;
     width: 20px;
+}
+textarea {
+  padding: 10px;
+  box-sizing: border-box;
+  min-height: 150px;
+  resize: vertical;
+  overflow-y: auto;
+  background: var(--background);
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.32px;
+  font-family: "Gill Sans", sans-serif;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 </style>

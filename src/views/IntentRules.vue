@@ -740,7 +740,7 @@ export default {
         Promise.all(apiRequests)
           .then(() => {
             // After the parallel processes are complete, send questions
-            if (this.questions.length > 0) {
+            if (this.addedQuestions.length > 0 || this.deletedQuestions.length > 0 || this.updatedQuestions.length > 0) {
               return DataService.sendQuestions(
                 this.questions.length,
                 intentId,

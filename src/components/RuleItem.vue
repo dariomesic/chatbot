@@ -371,7 +371,9 @@
       >
         <div style="padding:10px">
           <div v-for="(value, key) in ruleCopy.mail_options" :key="key" class="key-value-pair">
-            <p><strong>{{ key }}:</strong> {{ value }}</p>
+            <p v-if="!(key == 'Početak maila' || key == 'Kraj maila')"><strong>{{ key }}:</strong> {{ value }}</p>
+            <div v-else-if="key == 'Početak maila'" v-html="value.replace(/\n/g, '<br>') + '<br>( ****Odgovor korisnika iz chatbota koji unese svoje podatke za kontakt**** )'"></div>
+            <div v-else v-html="value.replace(/\n/g, '<br>')"/>
           </div>
         </div>
         <div
@@ -557,6 +559,7 @@ export default {
       this.$emit("updateRule", this.ruleCopy);
     },
     applyResponse(obj) {
+      console.log(obj)
       this.ruleCopy.mail_options = obj;
       this.$emit("updateRule", this.ruleCopy);
     },

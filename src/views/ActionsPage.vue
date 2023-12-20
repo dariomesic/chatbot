@@ -58,8 +58,9 @@
               ></path>
             </g>
           </svg>
-          <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a></span
-        >
+          <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a>
+        </span>
+        <h3>{{system_name}}</h3>
         <template v-if="activeTab === 'Namjere'">
           <IntentList />
         </template>
@@ -80,6 +81,7 @@ import Navbar from "../components/AppNavbar.vue";
 import IntentList from "./IntentList.vue";
 import ConversationsHistory from "./ConversationsHistory.vue";
 import SettingsPage from "./SettingsPage.vue";
+import DataService from "../services/data.services"
 export default {
   components: {
     Navbar,
@@ -90,7 +92,11 @@ export default {
   data() {
     return {
       activeTab: "Namjere",
+      system_name: ''
     };
+  },
+  async created(){
+    this.system_name = await DataService.getNameForSystem(this.$route.query.system_id)
   },
   methods: {
     setActiveTab(tab) {
@@ -145,5 +151,17 @@ li {
   background: var(--background);
   height: 10vh;
   margin-top: auto;
+}
+h3{
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--main__color); 
+  font-size: 18px; 
+  font-weight: 700;
+  margin-top: 0px;
+  font-style: italic;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
 }
 </style>
