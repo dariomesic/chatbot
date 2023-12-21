@@ -67,6 +67,7 @@
 
 <script>
 import DataService from '../services/data.services'
+import * as DOMPurify from 'dompurify';
 import { v4 as uuidv4 } from 'uuid';
 export default{
   data(){
@@ -133,8 +134,10 @@ export default{
     async sendMessage() {
       this.showFeedbackButtons = false
       if (this.inputValue !== '' && this.status_func_SendMsgBot === 0) {
+        // Sanitize the input to allow only plain text
+        const sanitizedInput = DOMPurify.sanitize(this.inputValue, { ALLOWED_TAGS: [] });
         // Add the sanitized input as a user message
-        this.addUserMessage(this.inputValue);
+        this.addUserMessage(sanitizedInput);
 
 
         try {
@@ -155,7 +158,7 @@ export default{
                 // Push the condition into the session's conditions array
                 this.conditions[this.sessionUUID].push(condition);
 
-                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, this.inputValue)
+                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, sanitizedInput)
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
@@ -173,7 +176,7 @@ export default{
                   // Push the condition into the session's conditions array
                   this.conditions[this.sessionUUID].push(condition);
 
-                  const response = await DataService.sendMail(this.responseApi, this.sessionUUID, this.inputValue, this.conditions[this.sessionUUID], this.$route.query.system_id)
+                  const response = await DataService.sendMail(this.responseApi, this.sessionUUID, sanitizedInput, this.conditions[this.sessionUUID], this.$route.query.system_id)
                   response.intent_id = this.responseApi.intent_id
                   this.addBotMessage(response);
                 } catch (error) {
@@ -197,7 +200,7 @@ export default{
             } else if (this.responseApi.response_type === 'Regularni izraz') {
                 // Handle "Regularni izraz" user response here
                 var regEx = new RegExp(this.responseApi.customer_response.split(' ')[1]);
-                if (regEx.test(this.inputValue)) {
+                if (regEx.test(sanitizedInput)) {
                   if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
                     let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
                     response.intent_id = this.responseApi.intent_id
@@ -213,7 +216,7 @@ export default{
                     // Push the condition into the session's conditions array
                     this.conditions[this.sessionUUID].push(condition);
 
-                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, this.inputValue)
+                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, sanitizedInput)
                     response.intent_id = this.responseApi.intent_id
                     this.addBotMessage(response);
                   }
@@ -231,7 +234,7 @@ export default{
                       // Push the condition into the session's conditions array
                       this.conditions[this.sessionUUID].push(condition);
 
-                      const response = await DataService.sendMail(this.responseApi, this.sessionUUID, this.inputValue, this.conditions[this.sessionUUID], this.$route.query.system_id)
+                      const response = await DataService.sendMail(this.responseApi, this.sessionUUID, sanitizedInput, this.conditions[this.sessionUUID], this.$route.query.system_id)
                       response.intent_id = this.responseApi.intent_id
                       this.addBotMessage(response);
                     } catch (error) {
@@ -267,7 +270,7 @@ export default{
                     }
             } else {
                 // For other response types, use the default DataService.sendMessage
-                const response = await DataService.sendMessage(this.inputValue, this.$route.query.system_id, this.sessionUUID);
+                const response = await DataService.sendMessage(sanitizedInput, this.$route.query.system_id, this.sessionUUID);
                 this.conditions[this.sessionUUID] = []
                 if(response.intent_id){ //if response has confidence > 0.9
                   this.selectedFeedbackButton = false;
