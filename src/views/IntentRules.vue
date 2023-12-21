@@ -216,7 +216,7 @@
                     </div>
                   </div>
                 </li>
-                <TransitionGroup name="list" tag="ul">
+                <TransitionGroup name="list" tag="ul" style="max-height:250px; overflow:scroll">
                   <li
                     v-for="(question, index) in questions"
                     :key="question.question_id"
