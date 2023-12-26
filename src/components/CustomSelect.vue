@@ -26,7 +26,7 @@
 export default {
   props: {
     options: Array,
-    value: Number, // The value prop for v-model
+    value: [Number, String], // The value prop for v-model
     placeholder: String,
     position: String,
   },

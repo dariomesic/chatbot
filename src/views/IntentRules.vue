@@ -67,7 +67,7 @@
         </span>
       </button>
       <div class="left-panel" :class="{ collapsed: isLeftPanelCollapsed }">
-        <transition name="card-slide" mode="in-out-left">
+        <transition name="card-slide">
           <section class="left-cards-container" v-show="!isLeftPanelCollapsed">
             <div class="left-cards">
               <!--CUSTOMER CARD-->
@@ -90,26 +90,24 @@
                 >
                   Slijed konverzacije
                 </p>
-                <TransitionGroup name="list" tag="ul">
-                  <div v-for="(card, index) in rules_copy" :key="card.id">
-                    <Card
-                      :key="componentKey"
-                      :card="card"
-                      :index="index"
-                      @click="scrollToCard(index)"
-                      @remove="removeRule"
-                      @duplicate="duplicateRule"
-                      @cardCopy="fillWithCopies"
-                      :isSelected="selectedCardIndex === index"
-                      :style="{
-                        backgroundColor:
-                          selectedCardIndex === index
-                            ? 'rgb(188, 218, 238)'
-                            : 'transparent',
-                      }"
-                    />
-                  </div>
-                </TransitionGroup>
+                <draggable v-model="rules_copy">
+                  <transition-group name="flip-transition">
+                    <div v-for="(card, index) in rules_copy" :key="card.id">
+                      <Card
+                        :card="card"
+                        :index="index"
+                        @click="scrollToCard(index)"
+                        @remove="removeRule"
+                        @duplicate="duplicateRule"
+                        @cardCopy="fillWithCopies"
+                        :isSelected="selectedCardIndex === index"
+                        :style="{
+                          backgroundColor: selectedCardIndex === index ? 'rgb(188, 218, 238)' : 'transparent',
+                        }"
+                      />
+                    </div>
+                  </transition-group>
+                </draggable>
               </div>
             </div>
             <hr />
@@ -304,7 +302,6 @@
                 :index="index"
                 :rules_answers="distinctAnswers"
                 :rules="rules_copy"
-                :triggerDeleteOptions="triggerDeleteOptions"
                 :isLeftPanelCollapsed="isLeftPanelCollapsed"
                 :isZooming="isZooming"
                 @add="addRule"
@@ -350,63 +347,63 @@
         </Transition>
       </div>
     </div>
+    <Teleport to="body">
+      <loading v-if="loading" />
+    </Teleport>
+    <Teleport to="body">
+      <action-dialog
+        :showDialog="showSaveDialog"
+        :leftButtonText="'Odbaci izmjene'"
+        :rightButtonText="'Spremi'"
+        @click-cancel="discardChanges"
+        @close="showSaveDialog = false"
+        @confirm-action="saveUnsavedChanges"
+      >
+        <template #title>Nespremljene izmjene</template>
+        <template #text
+          >Želite li spremiti svoje izmjene u "<strong>{{
+            intentTextCopy
+          }}</strong
+          >" prije nego što proslijedite dalje?</template
+        >
+      </action-dialog>
+    </Teleport>
+    <Teleport to="body">
+      <action-dialog
+        :showDialog="showDeleteRuleDialog"
+        :rightButtonText="'Obriši'"
+        @close="showDeleteRuleDialog = false"
+        @confirm-action="removeRule"
+      >
+        <template #title>Obriši Korak {{ selectedRuleIndex }}?</template>
+        <template #text
+          >Jeste li sigurni da želite obrisati
+          <span style="text-decoration: underline"
+            >Korak {{ selectedRuleIndex }}</span
+          >?
+          <br />
+          <br />
+          Svi koraci koji ovise o ovom koraku će biti pogođeni.</template
+        >
+      </action-dialog>
+    </Teleport>
+    <Teleport to="body">
+      <action-dialog
+        :showDialog="showDeleteOptionsDialog"
+        :rightButtonText="'Obriši'"
+        @close="showDeleteOptionsDialog = false"
+        @confirm-action="removeOptions"
+      >
+        <template #title
+          >Obriši odgovor korisnika za Korak {{ selectedRuleIndex }}?</template
+        >
+        <template #text
+          >Izgubljeni sadržaj i postavke neće biti moguće povratiti. Brisanje
+          odgovora ne briše odgovor asistenta.</template
+        >
+      </action-dialog>
+    </Teleport>
   </div>
-  <Teleport to="body">
-    <loading v-if="loading" />
-  </Teleport>
-  <Teleport to="body">
-    <action-dialog
-      :showDialog="showSaveDialog"
-      :leftButtonText="'Odbaci izmjene'"
-      :rightButtonText="'Spremi'"
-      @click-cancel="discardChanges"
-      @close="showSaveDialog = false"
-      @confirm-action="saveUnsavedChanges"
-    >
-      <template #title>Nespremljene izmjene</template>
-      <template #text
-        >Želite li spremiti svoje izmjene u "<strong>{{
-          intentTextCopy
-        }}</strong
-        >" prije nego što proslijedite dalje?</template
-      >
-    </action-dialog>
-  </Teleport>
-  <Teleport to="body">
-    <action-dialog
-      :showDialog="showDeleteRuleDialog"
-      :rightButtonText="'Obriši'"
-      @close="showDeleteRuleDialog = false"
-      @confirm-action="removeRule"
-    >
-      <template #title>Obriši Korak {{ selectedRuleIndex }}?</template>
-      <template #text
-        >Jeste li sigurni da želite obrisati
-        <span style="text-decoration: underline"
-          >Korak {{ selectedRuleIndex }}</span
-        >?
-        <br />
-        <br />
-        Svi koraci koji ovise o ovom koraku će biti pogođeni.</template
-      >
-    </action-dialog>
-  </Teleport>
-  <Teleport to="body">
-    <action-dialog
-      :showDialog="showDeleteOptionsDialog"
-      :rightButtonText="'Obriši'"
-      @close="showDeleteOptionsDialog = false"
-      @confirm-action="removeOptions"
-    >
-      <template #title
-        >Obriši odgovor korisnika za Korak {{ selectedRuleIndex }}?</template
-      >
-      <template #text
-        >Izgubljeni sadržaj i postavke neće biti moguće povratiti. Brisanje
-        odgovora ne briše odgovor asistenta.</template
-      >
-    </action-dialog>
-  </Teleport>
 </template>
 <script>
 import Navbar from "../components/AppNavbar.vue";
@@ -417,6 +414,7 @@ import { windowScrollPosition } from "../utils/window-scroll-position";
 import Chatbot from "../components/ChatBot.vue";
 import DataService from "../services/data.services";
 import Loading from "../components/popups/LoadingModal.vue";
+import { VueDraggableNext as Draggable } from 'vue-draggable-next';
 
 export default {
   mixins: [windowScrollPosition("position")],
@@ -427,6 +425,7 @@ export default {
     ActionEditor,
     Chatbot,
     Loading,
+    Draggable
   },
   data() {
     return {
@@ -904,6 +903,10 @@ export default {
   align-self: stretch;
   border-left: 1px solid #e0e0e0;
   width: 0;
+}
+
+.flip-transition-move {
+  transition: transform 0.4s;
 }
 
 /* Left-to-right animation */

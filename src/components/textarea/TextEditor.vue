@@ -130,6 +130,7 @@
         @mouseup="saveSelection"
         @keyup="saveSelection"
         @keydown="handleLineBreak"
+        @paste="handlePaste"
         :innerHTML="html"
       ></div>
     </div>
@@ -477,6 +478,15 @@ export default {
     handleDuration(data) {
       this.receivedDuration = data;
     },
+
+    handlePaste(event) {
+      event.preventDefault();
+      const clipboardData = event.clipboardData || window.clipboardData;
+      const pastedText = clipboardData.getData('text/plain');
+      // Insert the cleaned text into the editor
+      document.execCommand('insertHTML', false, pastedText);
+    },
+
     deleteTimer(event) {
       const timerDiv = event.target.closest(".pause-wrapper");
       timerDiv.remove();

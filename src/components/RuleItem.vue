@@ -478,6 +478,7 @@ export default {
     isLeftPanelCollapsed: Boolean,
     isZooming: Boolean,
   },
+  emits: ['add', 'updateRule', 'updateShowDeleteRule', 'updateShowDeleteOptions', 'remove'],
   data() {
     return {
       options: ["bez uvjeta", "s uvjetom"],

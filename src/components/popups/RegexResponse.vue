@@ -66,7 +66,7 @@ import CustomSelect from "../CustomSelect.vue";
 export default {
   components: { CustomSelect },
   props: ["isRegexOpen", "ruleCopy"],
-  emits: ["close"],
+  emits: ["close", "addRegex"],
   data() {
     return {
       regexOptions: [
