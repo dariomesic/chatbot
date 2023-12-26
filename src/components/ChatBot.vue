@@ -158,7 +158,7 @@ export default{
                 // Push the condition into the session's conditions array
                 this.conditions[this.sessionUUID].push(condition);
 
-                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, sanitizedInput)
+                const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.position, this.sessionUUID, this.$route.query.system_id, sanitizedInput)
                 response.intent_id = this.responseApi
                 this.addBotMessage(response);
               }
@@ -216,7 +216,7 @@ export default{
                     // Push the condition into the session's conditions array
                     this.conditions[this.sessionUUID].push(condition);
 
-                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, sanitizedInput)
+                    const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.position, this.sessionUUID, this.$route.query.system_id, sanitizedInput)
                     response.intent_id = this.responseApi.intent_id
                     this.addBotMessage(response);
                   }
@@ -478,7 +478,7 @@ export default{
         });
 
         // Make an API call to send the user's selected option.
-        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.id, this.sessionUUID, this.$route.query.system_id, selectedOption);
+        const response = await DataService.userResponse(this.conditions[this.sessionUUID], this.responseApi.intent_id, this.responseApi.position, this.sessionUUID, this.$route.query.system_id, selectedOption);
         response.intent_id = this.responseApi.intent_id
         this.responseApi = response
         this.showOptions = false

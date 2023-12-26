@@ -17,15 +17,14 @@
       </button>
       <hr />
       <draggable
-        v-model="response_options"
         tag="ul"
-        name="list"
-        class="options-list"
+        v-model="response_options"
+        v-bind="dragOptions"
       >
         <transition-group name="flip-transition">
           <li
             v-for="(option, index) in response_options"
-            :key="option"
+            :key="index"
             style="align-items: center; display: flex; margin-top: 0.5rem"
           >
             <div
@@ -105,6 +104,12 @@ export default {
   data() {
     return {
       response_options: [...this.options],
+      dragOptions: {
+        animation: 200,
+        group: "options",
+        disabled: false,
+        ghostClass: "ghost",
+      },
     };
   },
   watch: {
@@ -157,8 +162,5 @@ input {
     outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   width: 100%;
   cursor: grab;
-}
-.flip-transition-move {
-  transition: transform 0.4s;
 }
 </style>

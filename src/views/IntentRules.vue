@@ -90,9 +90,9 @@
                 >
                   Slijed konverzacije
                 </p>
-                <draggable v-model="rules_copy">
+                <draggable v-model="rules_copy" v-bind="dragOptions">
                   <transition-group name="flip-transition">
-                    <div v-for="(card, index) in rules_copy" :key="card.id">
+                    <div v-for="(card, index) in rules_copy" :key="index">
                       <Card
                         :card="card"
                         :index="index"
@@ -450,6 +450,12 @@ export default {
       cards_copy: [],
       isZooming: false,
       componentKey: 0,
+      dragOptions: {
+        animation: 200,
+        group: "options",
+        disabled: false,
+        ghostClass: "ghost",
+      },
     };
   },
   watch: {
@@ -905,8 +911,13 @@ export default {
   width: 0;
 }
 
-.flip-transition-move {
-  transition: transform 0.4s;
+.no-move {
+  transition: transform 0s;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
 }
 
 /* Left-to-right animation */
