@@ -91,8 +91,8 @@
                   Slijed konverzacije
                 </p>
                 <draggable v-model="rules_copy" v-bind="dragOptions">
-                  <transition-group name="flip-transition">
-                    <div v-for="(card, index) in rules_copy" :key="index">
+                  <transition-group name="slide-fade">
+                    <div v-for="(card, index) in rules_copy" :key="card.id">
                       <Card
                         :card="card"
                         :index="index"
@@ -911,10 +911,6 @@ export default {
   width: 0;
 }
 
-.flip-transition-move {
-  transition: transform 0.4s;
-}
-
 .no-move {
   transition: transform 0s;
 }
@@ -987,13 +983,17 @@ export default {
 }
 
 /*TRANSITION FOR CARDS*/
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
+.slide-fade-enter-active {
+  transition: opacity 0.4s, transform 0.4s;
 }
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
+
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
   transform: translateX(-30px);
+  opacity: 0;
 }
 </style>
