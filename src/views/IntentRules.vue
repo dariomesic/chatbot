@@ -911,6 +911,10 @@ export default {
   width: 0;
 }
 
+.flip-transition-move {
+  transition: transform 0.4s;
+}
+
 .no-move {
   transition: transform 0s;
 }
