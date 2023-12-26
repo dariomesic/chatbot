@@ -24,7 +24,7 @@
         <transition-group name="slide-fade">
           <div
             v-for="(option, index) in response_options"
-            :key="index"
+            :key="option"
             class="fade-item"
           >
             <li style="align-items: center; display: flex; margin-top: 0.5rem">
