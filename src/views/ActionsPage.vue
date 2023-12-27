@@ -95,8 +95,10 @@ export default {
       system_name: ''
     };
   },
-  async created(){
-    this.system_name = await DataService.getNameForSystem(this.$route.query.system_id)
+  async mounted(){
+    if (this.$route.query.system_id !== undefined) {
+      this.system_name = await DataService.getNameForSystem(this.$route.query.system_id)
+    }
   },
   methods: {
     setActiveTab(tab) {

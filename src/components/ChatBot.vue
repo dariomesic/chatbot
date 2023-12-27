@@ -576,7 +576,6 @@ export default{
 
       const childNodes = tempElement.childNodes;
       for (let i = 0; i < childNodes.length; i++) {
-        console.log(childNodes[i])
         const childNode = childNodes[i];
         await processNode(childNode, (i === 0 || (i === 1 && (childNodes[0].textContent.trim().length === 0 || childNodes[0].nodeName === "BR"))), i === childNodes.length - 1);//additional conditions because blank spaces in the beggining or empty <br>
       }
