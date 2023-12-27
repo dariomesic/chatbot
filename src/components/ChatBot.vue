@@ -547,7 +547,7 @@ export default{
             image.src = node.getAttribute("src");
             image.alt = node.getAttribute("alt");
             messageContentElement.appendChild(image);
-          } else if (node.nodeName === "BR") {
+          } else if (node.nodeName === "BR" && !isFirstNode) {
             messageContentElement.appendChild(document.createElement("br"));
           } else if (node.classList.contains("pause-wrapper")) {
             const duration = parseFloat(node.querySelector("p").getAttribute("data-duration"));
@@ -559,10 +559,11 @@ export default{
               }
               messageContentElement.innerHTML = '';
               // Delay here
+              this.scrollChatToBottom();
               await new Promise((resolve) => setTimeout(resolve, duration * 1000));
             }
             this.messages[this.messages.length - 1].text = this.messages[this.messages.length - 1].text.replace(`<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`, '')
-            messageContentElement.appendChild(document.createElement("br"));
+            !isFirstNode ? messageContentElement.appendChild(document.createElement("br")) : ''
           } else {
             const childNodes = node.childNodes;
             for (let i = 0; i < childNodes.length; i++) {
@@ -575,8 +576,9 @@ export default{
 
       const childNodes = tempElement.childNodes;
       for (let i = 0; i < childNodes.length; i++) {
+        console.log(childNodes[i])
         const childNode = childNodes[i];
-        await processNode(childNode, i === 0, i === childNodes.length - 1);
+        await processNode(childNode, (i === 0 || (i === 1 && (childNodes[0].textContent.trim().length === 0 || childNodes[0].nodeName === "BR"))), i === childNodes.length - 1);//additional conditions because blank spaces in the beggining or empty <br>
       }
 
       if (this.messages.length > 0) {

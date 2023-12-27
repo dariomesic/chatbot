@@ -52,6 +52,15 @@
           <path d="M13.9,4.6l-2.5-2.5C11.3,2.1,11.1,2,11,2H3C2.4,2,2,2.4,2,3v10c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1V5	C14,4.9,13.9,4.7,13.9,4.6z M6,3h4v2H6V3z M10,13H6V9h4V13z M11,13V9c0-0.6-0.4-1-1-1H6C5.4,8,5,8.4,5,9v4H3V3h2v2c0,0.6,0.4,1,1,1	h4c0.6,0,1-0.4,1-1V3.2l2,2V13H11z"></path>
       </svg>
     </button>
+
+    <section v-if="show">
+      <transition name="fade" appear>
+        <div class="card-header" :style="{ backgroundColor: message === 'Uspješno spremljene promjene.' ? 'rgb(105, 222, 64)' : '#cd5c5c' }">
+          <span>{{ message }}</span>
+          <div @click="show = false" class="cross">✕</div>
+        </div>
+      </transition>
+    </section>
   </div>
 </template>
 
@@ -67,6 +76,8 @@ export default {
       isEditable: [],
       upperThreshold: null,
       lowerThreshold: null,
+      show: false,
+      message: '',
     };
   },
   async created() {
@@ -157,8 +168,17 @@ export default {
 
         await DataService.updateSynonyms(this.$route.query.system_id, synonymsObject);
         await DataService.updateThresholdsBySystemId(this.$route.query.system_id, this.upperThreshold, this.lowerThreshold)
+        this.show = true
+        this.message = 'Uspješno spremljene promjene.'
+        setTimeout(() => {
+          this.show = false
+        }, 4000);
       } catch (error) {
-        console.error("Error saving content:", error);
+          this.show = true
+          this.message = 'Pogreška prilikom spremanja promjena. Molim Vas pokušajte ponovno.'
+          setTimeout(() => {
+            this.show = false
+          }, 4000);
       }
     },
   },
@@ -236,5 +256,42 @@ button {
   width: 1rem;
   margin-right: 4px;
   margin-top: 2px;
+}
+
+/*popup message*/
+.card-header {
+  height: 20px;
+  vertical-align: middle;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  line-height: 20px;
+  padding: 15px;
+  color: white;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  min-width: 420px;
+  border-radius: 5px;
+  padding-right: 5rem;
+  box-shadow:0 0 15px 5px #ccc;
+}
+
+.cross {
+  position: absolute;
+  top: 16px;
+  right: 15px;
+  font-size: 25px;
+  font-weight: 100;
+  cursor: pointer;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .4s linear;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
