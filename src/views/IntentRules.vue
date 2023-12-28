@@ -214,81 +214,86 @@
                     </div>
                   </div>
                 </li>
-                <TransitionGroup name="list" tag="ul" style="max-height:250px; overflow:scroll">
-                  <li
-                    v-for="(question, index) in questions"
-                    :key="question.question_id"
-                    style="
-                      align-items: center;
-                      display: flex;
-                      margin-top: 0.5rem;
-                    "
-                  >
+                <section style="max-height:250px; overflow:scroll">
+                  <transition-group name="slide-fade">
                     <div
-                      style="
-                        align-items: flex-start;
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                      "
+                      v-for="(question, index) in questions"
+                      :key="question.question_id"
                     >
-                      <div
-                        style="display: flex; position: relative; width: 100%"
+                      <li
+                        style="
+                          align-items: center;
+                          display: flex;
+                          margin-top: 0.5rem;
+                        "
                       >
                         <div
-                          class="custom-input"
-                          contenteditable="true"
                           style="
-                            padding-right: 3rem;
-                            scroll-margin-bottom: 2rem;
+                            align-items: flex-start;
+                            display: flex;
+                            flex-direction: column;
                             width: 100%;
-                            padding: 1rem 1rem;
-                            line-height: 17px;
-                            box-sizing: border-box;
-                            word-wrap: break-word;
                           "
-                          @blur="handleBlur($event, index)"
                         >
-                          {{ questions[index].question }}
+                          <div
+                            style="display: flex; position: relative; width: 100%"
+                          >
+                            <div
+                              class="custom-input"
+                              contenteditable="true"
+                              style="
+                                padding-right: 3rem;
+                                scroll-margin-bottom: 2rem;
+                                width: 100%;
+                                padding: 1rem 1rem;
+                                line-height: 17px;
+                                box-sizing: border-box;
+                                word-wrap: break-word;
+                              "
+                              @blur="handleBlur($event, index)"
+                            >
+                              {{ questions[index].question }}
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                        <button
+                          @click="deletePhrase(index)"
+                          tabindex="0"
+                          type="button"
+                          style="
+                            align-items: center;
+                            cursor: pointer;
+                            display: inline-flex;
+                            overflow: visible;
+                            position: relative;
+                            padding-left: 0.9375rem;
+                            padding-right: 0.9375rem;
+                            padding: calc(0.875rem - 3px) 16px;
+                          "
+                        >
+                          <svg
+                            focusable="false"
+                            preserveAspectRatio="xMidYMid meet"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            aria-label="Delete"
+                            aria-hidden="true"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 32 32"
+                            role="img"
+                            class="bx--btn__icon"
+                          >
+                            <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
+                            <path
+                              d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"
+                            ></path>
+                          </svg>
+                        </button>
+                      </li>
                     </div>
-                    <button
-                      @click="deletePhrase(index)"
-                      tabindex="0"
-                      type="button"
-                      style="
-                        align-items: center;
-                        cursor: pointer;
-                        display: inline-flex;
-                        overflow: visible;
-                        position: relative;
-                        padding-left: 0.9375rem;
-                        padding-right: 0.9375rem;
-                        padding: calc(0.875rem - 3px) 16px;
-                      "
-                    >
-                      <svg
-                        focusable="false"
-                        preserveAspectRatio="xMidYMid meet"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        aria-label="Delete"
-                        aria-hidden="true"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 32 32"
-                        role="img"
-                        class="bx--btn__icon"
-                      >
-                        <path d="M12 12H14V24H12zM18 12H20V24H18z"></path>
-                        <path
-                          d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"
-                        ></path>
-                      </svg>
-                    </button>
-                  </li>
-                </TransitionGroup>
+                  </transition-group>
+                </section>
               </ul>
             </div>
           </div>
@@ -648,9 +653,11 @@ export default {
         const maxQuestionId = Math.max(
           ...this.questions.map((question) => question.question_id)
         );
-        this.questions.push({
+        // Capitalize the first letter of newPhrase
+        const capitalizedPhrase = this.newPhrase.charAt(0).toUpperCase() + this.newPhrase.slice(1);
+        this.questions.unshift({
           question_id: maxQuestionId + 1,
-          question: this.newPhrase,
+          question: capitalizedPhrase,
         });
         this.newPhrase = "";
       }
