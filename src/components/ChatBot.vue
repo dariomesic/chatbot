@@ -114,6 +114,7 @@ export default{
         const intentId = event.target.getAttribute('data-intent-id');
         let response = await JSON.parse(await DataService.getRulesForIntent(intentId))[0]
         response.intent_id = intentId
+        response.position = 0
         this.intent_id = intentId
         this.selectedFeedbackButton = false;
         this.addBotMessage(response);

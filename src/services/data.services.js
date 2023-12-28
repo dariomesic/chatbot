@@ -334,6 +334,18 @@ class DataService {
     })
   }
 
+  reloadQuestions(system_id){
+    return fetch('https://18.194.27.183:8080/reloadQuestions?&system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   sendMessage(question, systemID, uuid){
     return fetch('https://18.194.27.183:8080/chatbotSentMessage', {
       method : "POST",

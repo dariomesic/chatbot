@@ -381,6 +381,9 @@
         </svg>
       </transition>
     </div>
+    <Teleport to="body">
+      <loading v-if="loading" />
+    </Teleport>
     <Transition name="fade">
       <div v-if="showChatbot" class="chatbot-container">
         <Chatbot />
@@ -394,8 +397,9 @@ import CustomSelect from "../components/CustomSelect.vue";
 import DataService from "../services/data.services";
 import SortingIcon from "../views/ui/SortingIcon.vue";
 import Chatbot from "../components/ChatBot.vue";
+import Loading from "../components/popups/LoadingModal.vue";
 export default {
-  components: { CustomSelect, SortingIcon, Chatbot },
+  components: { CustomSelect, SortingIcon, Chatbot, Loading },
   data() {
     return {
       intents: [],
@@ -408,6 +412,7 @@ export default {
       sortIcon: [1, 1, 1, 1],
       isVisible: [false, false, false, false],
       showChatbot: false,
+      loading: false,
     };
   },
   async created() {
@@ -478,11 +483,14 @@ export default {
     },
     async deleteIntent(id, once) {
       try {
+        this.loading = true
         await DataService.deleteStep(id);
         await DataService.deleteQuestionsById(id);
         await DataService.deleteIntent(id, this.$route.query.system_id);
         if (once) {
+          await DataService.reloadQuestions(this.$route.query.system_id)
           this.getIntents();
+          this.loading = false
         }
       } catch (error) {
         console.error(error);
@@ -495,10 +503,13 @@ export default {
       });
     },
     async deleteSelectedIntents() {
+      this.loading = true
       // Loop through selectedIntents and call deleteIntent for each
       for (const intent of this.selectedIntents) {
         await this.deleteIntent(intent);
       }
+      await DataService.reloadQuestions(this.$route.query.system_id)
+      this.loading = false
       this.getIntents();
       // Clear the selectedIntents array after deleting
       this.selectedIntents = [];
