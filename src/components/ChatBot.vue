@@ -872,4 +872,12 @@ a {
   background: var(--hover__color);
   transition: .2s;
 }
+
+@media only screen and (max-width: 415px) {
+  /* For phones: */
+  .container {
+    right: 0px;
+    width: unset;
+  }
+}
 </style>
