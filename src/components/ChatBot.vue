@@ -273,7 +273,7 @@ export default{
 
     addUserMessage(message) {
       this.messages.push({
-        text: `<div class="captionUser">You</div>`,
+        text: `<div class="captionUser">Vi</div>`,
         classes: ['message', 'msgCaption'],
         dataUser: true,
       });

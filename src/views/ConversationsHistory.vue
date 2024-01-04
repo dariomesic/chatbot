@@ -858,12 +858,13 @@ export default {
       const day = time.toLocaleString("hr-HR", { day: "numeric" });
       const month = time.toLocaleString("hr-HR", { month: "short" });
       const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+      const year = time.getFullYear(); // Get the year
       const hoursAndMinutes = time.toLocaleString("hr-HR", {
         hour: "numeric",
         minute: "numeric",
       });
 
-      const formattedTime = `${day} ${capitalizedMonth} u ${hoursAndMinutes}`;
+      const formattedTime = `${day} ${capitalizedMonth} ${year}. u ${hoursAndMinutes}`;
       return formattedTime;
     },
     formatThreshold(conversation) {
