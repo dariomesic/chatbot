@@ -88,7 +88,9 @@
                   </g>
                 </g>
               </svg>
-              <a style="margin-top:2px" @click="route(chatbot)">{{ chatbot.name }}</a>
+              <a style="margin-top: 2px" @click="route(chatbot)">{{
+                chatbot.name
+              }}</a>
             </div>
           </td>
           <td>
@@ -114,10 +116,32 @@ export default {
       isVisible: [false, false],
     };
   },
-  created() {
-    this.getSystems();
+  async created() {
+    await this.getSystems();
+    this.getStoredData();
+  },
+  beforeUnmount() {
+    sessionStorage.setItem("sortIconHP", JSON.stringify(this.sortIcon));
+    sessionStorage.setItem("isVisibleHP", JSON.stringify(this.isVisible));
+    sessionStorage.setItem("chatbots", JSON.stringify(this.chatbots));
   },
   methods: {
+    getStoredData() {
+      const storedSortIcon = sessionStorage.getItem("sortIconHP");
+      const storedIsVisible = sessionStorage.getItem("isVisibleHP");
+      const storedChatbots = sessionStorage.getItem("chatbots");
+
+      this.sortIcon = storedSortIcon
+        ? JSON.parse(storedSortIcon)
+        : this.sortIcon;
+      this.isVisible = storedIsVisible
+        ? JSON.parse(storedIsVisible)
+        : this.isVisible;
+      this.chatbots = storedChatbots
+        ? JSON.parse(storedChatbots)
+        : this.chatbots;
+      console.log(this.chatbots);
+    },
     async getSystems() {
       try {
         this.chatbots = await DataService.getSystems();
@@ -198,7 +222,11 @@ th {
   text-align: left;
 }
 
-th:not(:last-child):hover {
+.active {
+  border: 2px solid #022f5d !important ;
+}
+
+th:hover {
   user-select: none;
   filter: brightness(80%);
   cursor: pointer;

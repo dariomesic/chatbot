@@ -81,7 +81,7 @@
             @mouseleave="setSortIcon(0, false)"
             @click="toggleSortIcon(0, 'name')"
             :class="{ active: sortIcon[0] === 2 || sortIcon[0] === 3 }"
-            style="width:25vw"
+            style="width: 25vw"
           >
             <div class="span-wrapper">
               <span> Naziv </span>
@@ -98,7 +98,7 @@
             @mouseleave="setSortIcon(1, false)"
             @click="toggleSortIcon(1, 'lastEdit')"
             :class="{ active: sortIcon[1] === 2 || sortIcon[1] === 3 }"
-            style="width:15vw"
+            style="width: 15vw"
           >
             <div class="span-wrapper">
               <span> Zadnje uređivanje</span>
@@ -115,7 +115,7 @@
             @mouseleave="setSortIcon(2, false)"
             @click="toggleSortIcon(2, 'numOfQuestions')"
             :class="{ active: sortIcon[2] === 2 || sortIcon[2] === 3 }"
-            style="width:10vw"
+            style="width: 10vw"
           >
             <div class="span-wrapper">
               <span> Broj pitanja </span>
@@ -418,6 +418,14 @@ export default {
   async created() {
     await this.getIntents();
     this.initialIntents = [...this.intents];
+    this.getStoredData();
+  },
+  beforeUnmount() {
+    sessionStorage.setItem("currentPage", this.currentPage.toString());
+    sessionStorage.setItem("itemsPerPage", this.itemsPerPage.toString());
+    sessionStorage.setItem("sortIcon", JSON.stringify(this.sortIcon));
+    sessionStorage.setItem("isVisible", JSON.stringify(this.isVisible));
+    sessionStorage.setItem("intents", JSON.stringify(this.intents));
   },
   watch: {
     itemsPerPage() {
@@ -461,6 +469,27 @@ export default {
     },
   },
   methods: {
+    getStoredData() {
+      const storedCurrentPage = sessionStorage.getItem("currentPage");
+      const storedItemsPerPage = sessionStorage.getItem("itemsPerPage");
+      const storedSortIcon = sessionStorage.getItem("sortIcon");
+      const storedIsVisible = sessionStorage.getItem("isVisible");
+      const storedIntents = sessionStorage.getItem("intents");
+
+      this.currentPage = storedCurrentPage
+        ? parseInt(storedCurrentPage, 10)
+        : this.currentPage;
+      this.itemsPerPage = storedItemsPerPage
+        ? parseInt(storedItemsPerPage, 10)
+        : this.itemsPerPage;
+      this.sortIcon = storedSortIcon
+        ? JSON.parse(storedSortIcon)
+        : this.sortIcon;
+      this.isVisible = storedIsVisible
+        ? JSON.parse(storedIsVisible)
+        : this.isVisible;
+      this.intents = storedIntents ? JSON.parse(storedIntents) : this.intents;
+    },
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
       this.$router.push({
@@ -483,14 +512,14 @@ export default {
     },
     async deleteIntent(id, once) {
       try {
-        this.loading = true
+        this.loading = true;
         await DataService.deleteStep(id);
         await DataService.deleteQuestionsById(id);
         await DataService.deleteIntent(id, this.$route.query.system_id);
         if (once) {
-          await DataService.reloadQuestions(this.$route.query.system_id)
+          await DataService.reloadQuestions(this.$route.query.system_id);
           this.getIntents();
-          this.loading = false
+          this.loading = false;
         }
       } catch (error) {
         console.error(error);
@@ -503,13 +532,13 @@ export default {
       });
     },
     async deleteSelectedIntents() {
-      this.loading = true
+      this.loading = true;
       // Loop through selectedIntents and call deleteIntent for each
       for (const intent of this.selectedIntents) {
         await this.deleteIntent(intent);
       }
-      await DataService.reloadQuestions(this.$route.query.system_id)
-      this.loading = false
+      await DataService.reloadQuestions(this.$route.query.system_id);
+      this.loading = false;
       this.getIntents();
       // Clear the selectedIntents array after deleting
       this.selectedIntents = [];
@@ -771,7 +800,7 @@ th:not(:first-child):not(:nth-child(6)):not(:last-child):hover {
 }
 
 .active {
-  border: 2px solid #022f5d !important;
+  border: 2px solid #022f5d !important ;
 }
 
 .options-popup {

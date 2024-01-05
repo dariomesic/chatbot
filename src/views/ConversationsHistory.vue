@@ -559,6 +559,14 @@ export default {
     const today = new Date().toISOString().split("T")[0];
     this.startMaxDate = today;
     this.endMaxDate = today;
+    this.getStoredData();
+  },
+  beforeUnmount() {
+    sessionStorage.setItem("currentPageCH", this.currentPage.toString());
+    sessionStorage.setItem("itemsPerPageCH", this.itemsPerPage.toString());
+    sessionStorage.setItem("sortIconCH", JSON.stringify(this.sortIcon));
+    sessionStorage.setItem("isVisibleCH", JSON.stringify(this.isVisible));
+    sessionStorage.setItem("conversations", JSON.stringify(this.conversations));
   },
   watch: {
     SelectedDateRange(newVal) {
@@ -743,6 +751,29 @@ export default {
     },
   },
   methods: {
+    getStoredData() {
+      const storedCurrentPage = sessionStorage.getItem("currentPageCH");
+      const storedItemsPerPage = sessionStorage.getItem("itemsPerPageCH");
+      const storedSortIcon = sessionStorage.getItem("sortIconCH");
+      const storedIsVisible = sessionStorage.getItem("isVisibleCH");
+      const storedConversations = sessionStorage.getItem("conversations");
+
+      this.currentPage = storedCurrentPage
+        ? parseInt(storedCurrentPage, 10)
+        : this.currentPage;
+      this.itemsPerPage = storedItemsPerPage
+        ? parseInt(storedItemsPerPage, 10)
+        : this.itemsPerPage;
+      this.sortIcon = storedSortIcon
+        ? JSON.parse(storedSortIcon)
+        : this.sortIcon;
+      this.isVisible = storedIsVisible
+        ? JSON.parse(storedIsVisible)
+        : this.isVisible;
+      this.conversations = storedConversations
+        ? JSON.parse(storedConversations)
+        : this.conversations;
+    },
     async getConversations() {
       if (this.$route.query.system_id !== undefined) {
         try {
@@ -947,8 +978,7 @@ table {
   border-collapse: collapse;
 }
 
-tr,
-th {
+tr {
   border-top: none;
   border-bottom: none !important;
 }
@@ -966,6 +996,10 @@ th {
   text-align: left;
 }
 
+.active {
+  border: 2px solid #022f5d;
+}
+
 th:not(:last-child):hover {
   user-select: none;
   filter: brightness(80%);
@@ -974,9 +1008,13 @@ th:not(:last-child):hover {
 
 th,
 td {
+  border-top: 1px solid #dee2e6;
+}
+
+th,
+td {
   padding: 0.75rem;
   vertical-align: middle;
-  border-top: 1px solid #dee2e6;
 }
 
 table tbody tr th,

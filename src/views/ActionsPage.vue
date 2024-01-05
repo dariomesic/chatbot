@@ -60,8 +60,8 @@
           </svg>
           <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a>
         </span>
-        <h3>{{system_name}}</h3>
-        <template v-if="activeTab === 'Namjere'">
+        <h3>{{ system_name }}</h3>
+        <!-- <template v-if="activeTab === 'Namjere'">
           <IntentList />
         </template>
         <template v-else-if="activeTab === 'Razgovori'">
@@ -69,7 +69,10 @@
         </template>
         <template v-else-if="activeTab === 'Postavke'">
           <SettingsPage />
-        </template>
+        </template> -->
+        <IntentList v-show="activeTab === 'Namjere'" />
+        <ConversationsHistory v-show="activeTab === 'Razgovori'" />
+        <SettingsPage v-show="activeTab === 'Postavke'" />
       </div>
     </div>
     <div class="footer" />
@@ -81,7 +84,7 @@ import Navbar from "../components/AppNavbar.vue";
 import IntentList from "./IntentList.vue";
 import ConversationsHistory from "./ConversationsHistory.vue";
 import SettingsPage from "./SettingsPage.vue";
-import DataService from "../services/data.services"
+import DataService from "../services/data.services";
 export default {
   components: {
     Navbar,
@@ -92,12 +95,14 @@ export default {
   data() {
     return {
       activeTab: "Namjere",
-      system_name: ''
+      system_name: "",
     };
   },
-  async mounted(){
+  async mounted() {
     if (this.$route.query.system_id !== undefined) {
-      this.system_name = await DataService.getNameForSystem(this.$route.query.system_id)
+      this.system_name = await DataService.getNameForSystem(
+        this.$route.query.system_id
+      );
     }
   },
   methods: {
@@ -109,7 +114,6 @@ export default {
 </script>
 
 <style scoped>
-
 .main-block {
   display: flex;
   flex-direction: column;
@@ -154,12 +158,12 @@ li {
   height: 10vh;
   margin-top: auto;
 }
-h3{
+h3 {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  color: var(--main__color); 
-  font-size: 18px; 
+  color: var(--main__color);
+  font-size: 18px;
   font-weight: 700;
   margin-top: 0px;
   font-style: italic;
