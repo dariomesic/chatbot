@@ -10,16 +10,14 @@
         {{ index + 1 + ". " }}
         <div class="synonym-info">
           <div class="input-container">
-            <input
-              @input="handleInput($event.target.value, index)"
+            <div
+              contenteditable="true"
+              @blur="handleBlurKey($event.target.textContent, index)"
               placeholder="Prazno polje"
-              type="text"
               aria-describedby=""
-              autocomplete="off"
               maxlength="128"
-              :value="new_value"
               class="custom-input"
-            />
+            >{{ new_value }}</div>
             <div class="icon-container">
               <svg
                 class="bi-pencil"
@@ -76,8 +74,9 @@
             <!-- <input v-model="editedOldValues[index]" /> -->
             <div
               contenteditable="true"
-              @blur="handleBlur($event, index)"
+              @blur="handleBlurValue($event, index)"
               style="
+                min-width:115px;
                 background: var(--background);
                 padding-right: 2rem;
                 scroll-margin-bottom: 2rem;
@@ -305,21 +304,20 @@ export default {
       this.editedOldValues.push("");
       this.isEditable.push(true);
     },
-    handleInput(value, index) {
-      // Update the oldValuesMap when input changes
+    handleBlurKey(value, index) {
+      // Handle the input on blur
       const oldKey = this.newValues[index];
       const oldValueArray = this.oldValuesMap.get(oldKey) || [];
 
-      // Delete the old key
+      // Remove the old key-value pair
       this.oldValuesMap.delete(oldKey);
 
-      // Set the new key and value
-      const newKey = value.trim(); // Ensure that the new key is trimmed
-      this.oldValuesMap.set(newKey, oldValueArray);
+      // Set the new key and value in the map
+      this.oldValuesMap.set(value, oldValueArray);
       this.newValues[index] = value;
     },
 
-    handleBlur(event, index) {
+    handleBlurValue(event, index) {
       let [key, values] = Array.from(this.oldValuesMap.entries())[index];
       if (key !== undefined && values !== undefined) {
         this.oldValuesMap.delete(key);
@@ -407,7 +405,9 @@ button {
 
 .custom-input {
   height: 90%;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  font-weight: 800;
   flex-grow: 1;
   padding-right: 2rem;
   padding-left: 2.5rem;
