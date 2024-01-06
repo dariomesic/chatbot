@@ -249,6 +249,11 @@
         line-height: 1.28572;
         min-height: 2.5rem;
         align-items: center;
+        position: fixed;
+        bottom: 10%;
+        left: 15%;
+        right:1%;
+        background: #ffffff;
       "
     >
       <div
@@ -417,6 +422,7 @@ export default {
   },
   async created() {
     await this.getIntents();
+    sessionStorage.setItem("systemId", this.$route.query.system_id);
     this.initialIntents = [...this.intents];
     this.getStoredData();
   },
@@ -680,6 +686,7 @@ export default {
 <style scoped>
 .actions {
   padding: 2rem 2rem;
+  position: relative;
 }
 .actions section {
   background-color: #fff;
@@ -717,7 +724,7 @@ export default {
 
 table {
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   color: #212529;
   border-collapse: collapse;
   word-break: break-word;

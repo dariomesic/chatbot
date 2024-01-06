@@ -411,8 +411,13 @@
         justify-content: space-between;
         letter-spacing: 0.16px;
         line-height: 1.28572;
-        min-height: 2.5rem;
+        max-height: 2.5rem;
         align-items: center;
+        position: fixed;
+        bottom: 10%;
+        left: 15%;
+        right: 1%;
+        background: #ffffff;
       "
     >
       <div
@@ -972,7 +977,7 @@ input[type="text"] {
 
 table {
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   word-break: break-word;
   color: #212529;
   border-collapse: collapse;

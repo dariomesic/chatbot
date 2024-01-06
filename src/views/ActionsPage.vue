@@ -150,13 +150,18 @@ li {
 
 .right-part {
   position: relative;
-  overflow-y: scroll;
   flex-basis: 85%;
+  overflow-y: scroll;
+  height: 82vh;
 }
+
 .footer {
   background: var(--background);
+  position: fixed;
+  bottom: 0;
+  left: 0;
   height: 10vh;
-  margin-top: auto;
+  width: 100%;
 }
 h3 {
   position: absolute;
