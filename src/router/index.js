@@ -30,7 +30,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === "Actions" && from.name === undefined) {
+  if (
+    (to.name =
+      ("Actions" &&
+        to.query.system_id !== sessionStorage.getItem("systemId")) ||
+      (to.name === "Actions" && from.name === undefined))
+  ) {
     sessionStorage.removeItem("currentPage");
     sessionStorage.removeItem("itemsPerPage");
     sessionStorage.removeItem("sortIcon");
