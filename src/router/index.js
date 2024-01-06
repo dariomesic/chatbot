@@ -40,17 +40,14 @@ router.beforeEach((to, from, next) => {
     sessionStorage.removeItem("itemsPerPage");
     sessionStorage.removeItem("sortIcon");
     sessionStorage.removeItem("isVisible");
-    sessionStorage.removeItem("intents");
     sessionStorage.removeItem("currentPageCH");
     sessionStorage.removeItem("itemsPerPageCH");
     sessionStorage.removeItem("sortIconCH");
     sessionStorage.removeItem("isVisibleCH");
-    sessionStorage.removeItem("conversations");
   }
   if (to.name === "HomePage" && from.name === undefined) {
     sessionStorage.removeItem("sortIconHP");
     sessionStorage.removeItem("isVisibleHP");
-    sessionStorage.removeItem("chatbots");
   }
   next();
 });

@@ -123,13 +123,11 @@ export default {
   beforeUnmount() {
     sessionStorage.setItem("sortIconHP", JSON.stringify(this.sortIcon));
     sessionStorage.setItem("isVisibleHP", JSON.stringify(this.isVisible));
-    sessionStorage.setItem("chatbots", JSON.stringify(this.chatbots));
   },
   methods: {
     getStoredData() {
       const storedSortIcon = sessionStorage.getItem("sortIconHP");
       const storedIsVisible = sessionStorage.getItem("isVisibleHP");
-      const storedChatbots = sessionStorage.getItem("chatbots");
 
       this.sortIcon = storedSortIcon
         ? JSON.parse(storedSortIcon)
@@ -137,10 +135,24 @@ export default {
       this.isVisible = storedIsVisible
         ? JSON.parse(storedIsVisible)
         : this.isVisible;
-      this.chatbots = storedChatbots
-        ? JSON.parse(storedChatbots)
-        : this.chatbots;
-      console.log(this.chatbots);
+
+      switch (storedSortIcon) {
+        case "[1,1]":
+          break;
+        case "[2,1]":
+          this.chatbots.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case "[3,1]":
+          this.chatbots.sort((a, b) => b.name.localeCompare(a.name));
+          break;
+        case "[1,2]":
+          this.chatbots.sort((a, b) => a.intents_count - b.intents_count);
+          break;
+        case "[1,3]":
+          this.chatbots.sort((a, b) => b.intents_count - a.intents_count);
+          break;
+        default:
+      }
     },
     async getSystems() {
       try {

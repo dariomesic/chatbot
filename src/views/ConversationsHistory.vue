@@ -571,7 +571,6 @@ export default {
     sessionStorage.setItem("itemsPerPageCH", this.itemsPerPage.toString());
     sessionStorage.setItem("sortIconCH", JSON.stringify(this.sortIcon));
     sessionStorage.setItem("isVisibleCH", JSON.stringify(this.isVisible));
-    sessionStorage.setItem("conversations", JSON.stringify(this.conversations));
   },
   watch: {
     SelectedDateRange(newVal) {
@@ -761,7 +760,6 @@ export default {
       const storedItemsPerPage = sessionStorage.getItem("itemsPerPageCH");
       const storedSortIcon = sessionStorage.getItem("sortIconCH");
       const storedIsVisible = sessionStorage.getItem("isVisibleCH");
-      const storedConversations = sessionStorage.getItem("conversations");
 
       this.currentPage = storedCurrentPage
         ? parseInt(storedCurrentPage, 10)
@@ -775,9 +773,54 @@ export default {
       this.isVisible = storedIsVisible
         ? JSON.parse(storedIsVisible)
         : this.isVisible;
-      this.conversations = storedConversations
-        ? JSON.parse(storedConversations)
-        : this.conversations;
+
+      switch (storedSortIcon) {
+        case "[1,1,1]":
+          break;
+        case "[2,1,1]":
+          this.conversations.sort((a, b) => {
+            const timeA = new Date(a.time);
+            const timeB = new Date(b.time);
+            return timeA - timeB;
+          });
+          break;
+        case "[3,1,1]":
+          this.conversations.sort((a, b) => {
+            const timeA = new Date(a.time);
+            const timeB = new Date(b.time);
+            return timeB - timeA;
+          });
+          break;
+        case "[1,2,1]":
+          this.conversations.sort((a, b) => {
+            const intentA = this.uniqueIntents.find(
+              (int) => int === a.intent_name
+            );
+            const intentB = this.uniqueIntents.find(
+              (int) => int === b.intent_name
+            );
+            return intentA.localeCompare(intentB);
+          });
+          break;
+        case "[1,3,1]":
+          this.conversations.sort((a, b) => {
+            const intentA = this.uniqueIntents.find(
+              (int) => int === a.intent_name
+            );
+            const intentB = this.uniqueIntents.find(
+              (int) => int === b.intent_name
+            );
+            return intentB.localeCompare(intentA);
+          });
+          break;
+        case "[1,1,2]":
+          this.conversations.sort((a, b) => a.text.localeCompare(b.text));
+          break;
+        case "[1,1,3]":
+          this.conversations.sort((a, b) => b.text.localeCompare(a.text));
+          break;
+        default:
+      }
     },
     async getConversations() {
       if (this.$route.query.system_id !== undefined) {

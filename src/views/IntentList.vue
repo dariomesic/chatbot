@@ -252,7 +252,7 @@
         position: fixed;
         bottom: 10%;
         left: 15%;
-        right:1%;
+        right: 1%;
         background: #ffffff;
       "
     >
@@ -423,7 +423,6 @@ export default {
   async created() {
     await this.getIntents();
     sessionStorage.setItem("systemId", this.$route.query.system_id);
-    this.initialIntents = [...this.intents];
     this.getStoredData();
   },
   beforeUnmount() {
@@ -431,7 +430,6 @@ export default {
     sessionStorage.setItem("itemsPerPage", this.itemsPerPage.toString());
     sessionStorage.setItem("sortIcon", JSON.stringify(this.sortIcon));
     sessionStorage.setItem("isVisible", JSON.stringify(this.isVisible));
-    sessionStorage.setItem("intents", JSON.stringify(this.intents));
   },
   watch: {
     itemsPerPage() {
@@ -480,7 +478,6 @@ export default {
       const storedItemsPerPage = sessionStorage.getItem("itemsPerPage");
       const storedSortIcon = sessionStorage.getItem("sortIcon");
       const storedIsVisible = sessionStorage.getItem("isVisible");
-      const storedIntents = sessionStorage.getItem("intents");
 
       this.currentPage = storedCurrentPage
         ? parseInt(storedCurrentPage, 10)
@@ -494,7 +491,44 @@ export default {
       this.isVisible = storedIsVisible
         ? JSON.parse(storedIsVisible)
         : this.isVisible;
-      this.intents = storedIntents ? JSON.parse(storedIntents) : this.intents;
+
+      switch (storedSortIcon) {
+        case "[1,1,1,1]":
+          break;
+        case "[2,1,1,1]":
+          this.intents.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case "[3,1,1,1]":
+          this.intents.sort((a, b) => b.name.localeCompare(a.name));
+          break;
+        case "[1,2,1,1]":
+          this.intents.sort((a, b) => {
+            const timestampA = this.parseFormattedTime(a.last_edited_formatted);
+            const timestampB = this.parseFormattedTime(b.last_edited_formatted);
+            return timestampA - timestampB;
+          });
+          break;
+        case "[1,3,1,1]":
+          this.intents.sort((a, b) => {
+            const timestampA = this.parseFormattedTime(a.last_edited_formatted);
+            const timestampB = this.parseFormattedTime(b.last_edited_formatted);
+            return timestampB - timestampA;
+          });
+          break;
+        case "[1,1,2,1]":
+          this.intents.sort((a, b) => a.examples_count - b.examples_count);
+          break;
+        case "[1,1,3,1]":
+          this.intents.sort((a, b) => b.examples_count - a.examples_count);
+          break;
+        case "[1,1,1,2]":
+          this.intents.sort((a, b) => a.steps_count - b.steps_count);
+          break;
+        case "[1,1,1,3]":
+          this.intents.sort((a, b) => b.steps_count - a.steps_count);
+          break;
+        default:
+      }
     },
     navigateToDetail(intent) {
       // Navigate to intentDetail component with the selected intent
@@ -575,6 +609,7 @@ export default {
 
           // Assign the sorted and formatted intents to the data property
           this.intents = formattedIntents;
+          this.initialIntents = [...this.intents];
         } catch (error) {
           console.error(error);
         }
