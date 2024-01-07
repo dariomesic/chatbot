@@ -902,7 +902,7 @@ hr {
 
 .bottom-section {
   background-color: var(--background);
-  height: 180px;
+  min-height: 180px;
   position: relative;
 }
 
