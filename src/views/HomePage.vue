@@ -234,10 +234,6 @@ th {
   text-align: left;
 }
 
-.active {
-  border: 2px solid #022f5d !important ;
-}
-
 th:hover {
   user-select: none;
   filter: brightness(80%);
