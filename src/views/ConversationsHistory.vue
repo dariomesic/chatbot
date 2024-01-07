@@ -1100,7 +1100,7 @@ input[type="text"] {
   border: 1px solid #0f62fe;
   border-top: none;
   background-color: #fff;
-  z-index: 1;
+  z-index: 2;
   max-height: 200px;
   overflow-y: auto;
 }
