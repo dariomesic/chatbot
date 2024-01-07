@@ -770,7 +770,6 @@ export default {
   flex-grow: 1;
   overflow: auto;
   position: relative;
-  background-color: var(--background);
 }
 
 table {
