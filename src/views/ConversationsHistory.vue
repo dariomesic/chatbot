@@ -300,9 +300,20 @@
               </span>
             </div>
           </th>
-          <th>
+          <th
+            @mouseenter="setSortIcon(3, true)"
+            @mouseleave="setSortIcon(3, false)"
+            @click="toggleSortIcon(3, 'threshold')"
+            :class="{ active: sortIcon[3] === 2 || sortIcon[3] === 3 }"
+          >
             <div class="span-wrapper">
               <span>Prag</span>
+              <span>
+                <SortingIcon
+                  :sortIcon="sortIcon[3]"
+                  :isVisible="isVisible[3]"
+                />
+              </span>
             </div>
           </th>
         </tr>
@@ -319,7 +330,7 @@
           </td>
           <td>{{ conversation.intent_name }}</td>
           <td>
-            <span style="word-break: break-all">
+            <span>
               <template v-if="conversation.thumbs_up === 1">
                 <svg
                   viewBox="0 0 24 24"
@@ -399,7 +410,14 @@
                 </svg>
               </template>
               <template v-else>
-                <span :innerHTML="conversation.text" />
+                <pre
+                  style="
+                    overflow-wrap: break-word;
+                    display: unset;
+                    white-space: pre-wrap;
+                  "
+                  :innerHTML="formatText(conversation)"
+                ></pre>
               </template>
             </span>
           </td>
@@ -549,8 +567,8 @@ export default {
       initialConversationsOrder: [],
       currentPage: 1,
       itemsPerPage: 10,
-      sortIcon: [1, 1, 1],
-      isVisible: [false, false, false],
+      sortIcon: [1, 1, 1, 1],
+      isVisible: [false, false, false, false],
       filterThumbsUp: false,
       filterThumbsDown: false,
       searchBySessionId: "",
@@ -784,23 +802,23 @@ export default {
         : this.isVisible;
 
       switch (storedSortIcon) {
-        case "[1,1,1]":
+        case "[1,1,1,1]":
           break;
-        case "[2,1,1]":
+        case "[2,1,1,1]":
           this.conversations.sort((a, b) => {
             const timeA = new Date(a.time);
             const timeB = new Date(b.time);
             return timeA - timeB;
           });
           break;
-        case "[3,1,1]":
+        case "[3,1,1,1]":
           this.conversations.sort((a, b) => {
             const timeA = new Date(a.time);
             const timeB = new Date(b.time);
             return timeB - timeA;
           });
           break;
-        case "[1,2,1]":
+        case "[1,2,1,1]":
           this.conversations.sort((a, b) => {
             const intentA = this.uniqueIntents.find(
               (int) => int === a.intent_name
@@ -811,7 +829,7 @@ export default {
             return intentA.localeCompare(intentB);
           });
           break;
-        case "[1,3,1]":
+        case "[1,3,1,1]":
           this.conversations.sort((a, b) => {
             const intentA = this.uniqueIntents.find(
               (int) => int === a.intent_name
@@ -822,11 +840,21 @@ export default {
             return intentB.localeCompare(intentA);
           });
           break;
-        case "[1,1,2]":
+        case "[1,1,2,1]":
           this.conversations.sort((a, b) => a.text.localeCompare(b.text));
           break;
-        case "[1,1,3]":
+        case "[1,1,3,1]":
           this.conversations.sort((a, b) => b.text.localeCompare(a.text));
+          break;
+        case "[1,1,1,2]":
+          this.conversations.sort((a, b) => {
+            if (a.threshold === "") return 1;
+            else if (b.threshold === "") return -1;
+            else return a.threshold - b.threshold;
+          });
+          break;
+        case "[1,1,1,3]":
+          this.conversations.sort((a, b) => b.threshold - a.threshold);
           break;
         default:
       }
@@ -888,6 +916,12 @@ export default {
           });
         } else if (sortSubject === "requests") {
           this.conversations.sort((a, b) => a.text.localeCompare(b.text));
+        } else if (sortSubject === "threshold") {
+          this.conversations.sort((a, b) => {
+            if (a.threshold === "") return 1;
+            else if (b.threshold === "") return -1;
+            else return a.threshold - b.threshold;
+          });
         }
       } else if (this.sortIcon[index] === 2) {
         this.sortIcon[index] = 3;
@@ -909,6 +943,8 @@ export default {
           });
         } else if (sortSubject === "requests") {
           this.conversations.sort((a, b) => b.text.localeCompare(a.text));
+        } else if (sortSubject === "threshold") {
+          this.conversations.sort((a, b) => b.threshold - a.threshold);
         }
       } else if (this.sortIcon[index] === 3) {
         this.sortIcon[index] = 1;
@@ -954,6 +990,18 @@ export default {
 
       const formattedTime = `${day} ${capitalizedMonth} ${year}. u ${hoursAndMinutes}`;
       return formattedTime;
+    },
+    formatText(conversation) {
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = conversation.text;
+
+      tempContainer.querySelectorAll("div,img").forEach((element) => {
+        element.parentNode.removeChild(element);
+      });
+
+      const formattedText = tempContainer.innerHTML;
+
+      return formattedText;
     },
     formatThreshold(conversation) {
       if (conversation.threshold) {
@@ -1031,7 +1079,6 @@ input[type="text"] {
   justify-content: space-between;
   align-items: center;
 }
-
 .custom-checkbox-select,
 .custom-input-date {
   display: flex;

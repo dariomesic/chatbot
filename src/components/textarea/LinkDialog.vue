@@ -1,7 +1,7 @@
 <template>
   <base-dialog
     :show="show"
-    @click-submit="insertLink"
+    @click-submit="triggerInsertLink"
     @close="$emit('close-dialog')"
     :rightButtonText="'Umetni'"
     :isSubmitDisabled="!validUrl"
@@ -36,7 +36,7 @@
 
 <script>
 export default {
-  props: ["show", "getSelection",],
+  props: ["show", "insertLink"],
   emits: ["close-dialog", "click-submit"],
   data() {
     return {
@@ -46,30 +46,16 @@ export default {
     };
   },
   methods: {
-    insertLink() {
-      const link = document.createElement("a");
-      if (this.linkText.length === 0) {
-        link.textContent = this.linkUrl;
-      } else {
-        link.textContent = this.linkText;
-      }
-      link.href = this.linkUrl;
-      link.target = "_blank";
-      link.setAttribute("contenteditable", "false");
-      if (this.getSelection) {
-        this.getSelection.deleteContents();
-        this.getSelection.insertNode(link);
-      } else {
-        const editor = document.getElementById("editorId");
-        editor.appendChild(link);
-      }
-      this.$emit("close-dialog");
+    triggerInsertLink() {
+      this.$emit("get-data", this.linkText, this.linkUrl);
+      this.insertLink();
       this.resetInput();
-      this.validUrl = false;
+      this.$emit("close-dialog");
     },
     resetInput() {
       this.linkText = "";
       this.linkUrl = "";
+      this.validUrl = false;
     },
     validateUrl() {
       try {
@@ -100,20 +86,21 @@ label {
   font-size: 16px;
 }
 
-input{
+input {
   background-color: #f4f4f4;
   border: none;
   border-bottom: 1px solid #8d8d8d;
   color: #161616;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 400;
   height: 2.5rem;
-  letter-spacing: .16px;
+  letter-spacing: 0.16px;
   line-height: 1.28572;
   outline: 2px solid transparent;
   outline-offset: -2px;
   padding-left: 10px;
   width: calc(100% - 10px);
-  transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
+  transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+    outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 </style>

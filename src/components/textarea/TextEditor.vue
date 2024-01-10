@@ -137,13 +137,16 @@
     <image-dialog
       :show="showImageDialog"
       @close-dialog="closeImageDialog"
-      :getSelection="storedSelection"
+      @get-data="handleImageData"
+      :uploadImage="uploadImage"
       ref="imageDialog"
     ></image-dialog>
     <link-dialog
       :show="showLinkDialog"
       @close-dialog="closeLinkDialog"
+      @get-data="handleLinkData"
       :getSelection="storedSelection"
+      :insertLink="insertLink"
     ></link-dialog>
     <timer-dialog
       :show="showTimerDialog"
@@ -153,8 +156,8 @@
       ref="timerDialog"
     ></timer-dialog>
   </div>
-  <!-- <button @click="send">send</button> -->
-  <div id="output"></div>
+  <!-- <button @click="send">send</button>
+  <pre id="output"></pre> -->
 </template>
 
 <script>
@@ -182,13 +185,17 @@ export default {
       storedSelection: null,
       editMode: false,
       selectedTimer: null,
+      receivedAltText: null,
+      receivedImage: null,
+      receivedImageTitle: null,
+      receivedLinkText: null,
+      receivedLinkUrl: null,
       html: this.text,
     };
   },
   methods: {
     insertTimer() {
       const timer = `
-        <div id="content" class="timer-content">
           <div class="pause">
             <svg
               focusable="false"
@@ -255,10 +262,9 @@ export default {
               </svg>
             </button>
           </div>
-        </div>
         `;
       const tempContainer = document.createElement("div");
-      tempContainer.className = "pause-wrapper";
+      tempContainer.className = "timer-content";
       tempContainer.setAttribute("contenteditable", "false");
       tempContainer.innerHTML = timer;
 
@@ -300,6 +306,41 @@ export default {
           this.deleteTimer(event);
         });
       });
+    },
+    insertLink() {
+      const link = document.createElement("a");
+      if (this.receivedLinkText.length === 0) {
+        link.textContent = this.receivedLinkUrl;
+      } else {
+        link.textContent = this.receivedLinkText;
+      }
+      link.href = this.receivedLinkUrl;
+      link.target = "_blank";
+      link.setAttribute("contenteditable", "false");
+      if (this.storedSelection) {
+        this.storedSelection.deleteContents();
+        this.storedSelection.insertNode(link);
+      } else {
+        this.$refs.editor.appendChild(link);
+      }
+    },
+    uploadImage() {
+      const imgElement = document.createElement("img");
+      imgElement.src = this.receivedImage;
+      imgElement.alt = this.receivedAltText;
+      imgElement.title = this.receivedImageTitle;
+
+      imgElement.style.width = "100%";
+      imgElement.style.height = "auto";
+
+      if (this.storedSelection) {
+        this.storedSelection.collapse(false);
+        this.storedSelection.insertNode(imgElement);
+        this.storedSelection.setStartAfter(imgElement);
+        this.storedSelection.collapse(true);
+      } else {
+        this.$refs.editor.appendChild(imgElement);
+      }
     },
     saveSelection() {
       const selection = window.getSelection();
@@ -388,7 +429,7 @@ export default {
     },
     async send() {
       const editor = document.getElementById("editorId");
-      const output = document.getElementById("output");
+      let output = document.getElementById("output");
       this.isMessageSent = true;
 
       const tempElement = document.createElement("div");
@@ -444,7 +485,7 @@ export default {
             output.appendChild(document.createElement("br"));
           } else if (node.nodeName === "BR") {
             output.appendChild(document.createElement("br"));
-          } else if (node.classList.contains("pause-wrapper")) {
+          } else if (node.classList.contains("timer-content")) {
             const duration = node
               .querySelector("p")
               .getAttribute("data-duration");
@@ -472,29 +513,36 @@ export default {
         const childNode = childNodes[i];
         await processNode(childNode, i === 0, i === childNodes.length - 1);
       }
-
       editor.innerHTML = "";
     },
     handleDuration(data) {
       this.receivedDuration = data;
     },
-
+    handleImageData(altText, imageTitle, image) {
+      this.receivedAltText = altText;
+      this.receivedImageTitle = imageTitle;
+      this.receivedImage = image;
+    },
+    handleLinkData(linkText, linkUrl) {
+      this.receivedLinkText = linkText;
+      this.receivedLinkUrl = linkUrl;
+    },
     handlePaste(event) {
       event.preventDefault();
       const clipboardData = event.clipboardData || window.clipboardData;
-      const pastedText = clipboardData.getData('text/plain');
+      const pastedText = clipboardData.getData("text/plain");
       // Insert the cleaned text into the editor
-      document.execCommand('insertHTML', false, pastedText);
+      document.execCommand("insertHTML", false, pastedText);
     },
 
     deleteTimer(event) {
-      const timerDiv = event.target.closest(".pause-wrapper");
+      const timerDiv = event.target.closest(".timer-content");
       timerDiv.remove();
       this.$emit("updateText", this.$refs.editor.innerHTML);
     },
     editTimer(event) {
       this.editMode = true;
-      const timerDiv = event.target.closest(".pause-wrapper");
+      const timerDiv = event.target.closest(".timer-content");
       const paragraphElement = timerDiv.querySelector("p");
       this.$refs.timerDialog.duration =
         paragraphElement.getAttribute("data-duration");

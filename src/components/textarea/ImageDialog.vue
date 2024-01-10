@@ -1,7 +1,7 @@
 <template>
   <base-dialog
     :show="show"
-    @click-submit="uploadImage"
+    @click-submit="triggerUploadImage"
     @close="$emit('close-dialog')"
     :isSubmitDisabled="isImageNull"
     :isDisabledClass="isImageNull"
@@ -47,7 +47,7 @@
           <input
             type="button"
             value="Reset"
-            @click="resetInput"
+            @click="resetImage"
             v-if="resetButtonReady"
           />
         </div>
@@ -64,7 +64,7 @@
 
 <script>
 export default {
-  props: ["show", "getSelection"],
+  props: ["show", "uploadImage"],
   emits: ["close-dialog"],
   data() {
     return {
@@ -106,25 +106,14 @@ export default {
       this.file = false;
       this.image = null;
     },
-    uploadImage() {
-      const imgElement = document.createElement("img");
-      imgElement.src = this.image;
-      imgElement.alt = this.altText;
-      imgElement.title = this.imageTitle;
-
-      // Add the styling to the img element
-      imgElement.style.width = "100%";
-      imgElement.style.height = "auto";
-
-      if (this.getSelection) {
-        this.getSelection.collapse(false);
-        this.getSelection.insertNode(imgElement);
-        this.getSelection.setStartAfter(imgElement);
-        this.getSelection.collapse(true);
-      } else {
-        const editor = document.getElementById("editorId");
-        editor.appendChild(imgElement);
-      }
+    resetImage() {
+      this.image = null;
+      this.file = false;
+    },
+    triggerUploadImage() {
+      this.$emit("get-data", this.altText, this.imageTitle, this.image);
+      this.uploadImage();
+      this.resetInput();
       this.$emit("close-dialog");
     },
   },
@@ -182,21 +171,22 @@ span {
   font-size: 11px;
 }
 
-input[type="text"]{
+input[type="text"] {
   background-color: #f4f4f4;
   border: none;
   border-bottom: 1px solid #8d8d8d;
   color: #161616;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 400;
   height: 2.5rem;
-  letter-spacing: .16px;
+  letter-spacing: 0.16px;
   line-height: 1.28572;
   outline: 2px solid transparent;
   outline-offset: -2px;
   padding-left: 10px;
   width: calc(100% - 10px);
-  transition: background-color 70ms cubic-bezier(.2,0,.38,.9),outline 70ms cubic-bezier(.2,0,.38,.9);
+  transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+    outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
 .form-section {
@@ -208,7 +198,7 @@ input[type="text"]{
   border-top-right-radius: 18px;
   background-color: #f5f7f7;
   flex-basis: 45%;
-  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   height: fit-content;
   min-height: 40vh;
   min-width: 340px;
@@ -216,7 +206,7 @@ input[type="text"]{
 
 .image-preview-title {
   text-align: center;
-  box-shadow: 0 9.5px 12.7px 0 rgba(0,0,0,.05);
+  box-shadow: 0 9.5px 12.7px 0 rgba(0, 0, 0, 0.05);
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   padding: 10px 20px;
