@@ -203,7 +203,7 @@ export default {
             img.replaceWith(document.createTextNode("SLIKA"));
           });
 
-          container.querySelectorAll(".pause-wrapper").forEach((div) => {
+          container.querySelectorAll(".timer-content").forEach((div) => {
             const paragraphTag = div.querySelector("p[data-duration]");
             const timerDuration = `PAUSE ${paragraphTag.getAttribute(
               "data-duration"
