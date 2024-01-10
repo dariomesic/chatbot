@@ -510,26 +510,49 @@ export default{
             messageContentElement.appendChild(image);
           } else if (node.nodeName === "BR" && !isFirstNode) {
             messageContentElement.appendChild(document.createElement("br"));
-          } else if (node.classList.contains("pause-wrapper")) {
-            const duration = parseFloat(node.querySelector("p").getAttribute("data-duration"));
+          } else if (node.classList.contains("timer-content")) {
+            const duration = parseFloat(
+              node.querySelector("p").getAttribute("data-duration")
+            );
             if (!isNaN(duration) && duration > 0) {
               // Append the content before the pause to the message content element
               if (this.messages.length > 0) {
-                this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML)
-                this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, `<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`)
+                this.messages[this.messages.length - 1].text =
+                  this.removeLastOccurrence(
+                    this.messages[this.messages.length - 1].text,
+                    messageContentElement.innerHTML
+                  );
+                this.messages[this.messages.length - 1].text =
+                  this.removeLastOccurrence(
+                    this.messages[this.messages.length - 1].text,
+                    `<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`
+                  );
               }
-              messageContentElement.innerHTML = '';
+              messageContentElement.innerHTML = "";
               // Delay here
               this.scrollChatToBottom();
-              await new Promise((resolve) => setTimeout(resolve, duration * 1000));
+              await new Promise((resolve) =>
+                setTimeout(resolve, duration * 1000)
+              );
             }
-            this.messages[this.messages.length - 1].text = this.messages[this.messages.length - 1].text.replace(`<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`, '')
-            !isFirstNode ? messageContentElement.appendChild(document.createElement("br")) : ''
+            this.messages[this.messages.length - 1].text = this.messages[
+              this.messages.length - 1
+            ].text.replace(
+              `<div><h1 class="dot one">.</h1><h1 class="dot two">.</h1><h1 class="dot three">.</h1></div>`,
+              ""
+            );
+            !isFirstNode
+              ? messageContentElement.appendChild(document.createElement("br"))
+              : "";
           } else {
             const childNodes = node.childNodes;
             for (let i = 0; i < childNodes.length; i++) {
               const childNode = childNodes[i];
-              await processNode(childNode, isFirstNode && i === 0, isLastNode && i === childNodes.length - 1);
+              await processNode(
+                childNode,
+                isFirstNode && i === 0,
+                isLastNode && i === childNodes.length - 1
+              );
             }
           }
         }
@@ -538,11 +561,22 @@ export default{
       const childNodes = tempElement.childNodes;
       for (let i = 0; i < childNodes.length; i++) {
         const childNode = childNodes[i];
-        await processNode(childNode, (i === 0 || (i === 1 && (childNodes[0].textContent.trim().length === 0 || childNodes[0].nodeName === "BR"))), i === childNodes.length - 1);//additional conditions because blank spaces in the beggining or empty <br>
+        await processNode(
+          childNode,
+          i === 0 ||
+            (i === 1 &&
+              (childNodes[0].textContent.trim().length === 0 ||
+                childNodes[0].nodeName === "BR")),
+          i === childNodes.length - 1
+        ); //additional conditions because blank spaces in the beggining or empty <br>
       }
 
       if (this.messages.length > 0) {
-        this.messages[this.messages.length - 1].text = this.removeLastOccurrence(this.messages[this.messages.length - 1].text, messageContentElement.innerHTML);
+        this.messages[this.messages.length - 1].text =
+          this.removeLastOccurrence(
+            this.messages[this.messages.length - 1].text,
+            messageContentElement.innerHTML
+          );
       }
     },
 
