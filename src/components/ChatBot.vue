@@ -295,11 +295,11 @@ export default{
       });
 
 
-      let messageText = `<div class="bot-response text" text-first="true">` + message.assistant_answer + '</div>'
+      let messageText = `<div class="bot-response text" text-first="true"><pre>` + message.assistant_answer + '</pre></div>'
       let tmp = message.assistant_answer
       message.assistant_answer = tmp
     
-      if(!message.assistant_answer.includes("pause-wrapper")){
+      if(!message.assistant_answer.includes("timer-content")){
         this.messages.push({
           text: messageText,
           classes: ['message'],
@@ -390,7 +390,7 @@ export default{
       });
 
       // Replace pause elements with "PAUSE {duration}s"
-      container.querySelectorAll('.pause-wrapper').forEach((div) => {
+      container.querySelectorAll('.timer-content').forEach((div) => {
         const paragraphTag = div.querySelector('p[data-duration]');
         if (paragraphTag) {
           const timerDuration = `PAUSE ${paragraphTag.getAttribute('data-duration')}s `;

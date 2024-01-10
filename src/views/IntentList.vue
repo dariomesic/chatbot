@@ -907,7 +907,7 @@ hr {
 
 .chat {
   z-index: 2;
-  position: absolute;
+  position: fixed;
   right: 1rem;
   width: 50px;
   height: 50px;
