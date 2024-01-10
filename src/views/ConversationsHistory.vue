@@ -1024,6 +1024,11 @@ export default {
 </script>
 
 <style scoped>
+th:hover {
+  user-select: none;
+  filter: brightness(80%);
+  cursor: pointer;
+}
 .filters-container {
   display: flex;
   flex-direction: row;
