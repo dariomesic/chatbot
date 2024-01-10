@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="tile">
-        <span class="tile-title" :innerHTML="card.assistant_answer" />
+        <pre class="tile-title" :innerHTML="formatAssistantAnswer()" />
         <div class="selected-options">
           <template v-if="card.response_type === 'Opcije'">
             <div
@@ -231,9 +231,8 @@ export default {
     card: Object,
     isSelected: Boolean,
     index: Number,
-   
   },
-  
+
   created() {
     this.$emit("cardCopy", this.card);
   },
@@ -257,6 +256,18 @@ export default {
           textColor: "black",
         }
       );
+    },
+    formatAssistantAnswer() {
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = this.card.assistant_answer;
+
+      tempContainer.querySelectorAll("div,img").forEach((element) => {
+        element.parentNode.removeChild(element);
+      });
+
+      const formattedAssistantAnswer = tempContainer.innerHTML;
+
+      return formattedAssistantAnswer;
     },
     handleDuplicateClick(event) {
       event.stopPropagation();
@@ -292,7 +303,7 @@ export default {
   display: flex;
   list-style: none;
   max-height: 235px;
-  
+
   min-height: 3rem;
   padding: 0.5rem 1rem;
   position: relative;
@@ -343,7 +354,7 @@ label {
   background: white;
   width: 100%;
   overflow: hidden;
-  overflow-y:auto;
+  overflow-y: auto;
   font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.32px;
@@ -421,12 +432,23 @@ label {
   position: relative;
 }
 
-.tile-title {
+/* .tile-title {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   display: -webkit-box;
 
   overflow: hidden;
+  word-break: break-word;
+} */
+
+.tile-title {
+  display: -webkit-box;
+  max-width: 100%;
+  white-space: pre-line; /* Use pre-line to preserve line breaks */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical; /* This might not work with <pre> */
+  -webkit-line-clamp: 2; /* This might not work with <pre> */
   word-break: break-word;
 }
 

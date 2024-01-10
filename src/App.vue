@@ -117,6 +117,11 @@ p {
   margin: unset;
 }
 
+pre {
+  font-family: inherit;
+  margin: unset;
+}
+
 input[type="text"],
 .custom-input {
   background-color: #fff;
@@ -203,6 +208,13 @@ a:hover {
   font-style: normal;
   font-weight: normal;
   white-space: initial;
+}
+
+.option img,
+.option div.timer-content,
+.option-text img,
+.option-text div.timer-content {
+  display: none;
 }
 
 .option-text > .pause-wrapper {
