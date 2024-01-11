@@ -896,7 +896,6 @@ hr {
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #ddd;
-  z-index: 1; /* Ensure it's above the table */
 }
 
 .bottom-section {

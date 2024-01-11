@@ -200,15 +200,11 @@ export default {
           container.innerHTML = selectedAnswerObject.answer;
 
           container.querySelectorAll("img").forEach((img) => {
-            img.replaceWith(document.createTextNode("SLIKA"));
+            img.replaceWith(document.createTextNode(""));
           });
 
           container.querySelectorAll(".timer-content").forEach((div) => {
-            const paragraphTag = div.querySelector("p[data-duration]");
-            const timerDuration = `PAUSE ${paragraphTag.getAttribute(
-              "data-duration"
-            )}s `;
-            div.replaceWith(document.createTextNode(timerDuration));
+            div.replaceWith(document.createTextNode(''));
           });
 
           condition.answer = container.innerHTML;
