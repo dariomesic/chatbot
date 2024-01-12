@@ -463,8 +463,8 @@
         </div>
         <span style="margin-left: 1.235rem; word-break: break-all"
           >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
-          {{ Math.min(currentPage * itemsPerPage, conversations.length) }} od
-          {{ conversations.length }} stavki</span
+          {{ Math.min(currentPage * itemsPerPage, filteredLength) }}
+          od {{ filteredLength }} stavki</span
         >
       </div>
       <div
@@ -510,7 +510,7 @@
           </button>
           <button
             @click="currentPage < totalPages ? currentPage++ : null"
-            :disabled="currentPage === totalPages"
+            :disabled="currentPage === totalPages || totalPages === 0"
             style="
               border-left: 1px solid #e0e0e0;
               height: 2.5rem;
@@ -575,6 +575,7 @@ export default {
       endMaxDate: "",
       startDateText: "",
       endDateText: "",
+      filteredLength: 0,
     };
   },
   async created() {
@@ -740,9 +741,9 @@ export default {
           );
         });
       }
+      this.getFilteredLength(filtered);
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-
       return filtered.slice(startIndex, endIndex);
     },
     formatedSelectedStartDate() {
@@ -769,7 +770,7 @@ export default {
       }
     },
     totalPages() {
-      return Math.ceil(this.conversations.length / this.itemsPerPage);
+      return Math.ceil(this.filteredLength / this.itemsPerPage);
     },
   },
   methods: {
@@ -962,6 +963,7 @@ export default {
       }
     },
     removeChosenIntents() {
+      this.currentPage = 1;
       this.selectedIntents = [];
       this.isDropdownOpen = false;
     },
@@ -1009,6 +1011,9 @@ export default {
       } else {
         this.$refs.endDatePicker.showPicker();
       }
+    },
+    getFilteredLength(filtered) {
+      this.filteredLength = filtered.length;
     },
   },
 };
