@@ -13,8 +13,8 @@
             'Prošli mjesec',
             'Prošla godina',
           ]"
-          :value="SelectedDateRange"
-          @update:value="SelectedDateRange = $event"
+          :value="selectedDateRange"
+          @update:value="selectedDateRange = $event"
           style="box-sizing: border-box"
         />
       </div>
@@ -566,7 +566,7 @@ export default {
       uniqueIntents: [],
       isDropdownOpen: false,
       selectedIntents: [],
-      SelectedDateRange: "Prilagođeni raspon",
+      selectedDateRange: "Prilagođeni raspon",
       selectedStartDate: "",
       selectedEndDate: "",
       startMinDate: "",
@@ -592,7 +592,7 @@ export default {
     sessionStorage.setItem("isVisibleCH", JSON.stringify(this.isVisible));
   },
   watch: {
-    SelectedDateRange(newVal) {
+    selectedDateRange(newVal) {
       const today = new Date();
       const todayFormatted = today.toISOString().split("T")[0];
       const weekAgo = new Date(
@@ -646,14 +646,14 @@ export default {
     selectedStartDate(newVal) {
       this.endMinDate = newVal;
       if (newVal === "" && this.selectedEndDate === "") {
-        this.SelectedDateRange = "Prilagođeni raspon";
+        this.selectedDateRange = "Prilagođeni raspon";
         this.startMaxDate = new Date().toISOString().split("T")[0];
       }
       if (
         newVal === new Date().toISOString().split("T")[0] &&
         this.selectedEndDate === new Date().toISOString().split("T")[0]
       ) {
-        this.SelectedDateRange = "Danas";
+        this.selectedDateRange = "Danas";
       }
     },
     selectedEndDate(newVal) {
@@ -661,18 +661,24 @@ export default {
         this.startMaxDate = newVal;
       }
       if (newVal === "" && this.selectedStartDate === "") {
-        this.SelectedDateRange = "Prilagođeni raspon";
+        this.selectedDateRange = "Prilagođeni raspon";
         this.startMaxDate = new Date().toISOString().split("T")[0];
       }
       if (
         newVal === new Date().toISOString().split("T")[0] &&
         this.selectedStartDate === new Date().toISOString().split("T")[0]
       ) {
-        this.SelectedDateRange = "Danas";
+        this.selectedDateRange = "Danas";
       }
     },
     itemsPerPage() {
       this.currentPage = 1;
+    },
+    totalPages(newValue, oldValue) {
+      if (newValue < this.currentPage || oldValue < this.currentPage) {
+        this.currentPage = 1;
+        console.log("ok");
+      }
     },
   },
   computed: {
@@ -1014,6 +1020,9 @@ export default {
     },
     getFilteredLength(filtered) {
       this.filteredLength = filtered.length;
+    },
+    refreshPagination() {
+      this.currentPage = 1;
     },
   },
 };
