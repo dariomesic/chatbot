@@ -614,7 +614,7 @@ export default {
     },
     addRule(id) {
       this.rules_copy.splice(id, 0, {
-        id: this.rules_copy.length + 1,
+        id: this.rules_copy.reduce((max, obj) => (obj.id > max ? obj.id : max), this.rules_copy[0].id) + 1,
         conditions: {},
         assistant_answer: "",
         response_type: "",

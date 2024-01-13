@@ -126,7 +126,7 @@ export default {
   background-color: #fff;
   border: 1px solid #0f62fe;
   border-top: none;
-  z-index: 1;
+  z-index: 2;
   max-height: 200px;
   overflow-y: auto;
 }
