@@ -310,7 +310,7 @@ export default{
       }
       else{
         this.messages.push({
-          text: `<div class="bot-response text" text-first="true"></div>`,
+          text: `<div class="bot-response text" text-first="true"><pre></pre></div>`,
           classes: ['message'],
           dataUser: false,
         });
@@ -579,10 +579,10 @@ export default{
     },
 
     removeLastOccurrence(inputString, update) {
-      const lastIndex = inputString.lastIndexOf('</div>');
+      const lastIndex = inputString.lastIndexOf('</pre></div>');
       const beforeSubstring = inputString.slice(0, lastIndex);
-      const afterSubstring = inputString.slice(lastIndex + '</div>'.length);
-      return beforeSubstring + afterSubstring + update + '</div>';
+      const afterSubstring = inputString.slice(lastIndex + '</pre></div>'.length);
+      return beforeSubstring + afterSubstring + update + '</pre></div>';
     },
 
     toggleMinimized() {

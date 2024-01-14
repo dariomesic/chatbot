@@ -1,5 +1,5 @@
 <template>
-  <div class="conversations-main-block">
+  <div class="actions">
     <h3>Popis razgovora od strane chatbota i korisnika</h3>
     <div class="filters-container">
       <div class="input-control" style="width: 15vw">
@@ -169,7 +169,7 @@
       <div class="input-control" style="width: 20vw">
         <label>Filtriraj prema namjerama</label>
         <div class="custom-checkbox-select" tabindex="1">
-          <div class="selected-items" @click="toggleDropdown">
+          <div class="selected-items" @click="toggleDropdown" ref="selectedItemsRef">
             <span
               v-if="selectedIntents.length === 0"
               style="
@@ -196,7 +196,7 @@
               <title>Open menu</title>
             </svg>
           </div>
-          <div v-show="isDropdownOpen" class="dropdown">
+          <div v-show="isDropdownOpen" class="dropdown" ref="dropdownRef">
             <button
               style="display: block; padding: 8px; color: var(--main__color)"
               @click="removeChosenIntents"
@@ -241,8 +241,13 @@
         >
       </div>
     </div>
+  </div>
+
+
+  <!-- Table with scrollable tbody and pagination -->
+  <div class="table-container">
     <table>
-      <thead>
+      <thead style="position:relative;z-index:1">
         <tr style="width: 70vw">
           <th
             @mouseenter="setSortIcon(0, true)"
@@ -420,127 +425,130 @@
         </tr>
       </TransitionGroup>
     </table>
-    <div
-      style="
-        border: 1px solid #e0e0e0;
-        display: flex;
-        flex-wrap: wrap;
-        font-weight: 400;
-        justify-content: space-between;
-        letter-spacing: 0.16px;
-        line-height: 1.28572;
-        max-height: 2.5rem;
-        align-items: center;
-        position: fixed;
-        bottom: 10%;
-        left: 15%;
-        right: 1%;
-        background: #ffffff;
-      "
-    >
+
+    <div class="pagination">
+      <!-- Your pagination buttons go here -->
       <div
-        style="
-          padding: 0 1rem;
-          align-items: center;
-          display: flex;
-          flex-wrap: wrap;
-          height: 100%;
-        "
-      >
-        <div>
+          style="
+            width:100%;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+            font-weight: 400;
+            justify-content: space-between;
+            letter-spacing: 0.16px;
+            line-height: 1.28572;
+            min-height: 2.5rem;
+            align-items: center;
+          "
+        >
           <div
-            class="items-per-page"
-            style="display: flex; align-items: center; flex-wrap: wrap"
+            style="
+              padding: 0 1rem;
+              align-items: center;
+              display: flex;
+              flex-wrap: wrap;
+              height: 100%;
+            "
           >
-            <label for="itemsPerPage">Stavki po stranici:</label>
-            <CustomSelect
-              :options="[2, 5, 10, 25, 100]"
-              :value="itemsPerPage"
-              :position="'up'"
-              @update:value="itemsPerPage = $event"
-            />
+          <div>
+            <div
+              class="items-per-page"
+              style="display: flex; align-items: center; flex-wrap: wrap"
+            >
+              <label for="itemsPerPage">Stavki po stranici:</label>
+              <CustomSelect
+                :options="[2, 5, 10, 25, 100]"
+                :value="itemsPerPage"
+                :position="'up'"
+                @update:value="itemsPerPage = $event"
+              />
+            </div>
           </div>
+          <span style="margin-left: 1.235rem; word-break: break-all"
+            >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
+            {{ Math.min(currentPage * itemsPerPage, filteredLength) }}
+            od {{ filteredLength }} stavki</span
+          >
         </div>
-        <span style="margin-left: 1.235rem; word-break: break-all"
-          >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
-          {{ Math.min(currentPage * itemsPerPage, filteredLength) }}
-          od {{ filteredLength }} stavki</span
+        <div
+          style="
+            align-items: center;
+            display: flex;
+            height: 100%;
+            flex-wrap: wrap;
+          "
         >
-      </div>
-      <div
-        style="
-          align-items: center;
-          display: flex;
-          height: 100%;
-          flex-wrap: wrap;
-        "
-      >
-        <span style="margin-left: 0.0625rem; margin-right: 1rem"
-          >{{ currentPage }} od {{ totalPages }} stranica</span
-        >
-        <div style="display: flex; flex-wrap: wrap">
-          <button
-            @click="currentPage > 1 ? currentPage-- : null"
-            :disabled="currentPage === 1"
-            style="
-              border-left: 1px solid #e0e0e0;
-              height: 2.5rem;
-              margin: 0;
-              min-height: 2rem;
-              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
-                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
-              width: 2.5rem;
-            "
+          <span style="margin-left: 0.0625rem; margin-right: 1rem"
+            >{{ currentPage }} od {{ totalPages }} stranica</span
           >
-            <svg
-              focusable="false"
-              preserveAspectRatio="xMidYMid meet"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              aria-label="Previous page"
-              aria-hidden="true"
-              width="16"
-              height="16"
-              viewBox="0 0 32 32"
-              role="img"
-              style="margin-top: 5px"
+          <div style="display: flex; flex-wrap: wrap">
+            <button
+              @click="currentPage > 1 ? currentPage-- : null"
+              :disabled="currentPage === 1"
+              style="
+                border-left: 1px solid #e0e0e0;
+                height: 2.5rem;
+                margin: 0;
+                min-height: 2rem;
+                transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                  background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+                width: 2.5rem;
+              "
             >
-              <path d="M20 24L10 16 20 8z"></path>
-            </svg>
-          </button>
-          <button
-            @click="currentPage < totalPages ? currentPage++ : null"
-            :disabled="currentPage === totalPages || totalPages === 0"
-            style="
-              border-left: 1px solid #e0e0e0;
-              height: 2.5rem;
-              margin: 0;
-              min-height: 2rem;
-              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
-                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
-              width: 2.5rem;
-            "
-          >
-            <svg
-              focusable="false"
-              preserveAspectRatio="xMidYMid meet"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              aria-label="Next page"
-              aria-hidden="true"
-              width="16"
-              height="16"
-              viewBox="0 0 32 32"
-              role="img"
-              style="margin-top: 5px"
+              <svg
+                focusable="false"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                aria-label="Previous page"
+                aria-hidden="true"
+                width="16"
+                height="16"
+                viewBox="0 0 32 32"
+                role="img"
+                style="margin-top: 5px"
+              >
+                <path d="M20 24L10 16 20 8z"></path>
+              </svg>
+            </button>
+            <button
+              @click="currentPage < totalPages ? currentPage++ : null"
+              :disabled="currentPage === totalPages || totalPages === 0"
+              style="
+                border-left: 1px solid #e0e0e0;
+                height: 2.5rem;
+                margin: 0;
+                min-height: 2rem;
+                transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                  background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+                width: 2.5rem;
+              "
             >
-              <path d="M12 8L22 16 12 24z"></path>
-            </svg>
-          </button>
+              <svg
+                focusable="false"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                aria-label="Next page"
+                aria-hidden="true"
+                width="16"
+                height="16"
+                viewBox="0 0 32 32"
+                role="img"
+                style="margin-top: 5px"
+              >
+                <path d="M12 8L22 16 12 24z"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Grey background at the bottom -->
+  <div class="bottom-section"/>
 </template>
 
 <script>
@@ -677,7 +685,6 @@ export default {
     totalPages(newValue, oldValue) {
       if (newValue < this.currentPage || oldValue < this.currentPage) {
         this.currentPage = 1;
-        console.log("ok");
       }
     },
   },
@@ -958,8 +965,8 @@ export default {
       }
     },
     closeDropdownOnOutsideClick(event) {
-      const dropdown = this.$el.querySelector(".dropdown");
-      const selectedItems = this.$el.querySelector(".selected-items");
+      const dropdown = this.$refs.dropdownRef;
+      const selectedItems = this.$refs.selectedItemsRef;
       if (
         !dropdown.contains(event.target) &&
         !selectedItems.contains(event.target)
@@ -1029,6 +1036,11 @@ export default {
 </script>
 
 <style scoped>
+th:hover {
+  user-select: none;
+  filter: brightness(80%);
+  cursor: pointer;
+}
 .filters-container {
   display: flex;
   flex-direction: row;
@@ -1077,79 +1089,12 @@ input[type="text"] {
   flex-wrap: wrap;
 }
 
-table {
-  width: 100%;
-  margin-bottom: 2rem;
-  word-break: break-word;
-  color: #212529;
-  border-collapse: collapse;
-}
-
-tr {
-  border-top: none;
-  border-bottom: none !important;
-}
 .span-wrapper {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
-
-th {
-  background: var(--background);
-  vertical-align: bottom;
-  text-align: left;
-}
-
-.active {
-  border: 2px solid #022f5d;
-}
-
-th:hover {
-  user-select: none;
-  filter: brightness(80%);
-  cursor: pointer;
-}
-
-th,
-td {
-  border-top: 1px solid #dee2e6;
-}
-
-th,
-td {
-  padding: 0.75rem;
-  vertical-align: middle;
-}
-
-table tbody tr th,
-table tbody tr td {
-  vertical-align: middle;
-  position: relative;
-  transition: 0.3s all ease;
-}
-
-table tbody tr th::before,
-table tbody tr td::before {
-  top: -1px;
-}
-
-table tbody tr th::before,
-table tbody tr th::after,
-table tbody tr td::before,
-table tbody tr td::after {
-  transition: 0.3s all ease;
-  content: "";
-  left: 0;
-  right: 0;
-  position: absolute;
-  height: 1px;
-  background: #bfbfbf;
-  width: 100%;
-  opacity: 0;
-  visibility: hidden;
 }
 .custom-checkbox-select,
 .custom-input-date {
@@ -1219,7 +1164,7 @@ table tbody tr td::after {
   border: 1px solid #0f62fe;
   border-top: none;
   background-color: #fff;
-  z-index: 1;
+  z-index: 2;
   max-height: 200px;
   overflow-y: auto;
 }
