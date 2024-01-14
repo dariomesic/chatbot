@@ -283,8 +283,8 @@
           </div>
           <span style="margin-left: 1.235rem; word-break: break-all"
             >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
-            {{ Math.min(currentPage * itemsPerPage, intents.length) }} od
-            {{ intents.length }} stavki</span
+            {{ Math.min(currentPage * itemsPerPage, filteredLength) }} od
+            {{ filteredLength }} stavki</span
           >
         </div>
         <div
@@ -425,6 +425,7 @@ export default {
       isVisible: [false, false, false, false],
       showChatbot: false,
       loading: false,
+      filteredLength: 0,
     };
   },
   async created() {
@@ -442,6 +443,11 @@ export default {
     itemsPerPage() {
       this.currentPage = 1;
     },
+    totalPages(newValue, oldValue) {
+      if (newValue < this.currentPage || oldValue < this.currentPage) {
+        this.currentPage = 1;
+      }
+    },
   },
   computed: {
     filteredIntents() {
@@ -449,7 +455,7 @@ export default {
       const filtered = this.intents.filter((intent) =>
         intent.name.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
-
+      this.getFilteredLength(filtered);
       // Calculate the start and end indexes for the current page
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
@@ -458,7 +464,7 @@ export default {
       return filtered.slice(startIndex, endIndex);
     },
     totalPages() {
-      return Math.ceil(this.intents.length / this.itemsPerPage);
+      return Math.ceil(this.filteredLength / this.itemsPerPage);
     },
     selectAll: {
       get: function () {
@@ -721,6 +727,12 @@ export default {
         this.sortIcon[index] = 1;
         this.intents = [...this.initialIntents];
       }
+    },
+    getFilteredLength(filtered) {
+      this.filteredLength = filtered.length;
+    },
+    refreshPagination() {
+      this.currentPage = 1;
     },
   },
 };
