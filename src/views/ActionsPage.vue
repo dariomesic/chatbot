@@ -61,11 +61,21 @@
           <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a>
         </span>
         <h3>{{ system_name }}</h3>
-        <IntentList v-if="activeTab === 'Namjere'" />
-        <ConversationsHistory v-if="activeTab === 'Razgovori'" />
-        <SettingsPage v-if="activeTab === 'Postavke'" />
+        <!-- <template v-if="activeTab === 'Namjere'">
+          <IntentList />
+        </template>
+        <template v-else-if="activeTab === 'Razgovori'">
+          <ConversationsHistory />
+        </template>
+        <template v-else-if="activeTab === 'Postavke'">
+          <SettingsPage />
+        </template> -->
+        <IntentList v-show="activeTab === 'Namjere'" />
+        <ConversationsHistory v-show="activeTab === 'Razgovori'" />
+        <SettingsPage v-show="activeTab === 'Postavke'" />
       </div>
     </div>
+    <div class="footer" />
   </div>
 </template>
 
@@ -130,6 +140,7 @@ li {
   padding: 0.625rem 1.25rem;
   border-left: 5px solid transparent;
 }
+
 .active {
   text-decoration: underline;
   font-weight: bold;
@@ -140,11 +151,18 @@ li {
 .right-part {
   position: relative;
   flex-basis: 85%;
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 60px);
+  overflow-y: scroll;
+  height: 82vh;
 }
 
+.footer {
+  background: var(--background);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 10vh;
+  width: 100%;
+}
 h3 {
   position: absolute;
   top: 1rem;
@@ -156,6 +174,5 @@ h3 {
   font-style: italic;
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
-  z-index: 1;
 }
 </style>

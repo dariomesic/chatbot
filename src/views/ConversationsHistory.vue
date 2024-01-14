@@ -1,6 +1,5 @@
 <template>
-
-  <div class="actions">
+  <div class="conversations-main-block">
     <h3>Popis razgovora od strane chatbota i korisnika</h3>
     <div class="filters-container">
       <div class="input-control" style="width: 15vw">
@@ -14,8 +13,8 @@
             'Prošli mjesec',
             'Prošla godina',
           ]"
-          :value="SelectedDateRange"
-          @update:value="SelectedDateRange = $event"
+          :value="selectedDateRange"
+          @update:value="selectedDateRange = $event"
           style="box-sizing: border-box"
         />
       </div>
@@ -242,12 +241,8 @@
         >
       </div>
     </div>
-  </div>
-
-  <!-- Table with scrollable tbody and pagination -->
-  <div class="table-container">
     <table>
-      <thead style="position:relative;z-index:1">
+      <thead>
         <tr style="width: 70vw">
           <th
             @mouseenter="setSortIcon(0, true)"
@@ -425,131 +420,127 @@
         </tr>
       </TransitionGroup>
     </table>
-    
-    <!-- Fixed pagination navigation -->
-    <div class="pagination">
-      <!-- Your pagination buttons go here -->
+    <div
+      style="
+        border: 1px solid #e0e0e0;
+        display: flex;
+        flex-wrap: wrap;
+        font-weight: 400;
+        justify-content: space-between;
+        letter-spacing: 0.16px;
+        line-height: 1.28572;
+        max-height: 2.5rem;
+        align-items: center;
+        position: fixed;
+        bottom: 10%;
+        left: 15%;
+        right: 1%;
+        background: #ffffff;
+      "
+    >
       <div
-          style="
-            width:100%;
-            border: 1px solid #e0e0e0;
-            display: flex;
-            flex-wrap: wrap;
-            font-weight: 400;
-            justify-content: space-between;
-            letter-spacing: 0.16px;
-            line-height: 1.28572;
-            min-height: 2.5rem;
-            align-items: center;
-          "
+        style="
+          padding: 0 1rem;
+          align-items: center;
+          display: flex;
+          flex-wrap: wrap;
+          height: 100%;
+        "
+      >
+        <div>
+          <div
+            class="items-per-page"
+            style="display: flex; align-items: center; flex-wrap: wrap"
+          >
+            <label for="itemsPerPage">Stavki po stranici:</label>
+            <CustomSelect
+              :options="[2, 5, 10, 25, 100]"
+              :value="itemsPerPage"
+              :position="'up'"
+              @update:value="itemsPerPage = $event"
+            />
+          </div>
+        </div>
+        <span style="margin-left: 1.235rem; word-break: break-all"
+          >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
+          {{ Math.min(currentPage * itemsPerPage, filteredLength) }}
+          od {{ filteredLength }} stavki</span
         >
-          <div
+      </div>
+      <div
+        style="
+          align-items: center;
+          display: flex;
+          height: 100%;
+          flex-wrap: wrap;
+        "
+      >
+        <span style="margin-left: 0.0625rem; margin-right: 1rem"
+          >{{ currentPage }} od {{ totalPages }} stranica</span
+        >
+        <div style="display: flex; flex-wrap: wrap">
+          <button
+            @click="currentPage > 1 ? currentPage-- : null"
+            :disabled="currentPage === 1"
             style="
-              padding: 0 1rem;
-              align-items: center;
-              display: flex;
-              flex-wrap: wrap;
-              height: 100%;
+              border-left: 1px solid #e0e0e0;
+              height: 2.5rem;
+              margin: 0;
+              min-height: 2rem;
+              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+              width: 2.5rem;
             "
           >
-            <div>
-              <div
-                class="items-per-page"
-                style="display: flex; align-items: center; flex-wrap: wrap"
-              >
-                <label for="itemsPerPage">Stavki po stranici:</label>
-                <CustomSelect
-                  :options="[2, 5, 10, 25, 100]"
-                  :value="itemsPerPage"
-                  :position="'up'"
-                  @update:value="itemsPerPage = $event"
-                />
-              </div>
-            </div>
-            <span style="margin-left: 1.235rem; word-break: break-all"
-              >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
-              {{ Math.min(currentPage * itemsPerPage, conversations.length) }} od
-              {{ conversations.length }} stavki</span
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Previous page"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              style="margin-top: 5px"
             >
-          </div>
-          <div
+              <path d="M20 24L10 16 20 8z"></path>
+            </svg>
+          </button>
+          <button
+            @click="currentPage < totalPages ? currentPage++ : null"
+            :disabled="currentPage === totalPages || totalPages === 0"
             style="
-              align-items: center;
-              display: flex;
-              height: 100%;
-              flex-wrap: wrap;
+              border-left: 1px solid #e0e0e0;
+              height: 2.5rem;
+              margin: 0;
+              min-height: 2rem;
+              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+              width: 2.5rem;
             "
           >
-            <span style="margin-left: 0.0625rem; margin-right: 1rem"
-              >{{ currentPage }} od {{ totalPages }} stranica</span
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Next page"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              style="margin-top: 5px"
             >
-            <div style="display: flex; flex-wrap: wrap">
-            <button
-              @click="currentPage > 1 ? currentPage-- : null"
-              :disabled="currentPage === 1"
-              style="
-                border-left: 1px solid #e0e0e0;
-                height: 2.5rem;
-                margin: 0;
-                min-height: 2rem;
-                transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
-                  background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
-                width: 2.5rem;
-              "
-            >
-              <svg
-                focusable="false"
-                preserveAspectRatio="xMidYMid meet"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                aria-label="Previous page"
-                aria-hidden="true"
-                width="16"
-                height="16"
-                viewBox="0 0 32 32"
-                role="img"
-                style="margin-top: 5px"
-              >
-                <path d="M20 24L10 16 20 8z"></path>
-              </svg>
-            </button>
-            <button
-              @click="currentPage < totalPages ? currentPage++ : null"
-              :disabled="currentPage === totalPages"
-              style="
-                border-left: 1px solid #e0e0e0;
-                height: 2.5rem;
-                margin: 0;
-                min-height: 2rem;
-                transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
-                  background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
-                width: 2.5rem;
-              "
-            >
-              <svg
-                focusable="false"
-                preserveAspectRatio="xMidYMid meet"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                aria-label="Next page"
-                aria-hidden="true"
-                width="16"
-                height="16"
-                viewBox="0 0 32 32"
-                role="img"
-                style="margin-top: 5px"
-              >
-                <path d="M12 8L22 16 12 24z"></path>
-              </svg>
-            </button>
-          </div>
+              <path d="M12 8L22 16 12 24z"></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Grey background at the bottom -->
-  <div class="bottom-section"/>
 </template>
 
 <script>
@@ -575,7 +566,7 @@ export default {
       uniqueIntents: [],
       isDropdownOpen: false,
       selectedIntents: [],
-      SelectedDateRange: "Prilagođeni raspon",
+      selectedDateRange: "Prilagođeni raspon",
       selectedStartDate: "",
       selectedEndDate: "",
       startMinDate: "",
@@ -584,6 +575,7 @@ export default {
       endMaxDate: "",
       startDateText: "",
       endDateText: "",
+      filteredLength: 0,
     };
   },
   async created() {
@@ -600,7 +592,7 @@ export default {
     sessionStorage.setItem("isVisibleCH", JSON.stringify(this.isVisible));
   },
   watch: {
-    SelectedDateRange(newVal) {
+    selectedDateRange(newVal) {
       const today = new Date();
       const todayFormatted = today.toISOString().split("T")[0];
       const weekAgo = new Date(
@@ -654,14 +646,14 @@ export default {
     selectedStartDate(newVal) {
       this.endMinDate = newVal;
       if (newVal === "" && this.selectedEndDate === "") {
-        this.SelectedDateRange = "Prilagođeni raspon";
+        this.selectedDateRange = "Prilagođeni raspon";
         this.startMaxDate = new Date().toISOString().split("T")[0];
       }
       if (
         newVal === new Date().toISOString().split("T")[0] &&
         this.selectedEndDate === new Date().toISOString().split("T")[0]
       ) {
-        this.SelectedDateRange = "Danas";
+        this.selectedDateRange = "Danas";
       }
     },
     selectedEndDate(newVal) {
@@ -669,18 +661,24 @@ export default {
         this.startMaxDate = newVal;
       }
       if (newVal === "" && this.selectedStartDate === "") {
-        this.SelectedDateRange = "Prilagođeni raspon";
+        this.selectedDateRange = "Prilagođeni raspon";
         this.startMaxDate = new Date().toISOString().split("T")[0];
       }
       if (
         newVal === new Date().toISOString().split("T")[0] &&
         this.selectedStartDate === new Date().toISOString().split("T")[0]
       ) {
-        this.SelectedDateRange = "Danas";
+        this.selectedDateRange = "Danas";
       }
     },
     itemsPerPage() {
       this.currentPage = 1;
+    },
+    totalPages(newValue, oldValue) {
+      if (newValue < this.currentPage || oldValue < this.currentPage) {
+        this.currentPage = 1;
+        console.log("ok");
+      }
     },
   },
   computed: {
@@ -749,9 +747,9 @@ export default {
           );
         });
       }
+      this.getFilteredLength(filtered);
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-
       return filtered.slice(startIndex, endIndex);
     },
     formatedSelectedStartDate() {
@@ -778,7 +776,7 @@ export default {
       }
     },
     totalPages() {
-      return Math.ceil(this.conversations.length / this.itemsPerPage);
+      return Math.ceil(this.filteredLength / this.itemsPerPage);
     },
   },
   methods: {
@@ -971,6 +969,7 @@ export default {
       }
     },
     removeChosenIntents() {
+      this.currentPage = 1;
       this.selectedIntents = [];
       this.isDropdownOpen = false;
     },
@@ -1019,16 +1018,17 @@ export default {
         this.$refs.endDatePicker.showPicker();
       }
     },
+    getFilteredLength(filtered) {
+      this.filteredLength = filtered.length;
+    },
+    refreshPagination() {
+      this.currentPage = 1;
+    },
   },
 };
 </script>
 
 <style scoped>
-th:hover {
-  user-select: none;
-  filter: brightness(80%);
-  cursor: pointer;
-}
 .filters-container {
   display: flex;
   flex-direction: row;
@@ -1077,12 +1077,79 @@ input[type="text"] {
   flex-wrap: wrap;
 }
 
+table {
+  width: 100%;
+  margin-bottom: 2rem;
+  word-break: break-word;
+  color: #212529;
+  border-collapse: collapse;
+}
+
+tr {
+  border-top: none;
+  border-bottom: none !important;
+}
 .span-wrapper {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+th {
+  background: var(--background);
+  vertical-align: bottom;
+  text-align: left;
+}
+
+.active {
+  border: 2px solid #022f5d;
+}
+
+th:hover {
+  user-select: none;
+  filter: brightness(80%);
+  cursor: pointer;
+}
+
+th,
+td {
+  border-top: 1px solid #dee2e6;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  vertical-align: middle;
+}
+
+table tbody tr th,
+table tbody tr td {
+  vertical-align: middle;
+  position: relative;
+  transition: 0.3s all ease;
+}
+
+table tbody tr th::before,
+table tbody tr td::before {
+  top: -1px;
+}
+
+table tbody tr th::before,
+table tbody tr th::after,
+table tbody tr td::before,
+table tbody tr td::after {
+  transition: 0.3s all ease;
+  content: "";
+  left: 0;
+  right: 0;
+  position: absolute;
+  height: 1px;
+  background: #bfbfbf;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
 }
 .custom-checkbox-select,
 .custom-input-date {
@@ -1152,7 +1219,7 @@ input[type="text"] {
   border: 1px solid #0f62fe;
   border-top: none;
   background-color: #fff;
-  z-index: 2;
+  z-index: 1;
   max-height: 200px;
   overflow-y: auto;
 }

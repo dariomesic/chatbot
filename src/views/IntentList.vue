@@ -70,12 +70,8 @@
         </transition>
       </div>
     </section>
-  </div>
-
-  <!-- Table with scrollable tbody and pagination -->
-  <div class="table-container">
     <table>
-      <thead style="position:relative;z-index:1">
+      <thead>
         <tr style="width: 70vw">
           <th scope="col">
             <input type="checkbox" v-model="selectAll" />
@@ -241,130 +237,127 @@
         </tr>
       </TransitionGroup>
     </table>
-
-    <!-- Fixed pagination navigation -->
-    <div class="pagination">
-      <!-- Your pagination buttons go here -->
+    <!-- Pagination Controls -->
+    <div
+      style="
+        border: 1px solid #e0e0e0;
+        display: flex;
+        flex-wrap: wrap;
+        font-weight: 400;
+        justify-content: space-between;
+        letter-spacing: 0.16px;
+        line-height: 1.28572;
+        min-height: 2.5rem;
+        align-items: center;
+        position: fixed;
+        bottom: 10%;
+        left: 15%;
+        right: 1%;
+        background: #ffffff;
+      "
+    >
       <div
         style="
-          width:100%;
-          border: 1px solid #e0e0e0;
+          padding: 0 1rem;
+          align-items: center;
           display: flex;
           flex-wrap: wrap;
-          font-weight: 400;
-          justify-content: space-between;
-          letter-spacing: 0.16px;
-          line-height: 1.28572;
-          min-height: 2.5rem;
-          align-items: center;
+          height: 100%;
         "
       >
-        <div
-          style="
-            padding: 0 1rem;
-            align-items: center;
-            display: flex;
-            flex-wrap: wrap;
-            height: 100%;
-          "
-        >
-          <div>
-            <div
-              class="items-per-page"
-              style="display: flex; align-items: center; flex-wrap: wrap"
-            >
-              <label for="itemsPerPage">Stavki po stranici:</label>
-              <CustomSelect
-                :options="[2, 5, 10, 25, 100]"
-                :value="itemsPerPage"
-                :position="'up'"
-                @update:value="itemsPerPage = $event"
-              />
-            </div>
-          </div>
-          <span style="margin-left: 1.235rem; word-break: break-all"
-            >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
-            {{ Math.min(currentPage * itemsPerPage, intents.length) }} od
-            {{ intents.length }} stavki</span
+        <div>
+          <div
+            class="items-per-page"
+            style="display: flex; align-items: center; flex-wrap: wrap"
           >
+            <label for="itemsPerPage">Stavki po stranici:</label>
+            <CustomSelect
+              :options="[2, 5, 10, 25, 100]"
+              :value="itemsPerPage"
+              :position="'up'"
+              @update:value="itemsPerPage = $event"
+            />
+          </div>
         </div>
-        <div
-          style="
-            align-items: center;
-            display: flex;
-            height: 100%;
-            flex-wrap: wrap;
-          "
+        <span style="margin-left: 1.235rem; word-break: break-all"
+          >Prikazivanje {{ (currentPage - 1) * itemsPerPage + 1 }} -
+          {{ Math.min(currentPage * itemsPerPage, intents.length) }} od
+          {{ intents.length }} stavki</span
         >
-          <span style="margin-left: 0.0625rem; margin-right: 1rem"
-            >{{ currentPage }} od {{ totalPages }} stranica</span
+      </div>
+      <div
+        style="
+          align-items: center;
+          display: flex;
+          height: 100%;
+          flex-wrap: wrap;
+        "
+      >
+        <span style="margin-left: 0.0625rem; margin-right: 1rem"
+          >{{ currentPage }} od {{ totalPages }} stranica</span
+        >
+        <div style="display: flex; flex-wrap: wrap">
+          <button
+            @click="currentPage > 1 ? currentPage-- : null"
+            :disabled="currentPage === 1"
+            style="
+              border-left: 1px solid #e0e0e0;
+              height: 2.5rem;
+              margin: 0;
+              min-height: 2rem;
+              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+              width: 2.5rem;
+            "
           >
-          <div style="display: flex; flex-wrap: wrap">
-            <button
-              @click="currentPage > 1 ? currentPage-- : null"
-              :disabled="currentPage === 1"
-              style="
-                border-left: 1px solid #e0e0e0;
-                height: 2.5rem;
-                margin: 0;
-                min-height: 2rem;
-                transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
-                  background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
-                width: 2.5rem;
-              "
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Previous page"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              style="margin-top: 5px"
             >
-              <svg
-                focusable="false"
-                preserveAspectRatio="xMidYMid meet"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                aria-label="Previous page"
-                aria-hidden="true"
-                width="16"
-                height="16"
-                viewBox="0 0 32 32"
-                role="img"
-                style="margin-top: 5px"
-              >
-                <path d="M20 24L10 16 20 8z"></path>
-              </svg>
-            </button>
-            <button
-              @click="currentPage < totalPages ? currentPage++ : null"
-              :disabled="currentPage === totalPages"
-              style="
-                border-left: 1px solid #e0e0e0;
-                height: 2.5rem;
-                margin: 0;
-                min-height: 2rem;
-                transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
-                  background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
-                width: 2.5rem;
-              "
+              <path d="M20 24L10 16 20 8z"></path>
+            </svg>
+          </button>
+          <button
+            @click="currentPage < totalPages ? currentPage++ : null"
+            :disabled="currentPage === totalPages"
+            style="
+              border-left: 1px solid #e0e0e0;
+              height: 2.5rem;
+              margin: 0;
+              min-height: 2rem;
+              transition: outline 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+                background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+              width: 2.5rem;
+            "
+          >
+            <svg
+              focusable="false"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              aria-label="Next page"
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 32 32"
+              role="img"
+              style="margin-top: 5px"
             >
-              <svg
-                focusable="false"
-                preserveAspectRatio="xMidYMid meet"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                aria-label="Next page"
-                aria-hidden="true"
-                width="16"
-                height="16"
-                viewBox="0 0 32 32"
-                role="img"
-                style="margin-top: 5px"
-              >
-                <path d="M12 8L22 16 12 24z"></path>
-              </svg>
-            </button>
-          </div>
+              <path d="M12 8L22 16 12 24z"></path>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
-  </div>
-  <!-- Grey background at the bottom with a chatbot -->
-  <div class="bottom-section">
     <div class="chat" @click="showChatbot = !showChatbot">
       <transition name="fade" mode="out-in">
         <svg
@@ -725,11 +718,10 @@ export default {
   },
 };
 </script>
-
-<style>
-.actions{
-  padding-top: 20px;
-  margin: 0 0.7rem 0 0.7rem;
+<style scoped>
+.actions {
+  padding: 2rem 2rem;
+  position: relative;
 }
 .actions section {
   background-color: #fff;
@@ -765,21 +757,14 @@ export default {
   opacity: 0.7;
 }
 
-.table-container {
-  margin: 0 0.7rem 0 0.7rem;
-  flex-grow: 1;
-  overflow: auto;
-  position: relative;
-}
-
 table {
   width: 100%;
-  margin: auto;
-  border-collapse: collapse;
-  background: white;
+  margin-bottom: 2rem;
   color: #212529;
+  border-collapse: collapse;
   word-break: break-word;
 }
+
 tr,
 th {
   border-top: none;
@@ -793,14 +778,9 @@ th {
   justify-content: space-between;
   align-items: center;
 }
-
-thead th {
-  position: sticky;
-  top: 0;
-  background: #e0e0e0;
+th {
+  background: var(--background);
   vertical-align: bottom;
-  text-align: left;
-  z-index: 2; /* Ensure it's above the tbody while scrolling */
   text-align: left;
 }
 
@@ -861,6 +841,10 @@ th:not(:first-child):not(:nth-child(6)):not(:last-child):hover {
   cursor: pointer;
 }
 
+.active {
+  border: 2px solid #022f5d !important ;
+}
+
 .options-popup {
   background: #fff;
   border: 1px solid #c5c5c5;
@@ -888,22 +872,6 @@ hr {
   background: var(--hover__color);
 }
 
-.pagination {
-  position: sticky;
-  bottom: 0;
-  background-color: #fff;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid #ddd;
-}
-
-.bottom-section {
-  background-color: var(--background);
-  min-height: 180px;
-  position: relative;
-}
-
 .chat {
   z-index: 2;
   position: fixed;
@@ -918,7 +886,6 @@ hr {
   cursor: pointer;
   bottom: 1rem;
 }
-
 
 /* ---------------------------------- */
 .fade-enter-active,
