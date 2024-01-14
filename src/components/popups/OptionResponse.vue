@@ -24,7 +24,7 @@
         <transition-group name="slide-fade">
           <div
             v-for="(option, index) in response_options"
-            :key="option"
+            :key="option.id"
             class="fade-item"
           >
             <li style="align-items: center; display: flex; margin-top: 0.5rem">
@@ -46,7 +46,7 @@
                     "
                     type="text"
                     @blur="handleBlur($event, index)"
-                    :value="option"
+                    :value="option.value"
                     aria-describedby=""
                     autocomplete="off"
                   />
@@ -105,7 +105,10 @@ export default {
   },
   data() {
     return {
-      response_options: [...this.options],
+      response_options: this.options.map((option, index) => ({
+        id: index,
+        value: option,
+      })),
       dragOptions: {
         animation: 200,
         group: "options",
@@ -116,30 +119,29 @@ export default {
   },
   watch: {
     show_modal(newShowModal) {
-      if (
-        newShowModal &&
-        this.response_options.some((option) => option.trim() === "")
-      ) {
-        this.response_options = this.response_options.filter(
-          (option) => option.trim() !== ""
-        );
+      if (newShowModal && this.response_options.some((option) => option.value.trim() === "")) {
+        this.response_options = this.response_options.filter((option) => option.value.trim() !== "");
       }
     },
   },
   methods: {
     addNewOption() {
-      this.response_options.push("");
+      this.response_options.push({
+        id: this.response_options.length,
+        value: "",
+      });
     },
     removeOption(index) {
       this.response_options.splice(index, 1);
     },
     handleBlur(event, index) {
-      this.response_options[index] = event.target.value;
+      this.response_options[index].value = event.target.value;
     },
     applyOptions() {
-      const nonEmptyOptions = this.response_options.filter(
-        (option) => option.trim() !== ""
-      );
+      const nonEmptyOptions = this.response_options
+        .filter((option) => option.value.trim() !== "")
+        .map((option) => option.value);
+
       this.$emit("addOptions", nonEmptyOptions); // Emit options to the parent component
       this.$emit("close");
     },

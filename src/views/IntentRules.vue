@@ -787,11 +787,13 @@ export default {
     removeOptions() {
       this.rule_copy.customer_response = [];
       this.rule_copy.response_type = "";
-      const savedCard = this.cards_copy.find(
-        (card) => card.id === this.rule_copy.id
-      );
-      savedCard.customer_response = [];
-      savedCard.response_type = "";
+      // Check if savedCard is defined before accessing its properties
+      const savedCard = this.cards_copy.find((card) => card.id === this.rule_copy.id);
+      if (savedCard) {
+        savedCard.customer_response = [];
+        savedCard.response_type = "";
+      }
+
       this.showDeleteOptionsDialog = false;
     },
   },

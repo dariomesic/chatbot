@@ -120,6 +120,7 @@ p {
 pre {
   font-family: inherit;
   margin: unset;
+  white-space: break-spaces;
 }
 
 input[type="text"],

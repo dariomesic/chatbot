@@ -194,9 +194,26 @@ export default {
         const selectedAnswerObject = this.rules_answers.find(
           (item) => item.index === condition.subject
         );
-        return selectedAnswerObject;
+
+        if (selectedAnswerObject) {
+          const container = document.createElement("div");
+          container.innerHTML = selectedAnswerObject.answer;
+
+          container.querySelectorAll("img").forEach((img) => {
+            img.replaceWith(document.createTextNode(""));
+          });
+
+          container.querySelectorAll(".timer-content").forEach((div) => {
+            div.replaceWith(document.createTextNode(''));
+          });
+
+          condition.answer = container.innerHTML;
+          
+        }
+
+        return condition;
       });
-    },
+    }
   },
 };
 </script>

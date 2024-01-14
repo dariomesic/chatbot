@@ -1029,9 +1029,6 @@ export default {
 </script>
 
 <style scoped>
-.conversations-main-block {
-  padding: 2rem 2rem;
-}
 .filters-container {
   display: flex;
   flex-direction: row;
