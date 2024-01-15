@@ -901,6 +901,7 @@ hr {
 
 .pagination {
   position: sticky;
+  z-index: 1;
   bottom: 0;
   background-color: #fff;
   padding: 10px;

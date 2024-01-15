@@ -608,9 +608,9 @@ export default {
         today.getMonth(),
         today.getDate() - 7
       );
-      const formattedWeekAgo = `${weekAgo.getFullYear()}-${
-        weekAgo.getMonth() + 1
-      }-${weekAgo.getDate()}`;
+      const formattedWeekAgo = `${weekAgo.getFullYear()}-${(weekAgo.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${weekAgo.getDate().toString().padStart(2, '0')}`;
       const monthAgo = new Date(
         today.getFullYear(),
         today.getMonth() - 1,

@@ -128,10 +128,17 @@ export default{
     async initializeBot() {
       // Simulate a delayed bot response after initial greeting
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const responseMessage = {
-        assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ` + await DataService.getNameForSystem(this.$route.query.system_id) + `. Postavite pitanje vezano uz sustav.`
+      let responseMessage = {
+        assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ` + await DataService.getNameForSystem(this.$route.query.system_id) + `. Postavite pitanje vezano uz sustav ili odaberite neku od navedenih tema.`
       };
       this.addBotMessage(responseMessage);
+      // ADD SUBJECTS IN THE BEGGINING
+      const optionsHtml = ['Neprikladan jezik', 'Mail test', 'Izjava o pristupačnosti', 'Pronaći predmet'].map(option => `<button class="bot-option" style="margin: unset;margin-top: .25rem;border: 1px solid #003366;color: #003366;">${option}</button>`).join('');
+      this.messages.push({
+        text: optionsHtml,
+        classes: ['message'],
+        dataUser: false,
+      });
     },
     
     async sendMessage() {
@@ -369,7 +376,7 @@ export default{
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
       message.filter((v,i,a)=>a.findIndex(v2=>(v2.intent_id===v.intent_id))===i).forEach((option) => {
-        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}" data-threshold="${option.threshold}">${option.intent_name}</button>`;
+        messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}" data-threshold="${option.threshold}">${option.intent_name.toUpperCase()}</button>`;
       });
       messageText += '</div></div>'
       this.messages.push({
@@ -784,7 +791,7 @@ a {
  
 .ContentChat button:hover {
     z-index: 2;
-    transform: scale(1);
+    transform: scale(0.95);
     opacity: 1;
 }
 
@@ -875,14 +882,15 @@ a {
   min-height: 1.5rem;
   min-width: 2rem;
   border-radius: .9375rem;
-  background: #e0e0e0;
+  background: white;
+  border: 1px solid grey;
   color: #161616;
-  padding: .375rem .5rem;
+  padding: .375rem 1rem;
   margin-top: 8px;
 }
 
 .bot-option:hover{
-  background: var(--hover__color);
+  background: rgb(240, 240, 240);
 }
 
 .bot-option.selected {
