@@ -133,12 +133,15 @@ export default{
       };
       this.addBotMessage(responseMessage);
       // ADD SUBJECTS IN THE BEGGINING
-      const optionsHtml = ['Neprikladan jezik', 'Mail test', 'Izjava o pristupačnosti', 'Pronaći predmet'].map(option => `<button class="bot-option" style="margin: unset;margin-top: .25rem;border: 1px solid #003366;color: #003366;">${option}</button>`).join('');
-      this.messages.push({
-        text: optionsHtml,
-        classes: ['message'],
-        dataUser: false,
-      });
+      let themes = await DataService.getThemes(this.$route.query.system_id)
+      if(themes[0].intents){
+        const optionsHtml = JSON.parse(themes[0].intents).map(option => `<button class="bot-option" data-intent-id="${option.key}" data-text="${option.name}" data-question="${option.name}" data-threshold="1.0" style="margin: unset;margin-top: .25rem;border: 1px solid #003366;color: #003366;">${option.name}</button>`).join('');
+          this.messages.push({
+            text: optionsHtml,
+            classes: ['message'],
+            dataUser: false,
+          });
+      }
     },
     
     async sendMessage() {
@@ -787,6 +790,7 @@ a {
     transform: scale(0.85);
     transition: all .2s ease-in-out;
     opacity: 0.6;
+    transform-origin: 0; /* VERY IMPORTANT BECAUSE REMOVES PADDING FOR SCALE */
 }
  
 .ContentChat button:hover {

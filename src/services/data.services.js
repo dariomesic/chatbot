@@ -322,6 +322,35 @@ class DataService {
     })
   }
 
+  getThemes(system_id){
+    return fetch('http://18.194.27.183:8080/getThemes?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  updateThemes(system_id, intents){
+    return fetch('http://18.194.27.183:8080/updateThemes', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({system_id: system_id, intents: intents})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   uploadDocument(formData){
     return fetch('http://18.194.27.183:8080/uploadDocument', {
       method : "POST",

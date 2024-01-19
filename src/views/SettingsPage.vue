@@ -76,18 +76,20 @@
           <div class="custom-checkbox-select" tabindex="1">
             <div class="selected-items" @click="toggleDropdown" ref="selectedItemsSettingsRef">
               <span v-if="selectedIntents.length === 0" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;color: #757575;min-width: 1rem;">Odaberite namjere...</span>
-              <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;min-width: 1rem;" v-else>{{ selectedIntents.join(", ") }}</span>
+              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 1rem;" v-else>
+                {{ selectedIntents.map(intent => intent.name).join(", ") }}
+              </span>
               <svg class="dropdown-arrow" viewBox="0 0 16 16"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path><title>Open menu</title></svg>
             </div>
             <div v-show="isDropdownOpen" class="dropdown" ref="dropdownSettingsRef">
               <button style="display: block; padding: 8px; color: var(--main__color)" @click="removeChosenIntents">Ukloni sve...</button>
-              <label v-for="intent in uniqueIntents" :key="intent" class="checkbox-label">
+              <label v-for="intent in uniqueIntents" :key="intent.key" class="checkbox-label">
                 <input
                   type="checkbox"
                   :value="intent"
                   v-model="selectedIntents"
                 />
-                {{ intent }}
+                {{ intent.name }}
               </label>
             </div>
           </div>
@@ -95,7 +97,7 @@
         <div style="padding: 1rem 0 0 0.5rem;">
           <h4>Odabrane namjere:</h4>
           <div v-for="(intent, index) in selectedIntents" :key="index">
-            <p>{{ index + 1 }}. {{ intent }}</p>
+            <p>{{ index + 1 }}. {{ intent.name }}</p>
           </div>
         </div>
         <button @click="saveSubjects" class="background-button" tabindex="0" type="button" style="margin-top: 2rem;">Spremi teme
@@ -109,17 +111,33 @@
         <div class="file-upload-container">
           <!-- File Upload Section -->
           <div class="upload-container">
-            <div class="upload-box" @drop="handleDrop" @dragover.prevent>
-              <div class="upload-icon">
-                <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill="#003366" fill-rule="evenodd" d="M9 12a1 1 0 102 0V4.26l3.827 3.48a1 1 0 001.346-1.48l-5.5-5a1 1 0 00-1.346 0l-5.5 5a1 1 0 101.346 1.48L9 4.26V12zm-5.895-.796A1 1 0 001.5 12v3.867a2.018 2.018 0 002.227 2.002c1.424-.147 3.96-.369 6.273-.369 2.386 0 5.248.236 6.795.383a2.013 2.013 0 002.205-2V12a1 1 0 10-2 0v3.884l-13.895-4.68zm0 0L2.5 11l.605.204zm0 0l13.892 4.683a.019.019 0 01-.007.005h-.006c-1.558-.148-4.499-.392-6.984-.392-2.416 0-5.034.23-6.478.38h-.009a.026.026 0 01-.013-.011V12a.998.998 0 00-.394-.796z"></path> </g></svg>
-              </div>
-              <div class="upload-text">Drag and drop files to upload</div>
-              <div style="margin:5px">or</div>
-              <button class="upload-button" @click="this.$refs.fileInput.click();">Select files</button>
-              <div class="supported-format-text">*Supported format: pdf, docx, doc, html</div>
-            </div>
-            <input type="file" ref="fileInput" style="display: none" @change="saveUploadedFile" />
-          </div>
+            <DropZone class="upload-box" @files-dropped="saveUploadedFile" #default="{ dropZoneActive }">
+              <section v-if="!uploadedFile">
+                <span v-if="dropZoneActive" style="display:flex;justify-content:center;align-items: center;font-size:x-large">
+                  <div>
+                    <div class="upload-icon">
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#003366"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path fill-rule="nonzero" d="M16 13l6.964 4.062-2.973.85 2.125 3.681-1.732 1-2.125-3.68-2.223 2.15L16 13zm-2-7h2v2h5a1 1 0 0 1 1 1v4h-2v-3H10v10h4v2H9a1 1 0 0 1-1-1v-5H6v-2h2V9a1 1 0 0 1 1-1h5V6zM4 14v2H2v-2h2zm0-4v2H2v-2h2zm0-4v2H2V6h2zm0-4v2H2V2h2zm4 0v2H6V2h2zm4 0v2h-2V2h2zm4 0v2h-2V2h2z"></path> </g> </g></svg>
+                    </div>
+                    <span>Drop Them Here</span>
+                  </div>
+                </span>
+                <span v-else>
+                  <div class="upload-icon">
+                    <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill="#003366" fill-rule="evenodd" d="M9 12a1 1 0 102 0V4.26l3.827 3.48a1 1 0 001.346-1.48l-5.5-5a1 1 0 00-1.346 0l-5.5 5a1 1 0 101.346 1.48L9 4.26V12zm-5.895-.796A1 1 0 001.5 12v3.867a2.018 2.018 0 002.227 2.002c1.424-.147 3.96-.369 6.273-.369 2.386 0 5.248.236 6.795.383a2.013 2.013 0 002.205-2V12a1 1 0 10-2 0v3.884l-13.895-4.68zm0 0L2.5 11l.605.204zm0 0l13.892 4.683a.019.019 0 01-.007.005h-.006c-1.558-.148-4.499-.392-6.984-.392-2.416 0-5.034.23-6.478.38h-.009a.026.026 0 01-.013-.011V12a.998.998 0 00-.394-.796z"></path> </g></svg>
+                  </div>
+                  <div class="upload-text">Drag and drop files to upload</div>
+                  <div style="margin:5px">or</div>
+                  <button class="upload-button" @click="this.$refs.fileInput.click();">Select files</button>
+                  <div class="supported-format-text">*Supported format: pdf, docx, doc, html</div>
+                </span>
+              </section>
+              <section v-else>
+                <p>{{uploadedFile.name}}</p>
+                <button class="upload-button" @click="uploadFile">Upload</button>
+              </section>
+            </DropZone>
+            <input type="file" ref="fileInput" style="display: none" @change="saveUploadedFile($event.target.files)" />
+        </div>
 
           <!-- Documents uploaded -->
           <div class="uploaded-files-container" style="padding-left: 10rem;">
@@ -160,7 +178,9 @@
 </template>
 <script>
 import DataService from "../services/data.services";
+import DropZone from "./ui/DropZone.vue"
 export default {
+  components: {DropZone},
   data() {
     return {
       editing: false,
@@ -234,8 +254,10 @@ export default {
     async getIntents() {
       let objects = await DataService.getIntentsForSystem(this.$route.query.system_id);
       objects.forEach((element) => {
-        this.uniqueIntents.push(element.name)
-      })
+        this.uniqueIntents.push({ name: element.name, key: element.id });
+      });
+      objects = await DataService.getThemes(this.$route.query.system_id)
+      objects[0].intents ? this.selectedIntents = JSON.parse(objects[0].intents) : this.selectedIntents = []
     },
     deleteSynonyms(index) {
       const newValueToDelete = this.newValues[index];
@@ -326,6 +348,9 @@ export default {
     removeChosenIntents() {
       this.selectedIntents = [];
     },
+    async saveSubjects(){
+      await DataService.updateThemes(this.$route.query.system_id, this.selectedIntents)
+    },
     async getDocuments(){
       this.documents = await DataService.getDocumentsBySystemId(this.$route.query.system_id);
     },
@@ -335,7 +360,7 @@ export default {
       this.uploadedFile = files
     },
     saveUploadedFile(event) {
-      this.uploadedFile = event.target.files[0];
+      this.uploadedFile = event[0];
     },
     async uploadFile() {
       const file = this.uploadedFile;
@@ -539,6 +564,8 @@ button {
   border-radius: 60px;
   box-shadow: 0 0 2px #888;
   padding: 0.5em 0.6em;
+  width: fit-content;
+  margin: auto;
   margin-bottom: 10px;
   margin-top: -10px;
   cursor: pointer;
