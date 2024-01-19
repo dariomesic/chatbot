@@ -85,7 +85,7 @@
             @mouseleave="setSortIcon(0, false)"
             @click="toggleSortIcon(0, 'name')"
             :class="{ active: sortIcon[0] === 2 || sortIcon[0] === 3 }"
-            style="width: 25vw"
+            style="width: 30vw"
           >
             <div class="span-wrapper">
               <span> Naziv </span>
@@ -119,7 +119,7 @@
             @mouseleave="setSortIcon(2, false)"
             @click="toggleSortIcon(2, 'numOfQuestions')"
             :class="{ active: sortIcon[2] === 2 || sortIcon[2] === 3 }"
-            style="width: 10vw"
+            style="width: 15vw"
           >
             <div class="span-wrapper">
               <span> Broj pitanja </span>
@@ -147,7 +147,6 @@
               </span>
             </div>
           </th>
-          <th>Opcije</th>
         </tr>
       </thead>
       <TransitionGroup name="table-list" tag="tbody" mode="out-in">
@@ -194,49 +193,6 @@
           </td>
           <td>
             <span>{{ intent.steps_count }}</span>
-          </td>
-          <td>
-            <div style="position: relative">
-              <button
-                type="button"
-                aria-haspopup="true"
-                aria-expanded="false"
-                aria-label="Options"
-                @click="showOptionsFor(index)"
-              >
-                <svg
-                  focusable="false"
-                  preserveAspectRatio="xMidYMid meet"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  aria-label="Options"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 32 32"
-                  role="img"
-                  class="bx--overflow-menu__icon"
-                >
-                  <circle cx="16" cy="8" r="2"></circle>
-                  <circle cx="16" cy="16" r="2"></circle>
-                  <circle cx="16" cy="24" r="2"></circle>
-                  <title>Options</title>
-                </svg>
-              </button>
-              <!-- Popup menu -->
-              <div
-                v-if="showOptionsForIntent[index]"
-                class="options-popup"
-                :id="index"
-                tabindex="0"
-                @focusout="focusOut($event, index)"
-              >
-                <button @click="navigateToDetail(intent)">Uredi</button>
-                <hr />
-                <button @click="deleteIntent(intent.id, 'true')">
-                  Izbriši
-                </button>
-              </div>
-            </div>
           </td>
         </tr>
       </TransitionGroup>
@@ -420,7 +376,6 @@ export default {
       currentPage: 1,
       itemsPerPage: 10,
       selectedIntents: [],
-      showOptionsForIntent: [],
       sortIcon: [1, 1, 1, 1],
       isVisible: [false, false, false, false],
       showChatbot: false,
@@ -563,41 +518,26 @@ export default {
         query: { system_id: this.$route.query.system_id, intent_id: id },
       });
     },
-    async deleteIntent(id, once) {
+    async deleteIntent(id) {
       try {
         this.loading = true;
         await DataService.deleteStep(id);
-        await DataService.deleteQuestionsById(id);
+        await DataService.deleteQuestionsById(id, this.$route.query.system_id);
         await DataService.deleteIntent(id, this.$route.query.system_id);
-        if (once) {
-          await DataService.reloadQuestions(this.$route.query.system_id);
-          this.getIntents();
-          this.loading = false;
-        }
       } catch (error) {
         console.error(error);
       }
-    },
-    showOptionsFor(index) {
-      this.showOptionsForIntent[index] = true;
-      this.$nextTick(() => {
-        document.getElementById(index).focus();
-      });
     },
     async deleteSelectedIntents() {
       this.loading = true;
       // Loop through selectedIntents and call deleteIntent for each
       for (const intent of this.selectedIntents) {
-        await this.deleteIntent(intent);
+        await this.deleteIntent(intent, this.$route.query.system_id);
       }
-      await DataService.reloadQuestions(this.$route.query.system_id);
       this.loading = false;
       this.getIntents();
       // Clear the selectedIntents array after deleting
       this.selectedIntents = [];
-    },
-    focusOut(event, index) {
-      !event.relatedTarget ? (this.showOptionsForIntent[index] = false) : "";
     },
     async getIntents() {
       if (this.$route.query.system_id !== undefined) {
@@ -866,37 +806,10 @@ table input {
   width: 20px;
 }
 
-th:not(:first-child):not(:nth-child(6)):not(:last-child):hover {
+th:not(:first-child):not(:nth-child(6)):hover {
   user-select: none;
   filter: brightness(80%);
   cursor: pointer;
-}
-
-.options-popup {
-  background: #fff;
-  border: 1px solid #c5c5c5;
-  border-radius: 6px;
-  box-shadow: 0 1px 14px rgba(0, 0, 0, 0.2);
-  color: #616161;
-  position: absolute;
-  z-index: 1;
-  top: 100%;
-  right: 0;
-}
-
-hr {
-  margin: unset;
-}
-
-.options-popup button {
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 0.5rem 0.8rem;
-  width: 100%;
-}
-
-.options-popup button:hover {
-  background: var(--hover__color);
 }
 
 .pagination {

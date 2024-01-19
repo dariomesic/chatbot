@@ -199,8 +199,8 @@ class DataService {
     })
   }
 
-  deleteQuestionsById(intent_id){
-    return fetch('http://18.194.27.183:8080/deleteQuestionsById?intent_id=' + intent_id, {
+  deleteQuestionsById(intent_id, system_id){
+    return fetch('http://18.194.27.183:8080/deleteQuestionsById?intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -322,8 +322,21 @@ class DataService {
     })
   }
 
-  sendQuestions(questions, intent_id, system_id){
-    return fetch('http://18.194.27.183:8080/sendQuestions?questions=' + questions + '&intent_id=' + intent_id + '&system_id=' + system_id, {
+  uploadDocument(formData){
+    return fetch('http://18.194.27.183:8080/uploadDocument', {
+      method : "POST",
+      body: formData
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  getDocumentsBySystemId(system_id){
+    return fetch('http://18.194.27.183:8080/getDocumentsBySystemId?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -331,6 +344,17 @@ class DataService {
             throw new Error(response.error)
         }
         return response.json();
+    })
+  }
+
+  sendQuestions(questions, intent_id, questions_len){
+    return fetch('http://18.194.27.183:8080/sendQuestions', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({questions: questions, intent_id: intent_id, questions_len: questions_len})
     })
   }
 

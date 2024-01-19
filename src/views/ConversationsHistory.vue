@@ -161,6 +161,7 @@
           <span class="search-icon"></span>
           <input
             type="text"
+            class="conversation_input"
             v-model="searchBySessionId"
             placeholder="Pretraži"
           />
@@ -1035,7 +1036,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 th:hover {
   user-select: none;
   filter: brightness(80%);
@@ -1069,7 +1070,7 @@ th:hover {
   border-bottom: 1px solid #161616;
 }
 
-input[type="text"] {
+input.conversation_input[type="text"] {
   background-color: #f4f4f4;
   padding: 0 1rem 0 0.4rem;
   border-top: none;

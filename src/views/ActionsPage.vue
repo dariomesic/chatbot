@@ -64,6 +64,7 @@
         <IntentList v-if="activeTab === 'Namjere'" />
         <ConversationsHistory v-if="activeTab === 'Razgovori'" />
         <SettingsPage v-if="activeTab === 'Postavke'" />
+        <DocumentsBase v-if="activeTab === 'Baza znanja'" />
       </div>
     </div>
   </div>

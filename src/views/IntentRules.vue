@@ -708,69 +708,87 @@ export default {
       this.navigationAllowed = true;
       this.$router.push(this.intendedRoute);
     },
-    performAPIRequests(intentId) {
+    async performAPIRequests(intentId) {
       try {
         // Perform batch operations for added, deleted, and updated questions
         const apiRequests = [];
+        const ml_questions = [{
+          "SystemID": this.$route.query.system_id,
+          "AddedItems":[],
+          "EditedItems": [],
+          "DeletedItems": [],
+        }]
 
         if (this.addedQuestions.length > 0) {
           apiRequests.push(
-            ...this.addedQuestions.map((question) =>
-              DataService.postQuestion(
+            ...this.addedQuestions.map(async (question) => {
+              const response = await DataService.postQuestion(
                 question.question,
                 intentId,
                 this.$route.query.system_id
-              )
-            )
+              );
+              ml_questions[0]['AddedItems'].push({
+                  "IntentID": this.$route.query.intent_id,
+                  "QuestionID": response.question_id.toString(),
+                  "QuestionText": question.question,
+              });
+            })
           );
         }
 
         if (this.deletedQuestions.length > 0) {
           apiRequests.push(
-            ...this.deletedQuestions.map((question) =>
-              DataService.deleteQuestion(question.question_id)
-            )
+            ...this.deletedQuestions.map(async (question) =>{
+              await DataService.deleteQuestion(
+                question.question_id
+              );
+              ml_questions[0]['DeletedItems'].push({
+                  "IntentID": this.$route.query.intent_id,
+                  "QuestionID": question.question_id.toString(),
+                  "QuestionText": question.question,
+              });
+            })
           );
         }
 
         if (this.updatedQuestions.length > 0) {
           apiRequests.push(
-            ...this.updatedQuestions.map((question) =>
-              DataService.updateQuestion(
+            ...this.updatedQuestions.map(async (question) => {
+              await DataService.updateQuestion(
                 question.question,
                 question.question_id
-              )
-            )
+              );
+              ml_questions[0]['EditedItems'].push({
+                "IntentID": intentId,
+                "QuestionID": question.question_id.toString(),
+                "QuestionText": question.question,
+              });
+            })
           );
         }
 
-        if (!(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))) {
+        if (
+          !(JSON.stringify(this.rules_copy) === JSON.stringify(this.rules))
+        ) {
           apiRequests.push(DataService.updateRule(this.rules_copy, intentId));
         }
 
         // Execute parallel processes and wait for them to complete
-        Promise.all(apiRequests)
-          .then(() => {
-            // After the parallel processes are complete, send questions
-            if (this.addedQuestions.length > 0 || this.deletedQuestions.length > 0 || this.updatedQuestions.length > 0) {
-              return DataService.sendQuestions(
-                this.questions.length,
-                intentId,
-                this.$route.query.system_id
-              );
-            }
-          })
-          .then(() => {
-            // Reload questions and rules after the batch operations
-            this.loadQuestionsAndRules(this.intentTextCopy, intentId);
-          })
-          .catch((error) => {
-            console.error("API request failed:", error);
-          });
+        await Promise.all(apiRequests);
+
+        // Send ml_questions array to your API endpoint
+        if (this.addedQuestions.length > 0 || this.deletedQuestions.length > 0 || this.updatedQuestions.length > 0) {
+          console.log(ml_questions)
+          await DataService.sendQuestions(ml_questions, this.$route.query.intent_id, this.questions.length);
+        }
+
+        // Reload questions and rules after the batch operations
+        await this.loadQuestionsAndRules(this.intentTextCopy, intentId);
       } catch (error) {
-        console.error(error);
+        console.error("API request failed:", error);
       }
     },
+
 
     updateShowDeleteRule(val, index) {
       this.showDeleteRuleDialog = val;
