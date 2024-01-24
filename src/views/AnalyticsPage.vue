@@ -9,301 +9,177 @@
         style="box-sizing: border-box"
       />
     </div>
-    <!-- <div class="input-control" style="width: 10vw">
-        <label>Početni datum</label>
-        <div
-          class="custom-input-date"
-          @click="showDatePicker('start')"
-          tabindex="1"
-        >
-          <div class="selected-date">
-            <span class="date" :innerHTML="formatedSelectedStartDate"></span>
-            <input
-              type="date"
-              ref="startDatePicker"
-              v-model="selectedStartDate"
-              :min="startMinDate"
-              :max="startMaxDate"
-            />
-            <span class="datepicker-toggle-button"
-              ><svg
-                width="12"
-                height="12"
-                viewBox="0 0 20 20"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                fill="#000000"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <title>calendar [#1322]</title>
-                  <desc>Created with Sketch.</desc>
-                  <defs></defs>
-                  <g
-                    id="Page-1"
-                    stroke="none"
-                    stroke-width="1"
-                    fill="none"
-                    fill-rule="evenodd"
-                  >
-                    <g
-                      id="Dribbble-Light-Preview"
-                      transform="translate(-60.000000, -2319.000000)"
-                      fill="#000000"
-                    >
-                      <g
-                        id="icons"
-                        transform="translate(56.000000, 160.000000)"
-                      >
-                        <path
-                          d="M21.971246,2167 L5.99680511,2167 L5.99680511,2163.971 C5.99680511,2163.435 6.43111022,2163 6.96625399,2163 L7.99361022,2163 L7.99361022,2165 L9.99041534,2165 L9.99041534,2163 L17.9776358,2163 L17.9776358,2165 L19.9744409,2165 L19.9744409,2163 L20.9728435,2163 C21.5239617,2163 21.971246,2163.448 21.971246,2164 L21.971246,2167 Z M21.971246,2176 C21.971246,2176.55 21.5219649,2177 20.9728435,2177 L6.99520767,2177 C6.44408946,2177 5.99680511,2176.552 5.99680511,2176 L5.99680511,2169 L21.971246,2169 L21.971246,2176 Z M4.06389776,2176.761 C4.06389776,2177.865 5.02136581,2179 6.12360224,2179 L22.0980431,2179 C23.201278,2179 24,2177.979 24,2176.761 C24,2176.372 23.9680511,2164.36 23.9680511,2163.708 C23.9680511,2161.626 23.6875,2161 19.9744409,2161 L19.9744409,2159 L17.9776358,2159 L17.9776358,2161 L9.99041534,2161 L9.99041534,2159 L7.99361022,2159 L7.99361022,2161 L5.99680511,2161 C4.8985623,2161 4,2161.9 4,2163 L4.06389776,2176.761 Z"
-                          id="calendar-[#1322]"
-                        ></path>
-                      </g>
-                    </g>
-                  </g>
+  </div>
+  <div style="flex-grow: 1;overflow: auto;position: relative;">
+    <div class="graphs-container">
+      <div class="graph-container">
+        <div class="left-part">
+          <span>Jedinstvene sesije</span>
+          <p>{{ uniqueSessionIdsNum }}</p>
+        </div>
+        <div id="session-graph" class="graph"></div>
+      </div>
+      <div class="graph-container">
+        <div class="left-part">
+          <span>Zahtjevi</span>
+          <p>{{ uniqueRequestsNum }}</p>
+        </div>
+        <div id="requests-graph" class="graph"></div>
+      </div>
+      <div class="graph-container">
+        <div class="left-part">
+          <span>Neregistrirani zahtjevi</span>
+          <p>{{ uniqueUnregisteredRequestsNum }}</p>
+        </div>
+        <div id="unregistered-requests-graph" class="graph"></div>
+      </div>
+    </div>
+    <div class="tabs">
+      <span
+        :class="{ 'active-tab': activeTab === 'Prepoznavanje' }"
+        @click="setActiveTab('Prepoznavanje')"
+        >Prepoznavanje</span
+      >
+      <span
+        :class="{ 'active-tab': activeTab === 'Elektronička pošta' }"
+        @click="setActiveTab('Elektronička pošta')"
+        >Elektronička pošta</span
+      >
+    </div>
+    <div class="main-graph-container">
+      <div v-show="activeTab === 'Prepoznavanje'">
+          <h4 style="position:absolute;top:20px;left:20px;margin:unset">Koliko dobro virtualni asistent prepoznaje odgovore?</h4>
+          <CustomSelect
+            :placeholder="'Odaberite namjeru...'"
+            :options="uniqueIntentsList"
+            :value="selectedIntent"
+            @update:value="selectedIntent = $event"
+            style="
+              position:absolute;
+              top:20px;
+              right: 20px;
+              width: 20vw;
+              border: 1px solid #161616;
+            "
+          />
+        <div class="main-graph"></div>
+      </div>
+      <div v-show="activeTab === 'Elektronička pošta'">
+        <div style="position: absolute; top: 20px; right: 20px">
+          <button
+            class="graph-type-button"
+            :class="{ 'active-graph': activeGraph === 'Line' }"
+            @click="displayGraph('Line')"
+          >
+            <svg
+              height="16px"
+              width="16px"
+              version="1.1"
+              id="_x32_"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 512 512"
+              xml:space="preserve"
+              :fill="activeGraph === 'Line' ? '#ffffff' : '#000000'"
+            >
+              <title>Line Graph</title>
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <g>
+                  <polygon
+                    class="st0"
+                    points="55.924,451.681 55.924,20.681 55.924,4.393 0,4.393 0,20.681 0,451.681 0,491.314 0,507.607 16.289,507.607 55.924,507.607 486.922,507.607 503.211,507.607 503.211,451.681 486.922,451.681 "
+                  ></polygon>
+                  <path
+                    class="st0"
+                    d="M133.422,338.877l81.482-133.914c2.705,0.426,5.453,0.711,8.277,0.711c9.066,0,17.592-2.289,25.053-6.305 l84.476,71.426c-1.551,4.98-2.386,10.269-2.386,15.762c0,29.215,23.682,52.894,52.896,52.894c29.215,0,52.896-23.68,52.896-52.894 c0-12.387-4.289-23.754-11.42-32.766L512,105.838l-33.303-20.887l-86.953,149.457c-2.783-0.453-5.615-0.75-8.523-0.75 c-9.32,0-18.064,2.43-25.668,6.66l-84.104-71.121c1.688-5.172,2.631-10.684,2.631-16.422c0-29.215-23.686-52.898-52.898-52.898 c-29.215,0-52.896,23.684-52.896,52.898c0,12.054,4.078,23.133,10.867,32.027L99.838,318.435L133.422,338.877z"
+                  ></path>
                 </g>
-              </svg>
-            </span>
-          </div>
+              </g>
+            </svg>
+          </button>
+          <button
+            class="graph-type-button"
+            :class="{ 'active-graph': activeGraph === 'Bar' }"
+            @click="displayGraph('Bar')"
+          >
+            <svg
+              height="16px"
+              width="16px"
+              version="1.1"
+              id="_x32_"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 512 512"
+              xml:space="preserve"
+              :fill="activeGraph === 'Bar' ? '#ffffff' : '#000000'"
+            >
+              <title>Bar Graph</title>
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <g>
+                  <path
+                    class="st0"
+                    d="M70.697,395.352h80.633c5.658,0,10.246-4.252,10.246-9.498v-143.72c0-5.246-4.588-9.499-10.246-9.499H70.697 c-5.658,0-10.246,4.253-10.246,9.499v143.72C60.451,391.1,65.039,395.352,70.697,395.352z"
+                  ></path>
+                  <path
+                    class="st0"
+                    d="M215.684,395.352h80.631c5.658,0,10.248-4.252,10.248-9.498V141.117c0-5.246-4.59-9.498-10.248-9.498h-80.631 c-5.66,0-10.248,4.252-10.248,9.498v244.736C205.436,391.1,210.024,395.352,215.684,395.352z"
+                  ></path>
+                  <path
+                    class="st0"
+                    d="M360.668,395.352h80.631c5.66,0,10.248-4.252,10.248-9.498V25.964c0-5.246-4.588-9.499-10.248-9.499h-80.631 c-5.66,0-10.248,4.253-10.248,9.499v359.89C350.42,391.1,355.008,395.352,360.668,395.352z"
+                  ></path>
+                  <polygon
+                    class="st0"
+                    points="495.426,438.633 16.574,438.633 0,438.633 0,495.535 16.574,495.535 495.426,495.535 512,495.535 512,438.633 "
+                  ></polygon>
+                </g>
+              </g>
+            </svg>
+          </button>
+        </div>
+        <div class="the-graph"></div>
+      </div>
+    </div>
+    <div class="frequencies-container">
+      <div class="frequency">
+        <span>Najčešće namjere</span>
+        <div class="column-title">
+          <p>Namjera</p>
+          <p>Broj</p>
+        </div>
+        <div class="intent-row" v-for="intent in topFive" :key="intent">
+          <p class="intent-name">{{ intent.name }}</p>
+          <p class="intent-occurances">{{ intent.occurrences }}</p>
         </div>
       </div>
-      <div class="input-control" style="width: 10vw">
-        <label>Završni datum</label>
-        <div
-          class="custom-input-date"
-          @click="showDatePicker('end')"
-          tabindex="1"
-        >
-          <div class="selected-date">
-            <span class="date" :innerHTML="formatedSelectedEndDate"></span>
-            <input
-              type="date"
-              ref="endDatePicker"
-              v-model="selectedEndDate"
-              :min="endMinDate"
-              :max="endMaxDate"
-            />
-            <span class="datepicker-toggle-button"
-              ><svg
-                width="12"
-                height="12"
-                viewBox="0 0 20 20"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                fill="#000000"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <title>calendar [#1322]</title>
-                  <desc>Created with Sketch.</desc>
-                  <defs></defs>
-                  <g
-                    id="Page-1"
-                    stroke="none"
-                    stroke-width="1"
-                    fill="none"
-                    fill-rule="evenodd"
-                  >
-                    <g
-                      id="Dribbble-Light-Preview"
-                      transform="translate(-60.000000, -2319.000000)"
-                      fill="#000000"
-                    >
-                      <g
-                        id="icons"
-                        transform="translate(56.000000, 160.000000)"
-                      >
-                        <path
-                          d="M21.971246,2167 L5.99680511,2167 L5.99680511,2163.971 C5.99680511,2163.435 6.43111022,2163 6.96625399,2163 L7.99361022,2163 L7.99361022,2165 L9.99041534,2165 L9.99041534,2163 L17.9776358,2163 L17.9776358,2165 L19.9744409,2165 L19.9744409,2163 L20.9728435,2163 C21.5239617,2163 21.971246,2163.448 21.971246,2164 L21.971246,2167 Z M21.971246,2176 C21.971246,2176.55 21.5219649,2177 20.9728435,2177 L6.99520767,2177 C6.44408946,2177 5.99680511,2176.552 5.99680511,2176 L5.99680511,2169 L21.971246,2169 L21.971246,2176 Z M4.06389776,2176.761 C4.06389776,2177.865 5.02136581,2179 6.12360224,2179 L22.0980431,2179 C23.201278,2179 24,2177.979 24,2176.761 C24,2176.372 23.9680511,2164.36 23.9680511,2163.708 C23.9680511,2161.626 23.6875,2161 19.9744409,2161 L19.9744409,2159 L17.9776358,2159 L17.9776358,2161 L9.99041534,2161 L9.99041534,2159 L7.99361022,2159 L7.99361022,2161 L5.99680511,2161 C4.8985623,2161 4,2161.9 4,2163 L4.06389776,2176.761 Z"
-                          id="calendar-[#1322]"
-                        ></path>
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
-            </span>
-          </div>
+      <div class="frequency">
+        <span>Najrjeđe namjere</span>
+        <div class="column-title">
+          <p>Namjera</p>
+          <p>Broj</p>
         </div>
-      </div> -->
-  </div>
-  <div class="graphs-container">
-    <div class="graph-container">
-      <div class="left-part">
-        <span>Jedinstvene sesije</span>
-        <p>{{ uniqueSessionIdsNum }}</p>
-      </div>
-      <div id="session-graph" class="graph"></div>
-    </div>
-    <div class="graph-container">
-      <div class="left-part">
-        <span>Zahtjevi</span>
-        <p>{{ uniqueRequestsNum }}</p>
-      </div>
-      <div id="requests-graph" class="graph"></div>
-    </div>
-    <div class="graph-container">
-      <div class="left-part">
-        <span>Neregistrirani zahtjevi</span>
-        <p>{{ uniqueUnregisteredRequestsNum }}</p>
-      </div>
-      <div id="unregistered-requests-graph" class="graph"></div>
-    </div>
-  </div>
-  <div class="tabs">
-    <span
-      :class="{ 'active-tab': activeTab === 'Prvi' }"
-      @click="setActiveTab('Prvi')"
-      >Prvi</span
-    >
-    <span
-      :class="{ 'active-tab': activeTab === 'Drugi' }"
-      @click="setActiveTab('Drugi')"
-      >Drugi</span
-    >
-  </div>
-  <div class="main-graph-container">
-    <div v-show="activeTab === 'Prvi'">
-      <CustomSelect
-        :placeholder="'Odaberite namjeru...'"
-        :options="uniqueIntentsList"
-        :value="selectedIntent"
-        @update:value="selectedIntent = $event"
-        style="
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          width: 20vw;
-          border: 1px solid #161616;
-        "
-      />
-      <div class="main-graph"></div>
-    </div>
-    <div v-show="activeTab === 'Drugi'">
-      <div style="position: absolute; top: 20px; right: 20px">
-        <button
-          class="graph-type-button"
-          :class="{ 'active-graph': activeGraph === 'Line' }"
-          @click="displayGraph('Line')"
-        >
-          <svg
-            height="16px"
-            width="16px"
-            version="1.1"
-            id="_x32_"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 512 512"
-            xml:space="preserve"
-            :fill="activeGraph === 'Line' ? '#ffffff' : '#000000'"
-          >
-            <title>Line Graph</title>
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              <g>
-                <polygon
-                  class="st0"
-                  points="55.924,451.681 55.924,20.681 55.924,4.393 0,4.393 0,20.681 0,451.681 0,491.314 0,507.607 16.289,507.607 55.924,507.607 486.922,507.607 503.211,507.607 503.211,451.681 486.922,451.681 "
-                ></polygon>
-                <path
-                  class="st0"
-                  d="M133.422,338.877l81.482-133.914c2.705,0.426,5.453,0.711,8.277,0.711c9.066,0,17.592-2.289,25.053-6.305 l84.476,71.426c-1.551,4.98-2.386,10.269-2.386,15.762c0,29.215,23.682,52.894,52.896,52.894c29.215,0,52.896-23.68,52.896-52.894 c0-12.387-4.289-23.754-11.42-32.766L512,105.838l-33.303-20.887l-86.953,149.457c-2.783-0.453-5.615-0.75-8.523-0.75 c-9.32,0-18.064,2.43-25.668,6.66l-84.104-71.121c1.688-5.172,2.631-10.684,2.631-16.422c0-29.215-23.686-52.898-52.898-52.898 c-29.215,0-52.896,23.684-52.896,52.898c0,12.054,4.078,23.133,10.867,32.027L99.838,318.435L133.422,338.877z"
-                ></path>
-              </g>
-            </g>
-          </svg>
-        </button>
-        <button
-          class="graph-type-button"
-          :class="{ 'active-graph': activeGraph === 'Bar' }"
-          @click="displayGraph('Bar')"
-        >
-          <svg
-            height="16px"
-            width="16px"
-            version="1.1"
-            id="_x32_"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 512 512"
-            xml:space="preserve"
-            :fill="activeGraph === 'Bar' ? '#ffffff' : '#000000'"
-          >
-            <title>Bar Graph</title>
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              <g>
-                <path
-                  class="st0"
-                  d="M70.697,395.352h80.633c5.658,0,10.246-4.252,10.246-9.498v-143.72c0-5.246-4.588-9.499-10.246-9.499H70.697 c-5.658,0-10.246,4.253-10.246,9.499v143.72C60.451,391.1,65.039,395.352,70.697,395.352z"
-                ></path>
-                <path
-                  class="st0"
-                  d="M215.684,395.352h80.631c5.658,0,10.248-4.252,10.248-9.498V141.117c0-5.246-4.59-9.498-10.248-9.498h-80.631 c-5.66,0-10.248,4.252-10.248,9.498v244.736C205.436,391.1,210.024,395.352,215.684,395.352z"
-                ></path>
-                <path
-                  class="st0"
-                  d="M360.668,395.352h80.631c5.66,0,10.248-4.252,10.248-9.498V25.964c0-5.246-4.588-9.499-10.248-9.499h-80.631 c-5.66,0-10.248,4.253-10.248,9.499v359.89C350.42,391.1,355.008,395.352,360.668,395.352z"
-                ></path>
-                <polygon
-                  class="st0"
-                  points="495.426,438.633 16.574,438.633 0,438.633 0,495.535 16.574,495.535 495.426,495.535 512,495.535 512,438.633 "
-                ></polygon>
-              </g>
-            </g>
-          </svg>
-        </button>
-      </div>
-      <div class="the-graph"></div>
-    </div>
-  </div>
-  <div class="frequencies-container">
-    <div class="frequency">
-      <span>Najčešće namjere</span>
-      <div class="column-title">
-        <p>Namjera</p>
-        <p>Broj</p>
-      </div>
-      <div class="intent-row" v-for="intent in topFive" :key="intent">
-        <p class="intent-name">{{ intent.name }}</p>
-        <p class="intent-occurances">{{ intent.occurrences }}</p>
-      </div>
-    </div>
-    <div class="frequency">
-      <span>Najrjeđe namjere</span>
-      <div class="column-title">
-        <p>Namjera</p>
-        <p>Broj</p>
-      </div>
-      <div class="intent-row" v-for="intent in bottomFive" :key="intent">
-        <p class="intent-name">{{ intent.name }}</p>
-        <p class="intent-occurances">{{ intent.occurrences }}</p>
+        <div class="intent-row" v-for="intent in bottomFive" :key="intent">
+          <p class="intent-name">{{ intent.name }}</p>
+          <p class="intent-occurances">{{ intent.occurrences }}</p>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Grey background at the bottom -->
+  <div class="bottom-section"/>
 </template>
 
 <script>
@@ -318,7 +194,7 @@ export default {
     return {
       conversations: [],
       uniqueIntentsList: [],
-      activeTab: "Prvi",
+      activeTab: "Prepoznavanje",
       activeGraph: "Line",
       selectedDateRange: "",
       selectedIntent: "",

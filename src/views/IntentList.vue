@@ -825,7 +825,7 @@ th:not(:first-child):not(:nth-child(6)):hover {
 
 .bottom-section {
   background-color: var(--background);
-  min-height: 180px;
+  min-height: 120px;
   position: relative;
   z-index: 2;
 }
