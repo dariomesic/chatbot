@@ -583,6 +583,12 @@ export default {
         errorDiv.innerHTML = `Ne postoji prag za "${this.selectedIntent}" namjeru u zadanom vremenskom pragu.`;
         document.querySelector(".main-graph").innerHTML = errorDiv.outerHTML;
       } else {
+        const allValuesSame = filteredData.every((data) => data.y === 100);
+
+        if (allValuesSame) {
+          filteredData.forEach((data) => (data.y = 99.99));
+        }
+
         const hideDots = filteredData.length === 1 ? 0 : 1;
 
         new Chart(".main-graph", {
