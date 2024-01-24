@@ -273,4 +273,32 @@ a:hover {
   opacity: 0;
   transform: translateX(-30px);
 }
+
+/* x axis */
+
+.graph .frappe-chart .x.axis text {
+  display: none;
+}
+
+/* y axis */
+.graph .frappe-chart .y.axis .line-horizontal,
+.graph .frappe-chart .y.axis text {
+  display: none;
+}
+
+.graph .chart-container {
+  width: 15vw;
+}
+
+.main-graph .graph-svg-tip {
+  opacity: 0 !important;
+}
+
+.main-graph-container .selected-option .exit-svg,
+.main-graph-container .selected-option .arrow-icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 1rem;
+}
 </style>

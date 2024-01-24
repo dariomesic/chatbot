@@ -22,6 +22,12 @@
           >
             Postavke
           </li>
+          <li
+            :class="{ active: activeTab === 'Analitika' }"
+            @click="setActiveTab('Analitika')"
+          >
+            Analitika
+          </li>
         </ul>
       </div>
       <div class="right-part">
@@ -65,6 +71,7 @@
         <ConversationsHistory v-if="activeTab === 'Razgovori'" />
         <SettingsPage v-if="activeTab === 'Postavke'" />
         <DocumentsBase v-if="activeTab === 'Baza znanja'" />
+        <AnalyticsPage v-if="activeTab === 'Analitika'" />
       </div>
     </div>
   </div>
@@ -76,12 +83,14 @@ import IntentList from "./IntentList.vue";
 import ConversationsHistory from "./ConversationsHistory.vue";
 import SettingsPage from "./SettingsPage.vue";
 import DataService from "../services/data.services";
+import AnalyticsPage from "./AnalyticsPage.vue";
 export default {
   components: {
     Navbar,
     IntentList,
     ConversationsHistory,
     SettingsPage,
+    AnalyticsPage,
   },
   data() {
     return {
