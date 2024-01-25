@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 3.5rem 0 0 1rem">
+  <div style="padding: 3.5rem 0 0 1rem;flex-grow: 1;overflow: auto;position: relative;">
     <!-- TABS -->
     <div class="tabs">
       <button @click="activeTab = 'synonyms'" :class="{ 'active': activeTab === 'synonyms' }">Sinonimi i pragovi</button>
@@ -175,6 +175,9 @@
 
       <!-- Add more divs for additional tab contents -->
     </div>
+
+    <!-- Grey background at the bottom -->
+    <div class="bottom-section"/>
 </template>
 <script>
 import DataService from "../services/data.services";
