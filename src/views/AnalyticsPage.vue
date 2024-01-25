@@ -69,7 +69,7 @@
           <button
             class="graph-type-button"
             :class="{ 'active-graph': activeGraph === 'Line' }"
-            @click="displayGraph('Line')"
+            @click="activeGraph = 'Line'"
           >
             <svg
               height="16px"
@@ -106,7 +106,7 @@
           <button
             class="graph-type-button"
             :class="{ 'active-graph': activeGraph === 'Bar' }"
-            @click="displayGraph('Bar')"
+            @click="activeGraph = 'Bar'"
           >
             <svg
               height="16px"
@@ -208,7 +208,6 @@ export default {
   async mounted() {
     await this.getConversations();
     this.selectedDateRange = "4 tjedna";
-    console.log(this.conversations);
   },
   watch: {
     selectedDateRange(newVal) {
@@ -218,9 +217,18 @@ export default {
       this.triggerDateStoring(newVal, oldVal);
       this.toggleSvg(newVal, oldVal);
     },
+    activeGraph(newVal) {
+      this.triggerDateStoring(undefined, undefined, undefined, newVal);
+      console.log("trigeralo se");
+    },
   },
   methods: {
-    triggerDateStoring(selectedIntent, previousSelectedIntent, selectedDate) {
+    triggerDateStoring(
+      selectedIntent,
+      previousSelectedIntent,
+      selectedDate,
+      selectedGraphType
+    ) {
       const today = new Date();
       let dateRange;
       // const todayFormatted = today.toISOString().split("T")[0];
@@ -284,20 +292,23 @@ export default {
             selectedDate
           );
         }
-      } else if (this.selectedIntent !== "") {
+      } else if (
+        this.selectedIntent !== "" &&
+        selectedGraphType === undefined
+      ) {
         this.showData(
           new Date(dateRange),
           today,
           this.selectedIntent,
           selectedDate
         );
+        console.log("kfodkfsoak");
       } else {
         this.showData(new Date(dateRange), today, undefined, selectedDate);
+        console.log("salje se data za graph");
       }
     },
     displayGraph(type, filteredConversations, startDate) {
-      console.log(filteredConversations);
-      console.log(startDate);
       if (type === "Line") {
         this.activeGraph = "Line";
       } else {
@@ -726,8 +737,16 @@ export default {
         .sort((a, b) => a.occurrences - b.occurrences)
         .slice(0, 5);
 
+      let flag = 0;
+
       if (selectedIntent === undefined || selectedDate) {
         this.slopeChart(filteredConversations, dateRange, selectedDate);
+        this.displayGraph(
+          this.activeGraph,
+          filteredConversations,
+          new Date(dateRange)
+        );
+        flag++;
       }
 
       if (selectedIntent !== undefined) {
@@ -741,11 +760,13 @@ export default {
         this.distributionChart(selectedIntentUniqueRequests, dateRange);
       } else {
         this.distributionChart(uniqueRequests, new Date(dateRange));
-        this.displayGraph(
-          this.activeGraph,
-          filteredConversations,
-          new Date(dateRange)
-        );
+        if (flag !== 1) {
+          this.displayGraph(
+            this.activeGraph,
+            filteredConversations,
+            new Date(dateRange)
+          );
+        }
       }
     },
     async getConversations() {
