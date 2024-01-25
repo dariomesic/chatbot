@@ -332,7 +332,6 @@ export default {
   async mounted() {
     await this.getConversations();
     this.selectedDateRange = "4 tjedna";
-    this.displayGraph(this.activeGraph);
     console.log(this.conversations);
   },
   watch: {
@@ -402,35 +401,95 @@ export default {
       }
       if (selectedIntent && previousSelectedIntent) {
         if (selectedIntent !== previousSelectedIntent) {
-          this.showData(dateRange, today, selectedIntent, selectedDate);
+          this.showData(
+            new Date(dateRange),
+            today,
+            selectedIntent,
+            selectedDate
+          );
         }
       } else if (this.selectedIntent !== "") {
-        this.showData(dateRange, today, this.selectedIntent, selectedDate);
+        this.showData(
+          new Date(dateRange),
+          today,
+          this.selectedIntent,
+          selectedDate
+        );
       } else {
-        this.showData(dateRange, today, undefined, selectedDate);
+        this.showData(new Date(dateRange), today, undefined, selectedDate);
       }
     },
-    displayGraph(type) {
+    displayGraph(type, filteredConversations, startDate) {
+      console.log(filteredConversations);
+      console.log(startDate);
       if (type === "Line") {
         this.activeGraph = "Line";
       } else {
         this.activeGraph = "Bar";
       }
 
+      const today = new Date();
+
+      const dates = [];
+
+      for (
+        let date = startDate;
+        date <= today;
+        date.setDate(date.getDate() + 1)
+      ) {
+        dates.push(
+          new Date(Math.min(date, today)).toLocaleDateString("hr-HR", {
+            day: "numeric",
+            month: "short",
+          })
+        );
+        if (date > today) {
+          break;
+        }
+      }
+
+      if (
+        !dates.includes(
+          today.toLocaleDateString("hr-HR", {
+            day: "numeric",
+            month: "short",
+          })
+        )
+      ) {
+        dates.push(
+          new Date(today).toLocaleDateString("hr-HR", {
+            day: "numeric",
+            month: "short",
+          })
+        );
+      }
+
+      const occurrences = [];
+
+      dates.forEach((day) => {
+        const wantedDay = filteredConversations
+          .filter((conversation) => {
+            const conversationDate = new Date(conversation.time);
+            return conversationDate === new Date(day);
+          })
+          .filter((conversation) => {
+            return conversation.request.startsWith("KORISNIK ŠALJE MAIL:");
+          });
+
+        occurrences.push(wantedDay.length);
+      });
+
+      const displayGraphData = dates.map((date, index) => ({
+        x: date,
+        y: occurrences[index],
+      }));
+
       new Chart(".the-graph", {
         data: {
-          labels: [
-            "Ponedjeljak",
-            "Utorak",
-            "Srijeda",
-            "Četvrtak",
-            "Petak",
-            "Subota",
-            "Nedjelja",
-          ],
+          labels: displayGraphData.map((data) => data.x),
           datasets: [
             {
-              values: [100, 20, 40, 50, 90, 80, 10],
+              values: displayGraphData.map((data) => data.y),
             },
           ],
         },
@@ -691,6 +750,7 @@ export default {
           })
         );
       }
+
       const distributionChartData = dates.map((date, index) => ({
         x: date,
         y: sortedByThreshold[index]?.threshold,
@@ -804,7 +864,12 @@ export default {
           });
         this.distributionChart(selectedIntentUniqueRequests, dateRange);
       } else {
-        this.distributionChart(uniqueRequests, dateRange);
+        this.distributionChart(uniqueRequests, new Date(dateRange));
+        this.displayGraph(
+          this.activeGraph,
+          filteredConversations,
+          new Date(dateRange)
+        );
       }
     },
     async getConversations() {
