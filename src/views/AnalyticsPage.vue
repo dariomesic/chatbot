@@ -14,7 +14,7 @@
     <div class="graphs-container">
       <div class="graph-container">
         <div class="left-part">
-          <span>Jedinstvene sesije</span>
+          <span>Pristupi</span>
           <p>{{ uniqueSessionIdsNum }}</p>
         </div>
         <div id="session-graph" class="graph"></div>
@@ -28,7 +28,7 @@
       </div>
       <div class="graph-container">
         <div class="left-part">
-          <span>Neregistrirani zahtjevi</span>
+          <span>Neprepoznati zahtjevi</span>
           <p>{{ uniqueUnregisteredRequestsNum }}</p>
         </div>
         <div id="unregistered-requests-graph" class="graph"></div>
@@ -562,7 +562,7 @@ export default {
           uniqueSessionIdsSum,
           graphWidth,
           "#session-graph",
-          "Jedinstvene sesije"
+          "Pristupi"
         );
         this.drawSlopeChart(
           dateRangesFormatted,
@@ -576,7 +576,7 @@ export default {
           uniqueUnregisteredRequestsSum,
           graphWidth,
           "#unregistered-requests-graph",
-          "Neregistrirani zahtjevi"
+          "Neprepoznati zahtjevi"
         );
       }
     },
