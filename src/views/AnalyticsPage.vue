@@ -828,7 +828,7 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
-  margin: 3rem 0.7rem;
+  margin: 3rem 0.7rem 0 0.7rem;
 }
 
 .input-control {
@@ -893,7 +893,7 @@ input[type="date"] {
 .graphs-container {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 0.7rem 2rem 0.7rem;
+  margin: 3rem 0.7rem 2rem 0.7rem;
 }
 
 .graph-container {
