@@ -1,5 +1,21 @@
 <template>
   <div style="padding: 3.5rem 0 0 1rem;flex-grow: 1;overflow: auto;position: relative;">
+    <section v-if="show">
+      <transition name="fade" appear>
+        <div
+          class="card-header"
+          :style="{
+            backgroundColor:
+              message === message
+                ? 'rgb(105, 222, 64)'
+                : '#cd5c5c',
+          }"
+        >
+          <span>{{ message }}</span>
+          <div @click="show = false" class="cross">✕</div>
+        </div>
+      </transition>
+    </section>
     <!-- TABS -->
     <div class="tabs">
       <button @click="activeTab = 'synonyms'" :class="{ 'active': activeTab === 'synonyms' }">Sinonimi i pragovi</button>
@@ -50,22 +66,6 @@
           <svg class="svg" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Saved" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" role="img"><path d="M13.9,4.6l-2.5-2.5C11.3,2.1,11.1,2,11,2H3C2.4,2,2,2.4,2,3v10c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1V5	C14,4.9,13.9,4.7,13.9,4.6z M6,3h4v2H6V3z M10,13H6V9h4V13z M11,13V9c0-0.6-0.4-1-1-1H6C5.4,8,5,8.4,5,9v4H3V3h2v2c0,0.6,0.4,1,1,1	h4c0.6,0,1-0.4,1-1V3.2l2,2V13H11z"></path></svg>
         </button>
 
-        <section v-if="show">
-          <transition name="fade" appear>
-            <div
-              class="card-header"
-              :style="{
-                backgroundColor:
-                  message === 'Uspješno spremljene promjene.'
-                    ? 'rgb(105, 222, 64)'
-                    : '#cd5c5c',
-              }"
-            >
-              <span>{{ message }}</span>
-              <div @click="show = false" class="cross">✕</div>
-            </div>
-          </transition>
-        </section>
       </div>
 
       <!-- Subjects TAB CONTENT -->
@@ -256,9 +256,8 @@ export default {
     },
     async getIntents() {
       let objects = await DataService.getIntentsForSystem(this.$route.query.system_id);
-      objects.forEach((element) => {
-        this.uniqueIntents.push({ name: element.name, key: element.id });
-      });
+      this.uniqueIntents = objects.map(element => ({ name: element.name, key: element.id }));
+      this.uniqueIntents.sort((a, b) => a.name.localeCompare(b.name));
       objects = await DataService.getThemes(this.$route.query.system_id)
       objects[0].intents ? this.selectedIntents = JSON.parse(objects[0].intents) : this.selectedIntents = []
     },
@@ -340,19 +339,36 @@ export default {
     closeDropdownOnOutsideClick(event) {
       const dropdown = this.$refs.dropdownSettingsRef;
       const selectedItems = this.$refs.selectedItemsSettingsRef;
-      if (
-        !dropdown.contains(event.target) &&
-        !selectedItems.contains(event.target)
-      ) {
-        this.isDropdownOpen = false;
-        document.removeEventListener("click", this.closeDropdownOnOutsideClick);
+      if (dropdown && selectedItems) {
+        if (
+          !dropdown.contains(event.target) &&
+          !selectedItems.contains(event.target)
+        ) {
+          this.isDropdownOpen = false;
+          document.removeEventListener("click", this.closeDropdownOnOutsideClick);
+        }
       }
     },
     removeChosenIntents() {
       this.selectedIntents = [];
     },
     async saveSubjects(){
-      await DataService.updateThemes(this.$route.query.system_id, this.selectedIntents)
+      try{
+        await DataService.updateThemes(this.$route.query.system_id, this.selectedIntents)
+        this.show = true;
+        this.message = "Uspješno spremljene promjene.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
+      }
+      catch (error) {
+        this.show = true;
+        this.message =
+          "Pogreška prilikom spremanja promjena. Molim Vas pokušajte ponovno.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
+      }
     },
     async getDocuments(){
       this.documents = await DataService.getDocumentsBySystemId(this.$route.query.system_id);

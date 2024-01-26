@@ -219,7 +219,6 @@ export default {
     },
     activeGraph(newVal) {
       this.triggerDateStoring(undefined, undefined, undefined, newVal);
-      console.log("trigeralo se");
     },
   },
   methods: {
@@ -302,10 +301,8 @@ export default {
           this.selectedIntent,
           selectedDate
         );
-        console.log("kfodkfsoak");
       } else {
         this.showData(new Date(dateRange), today, undefined, selectedDate);
-        console.log("salje se data za graph");
       }
     },
     displayGraph(type, filteredConversations, startDate) {
@@ -350,17 +347,23 @@ export default {
           })
         );
       }
-
+      const monthMap = {
+        "sij": "01", "velj": "02", "ožu": "03", "tra": "04",
+        "svi": "05", "lip": "06", "srp": "07", "kol": "08",
+        "ruj": "09", "lis": "10", "stu": "11", "pro": "12"
+      };
       const occurrences = [];
 
       dates.forEach((day) => {
+        const [dayMonth1, monthAbbrev1] = day.split('. ');
         const wantedDay = filteredConversations
           .filter((conversation) => {
-            const conversationDate = new Date(conversation.time);
-            return conversationDate === new Date(day);
+            const [, month2, dayMonth2] = conversation.time.split(/-| /);
+            const numericMonth1 = monthMap[monthAbbrev1.toLowerCase()];
+            return (dayMonth1 === dayMonth2 && numericMonth1 === month2)
           })
           .filter((conversation) => {
-            return conversation.request.startsWith("KORISNIK ŠALJE MAIL:");
+            return conversation.text.startsWith("KORISNIK ŠALJE MAIL:");
           });
 
         occurrences.push(wantedDay.length);
