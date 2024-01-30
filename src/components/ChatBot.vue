@@ -143,7 +143,7 @@ export default{
       // Simulate a delayed bot response after initial greeting
       await new Promise(resolve => setTimeout(resolve, 1000));
       let responseMessage = {
-        assistant_answer: `Pozdrav 👋 ! Ja sam chatbot sustava ` + this.system_name + `. Postavite pitanje vezano uz sustav ili odaberite neku od navedenih tema.`
+        assistant_answer: `Pozdrav 👋 ! Ja sam virtualni asistent sustava ` + this.system_name + `. Postavite pitanje vezano uz sustav ili odaberite neku od navedenih tema.`
       };
       this.addBotMessage(responseMessage);
       // ADD SUBJECTS IN THE BEGGINING
@@ -280,8 +280,11 @@ export default{
                   this.intent_id = response.intent_id
                   this.addBotMessage(response);
                 }
-                else{
+                else if(Array.isArray(response)){
                   this.addPossibleIntents(response)
+                }
+                else{
+                  this.addBotMessage({ assistant_answer: response });
                 }
             }
             // Clear the input field after sending the message.
