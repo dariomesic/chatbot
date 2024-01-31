@@ -707,7 +707,7 @@ input[type="text"]:focus {
 
 .message img {
   width: 100%;
-  height: 217px;
+  height: 100%;
   background: white;
   border-radius: 10px;
   margin-bottom: 6px;
