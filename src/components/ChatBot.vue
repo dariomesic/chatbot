@@ -130,10 +130,12 @@ export default{
           };
           this.addBotMessage(response);
         }
-        /*else{
-          response = await JSON.parse(await DataService.searchDocuments(event.target.getAttribute('data-question')))[0]
-          this.addBotMessage(response);
-        }*/
+        else{
+          this.addUserMessage(event.target.getAttribute('data-text'))
+          response = await DataService.searchDocuments(event.target.getAttribute('data-question'))
+          let messageText = `<div><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4>${response.document_title}${response.document_page ? `(${response.document_page}.str)` : ''}</h4><div>${response.text}</div></div>`;
+          this.addBotMessage({assistant_answer: messageText});
+        }
         await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, Number(event.target.getAttribute('data-intent-id')), event.target.getAttribute('data-question'), event.target.getAttribute('data-threshold'), response)
       }
     });

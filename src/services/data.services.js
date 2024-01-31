@@ -376,6 +376,23 @@ class DataService {
     })
   }
 
+  searchDocuments(text){
+    return fetch('http://18.194.27.183:8080/searchDocuments', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({text: text})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   sendQuestions(questions, intent_id, questions_len){
     return fetch('http://18.194.27.183:8080/sendQuestions', {
       method : "POST",
