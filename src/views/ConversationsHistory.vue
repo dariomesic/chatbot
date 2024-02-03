@@ -320,7 +320,7 @@
         </tr>
       </thead>
       <TransitionGroup name="table-list" tag="tbody" mode="out-in">
-        <tr v-for="(conversation, index) in filteredConversations" :key="index">
+        <tr v-for="(conversation, index) in filteredConversations" :key="index" :style="{ background: (lowerThreshold > (conversation.threshold * 100) && conversation.threshold) ? '#ff8a8a' : 'none' }">
           <td>
             <div style="display: flex; flex-direction: column">
               <span style="margin-bottom: 0.5rem; color: var(--main__color)">{{
@@ -585,6 +585,7 @@ export default {
       startDateText: "",
       endDateText: "",
       filteredLength: 0,
+      lowerThreshold: 0
     };
   },
   async created() {
@@ -758,7 +759,7 @@ export default {
       this.getFilteredLength(filtered);
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-      return filtered.slice(startIndex, endIndex);
+      return filtered.slice().reverse().slice(startIndex, endIndex);
     },
     formatedSelectedStartDate() {
       const options = { year: "numeric", month: "short", day: "numeric" };
@@ -871,17 +872,16 @@ export default {
           this.conversations = await DataService.getConversationsForSystem(
             this.$route.query.system_id
           );
-          this.conversations.sort((a, b) => {
-            const timeA = new Date(a.time);
-            const timeB = new Date(b.time);
-            return timeB - timeA;
-          });
+          let res = await DataService.getThresholdsBySystemId(
+            this.$route.query.system_id
+          );
+          this.lowerThreshold = res[0].percentage_lower
           this.conversations.forEach((conversation) => {
             if (!this.uniqueIntents.includes(conversation.intent_name)) {
               this.uniqueIntents.push(conversation.intent_name);
             }
           });
-          this.initialConversationsOrder = [...this.conversations];
+          this.initialConversationsOrder = JSON.parse(JSON.stringify(this.conversations));
         } catch (error) {
           console.error(error);
         }
