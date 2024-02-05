@@ -286,10 +286,6 @@ a:hover {
   display: none;
 }
 
-.graph .chart-container {
-  width: 15vw;
-}
-
 .main-graph .graph-svg-tip {
   opacity: 0 !important;
 }
