@@ -759,7 +759,7 @@ export default {
       this.getFilteredLength(filtered);
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-      return filtered.slice().reverse().slice(startIndex, endIndex);
+      return filtered.slice(startIndex, endIndex);
     },
     formatedSelectedStartDate() {
       const options = { year: "numeric", month: "short", day: "numeric" };

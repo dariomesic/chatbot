@@ -87,10 +87,13 @@ export default{
       conditions: {},
       sessionUUID: '',
       system_name: '',
+      system_initial: '',
     }
   },
   async mounted() {
-    this.system_name = await DataService.getNameForSystem(this.$route.query.system_id)
+    let res = await DataService.getInitialChat(this.$route.query.system_id)
+    this.system_name = res[0].system_name
+    this.system_initial = res[0].system_initial
     // Generate a session UUID when the component is mounted
     this.sessionUUID = uuidv4();
     this.conditions[this.sessionUUID] = [];
@@ -145,7 +148,7 @@ export default{
       // Simulate a delayed bot response after initial greeting
       await new Promise(resolve => setTimeout(resolve, 1000));
       let responseMessage = {
-        assistant_answer: `Pozdrav 👋 ! Ja sam virtualni asistent sustava ` + this.system_name + `. Postavite pitanje vezano uz sustav ili odaberite neku od navedenih tema.`
+        assistant_answer: this.system_initial
       };
       this.addBotMessage(responseMessage);
       // ADD SUBJECTS IN THE BEGGINING

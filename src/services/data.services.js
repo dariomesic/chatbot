@@ -322,6 +322,35 @@ class DataService {
     })
   }
 
+  getInitialChat(system_id){
+    return fetch('http://18.194.27.183:8080/getInitialChat?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  saveInitial(text, system_id){
+    return fetch('http://18.194.27.183:8080/saveInitial', {
+      method : "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({text: text, system_id: system_id})
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   getThemes(system_id){
     return fetch('http://18.194.27.183:8080/getThemes?system_id=' + system_id, {
       method : "GET",

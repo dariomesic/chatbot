@@ -19,6 +19,7 @@
     <!-- TABS -->
     <div class="tabs">
       <button @click="activeTab = 'synonyms'" :class="{ 'active': activeTab === 'synonyms' }">Sinonimi i pragovi</button>
+      <button @click="activeTab = 'initial'" :class="{ 'active': activeTab === 'initial' }">Početni razgovor</button>
       <button @click="activeTab = 'subjects'" :class="{ 'active': activeTab === 'subjects' }">Lista tema</button>
       <button @click="activeTab = 'documents'" :class="{ 'active': activeTab === 'documents' }">Baza znanja</button>
       <button @click="activeTab = 'live'" :class="{ 'active': activeTab === 'live' }">Live</button>
@@ -39,8 +40,8 @@
             </div>
             &larr;
             <div class="old-values">
-            <div contenteditable="true" @blur="handleBlurValue($event, index)" style="min-width:115px; background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; width: 100%; padding: 10px; line-height: 17px; box-sizing: border-box; word-wrap: break-word;">{{ editedOldValues[index] }}</div>
-          </div>
+              <div contenteditable="true" @blur="handleBlurValue($event, index)" style="min-width:115px; background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; width: 100%; padding: 10px; line-height: 17px; box-sizing: border-box; word-wrap: break-word;">{{ editedOldValues[index] }}</div>
+            </div>
           <div>
             <button @click="deleteSynonyms(index)" style="align-items: center; display: inline-flex;">
               <svg style="margin-top: 6px" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Close" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon"> <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path></svg>
@@ -66,6 +67,17 @@
           <svg class="svg" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Saved" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" role="img"><path d="M13.9,4.6l-2.5-2.5C11.3,2.1,11.1,2,11,2H3C2.4,2,2,2.4,2,3v10c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1V5	C14,4.9,13.9,4.7,13.9,4.6z M6,3h4v2H6V3z M10,13H6V9h4V13z M11,13V9c0-0.6-0.4-1-1-1H6C5.4,8,5,8.4,5,9v4H3V3h2v2c0,0.6,0.4,1,1,1	h4c0.6,0,1-0.4,1-1V3.2l2,2V13H11z"></path></svg>
         </button>
 
+      </div>
+
+      <!-- Initial chat TAB CONTENT -->
+      <div v-if="activeTab === 'initial'" class="tabcontent">
+        <h3>Tekst početka razgovora u chatbotu</h3>
+        <div class="old-values">
+          <div contenteditable="true" @blur="initialChat = $event.target.innerText" style="min-width:115px; background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; width: 100%; padding: 10px; line-height: 17px; box-sizing: border-box; word-wrap: break-word;">{{ initialChat }}</div>
+        </div>
+        <button @click="saveInitial" class="background-button" tabindex="0" type="button" style="margin-top: 2rem;">Spremi promjene
+          <svg class="svg" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Saved" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" role="img"><path d="M13.9,4.6l-2.5-2.5C11.3,2.1,11.1,2,11,2H3C2.4,2,2,2.4,2,3v10c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1V5	C14,4.9,13.9,4.7,13.9,4.6z M6,3h4v2H6V3z M10,13H6V9h4V13z M11,13V9c0-0.6-0.4-1-1-1H6C5.4,8,5,8.4,5,9v4H3V3h2v2c0,0.6,0.4,1,1,1	h4c0.6,0,1-0.4,1-1V3.2l2,2V13H11z"></path></svg>
+        </button>
       </div>
 
       <!-- Subjects TAB CONTENT -->
@@ -203,12 +215,14 @@ export default {
       hoveredDocument: null,
       uploadedFile: null,
       selectedIntents: [],
+      initialChat: ''
     };
   },
   async created() {
     this.filterOldValues();
     this.getDocuments();
     this.getIntents();
+    this.getInitialChat();
     try {
       let res = await DataService.getThresholdsBySystemId(
         this.$route.query.system_id
@@ -356,6 +370,28 @@ export default {
     async saveSubjects(){
       try{
         await DataService.updateThemes(this.$route.query.system_id, this.selectedIntents)
+        this.show = true;
+        this.message = "Uspješno spremljene promjene.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
+      }
+      catch (error) {
+        this.show = true;
+        this.message =
+          "Pogreška prilikom spremanja promjena. Molim Vas pokušajte ponovno.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
+      }
+    },
+    async getInitialChat(){
+      let res = await DataService.getInitialChat(this.$route.query.system_id);
+      this.initialChat = res[0].system_initial
+    },
+    async saveInitial(){
+      try{
+        await DataService.saveInitial(this.initialChat, this.$route.query.system_id);
         this.show = true;
         this.message = "Uspješno spremljene promjene.";
         setTimeout(() => {
