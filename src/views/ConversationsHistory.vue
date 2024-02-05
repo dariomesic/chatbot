@@ -2,7 +2,7 @@
   <div class="actions">
     <h3>Popis razgovora od strane chatbota i korisnika</h3>
     <div class="filters-container">
-      <div class="input-control" style="width: 15vw">
+      <div class="input-control">
         <label>Odaberite vremenski raspon</label>
         <CustomSelect
           :placeholder="'Odaberite'"
@@ -18,7 +18,7 @@
           style="box-sizing: border-box"
         />
       </div>
-      <div class="input-control" style="width: 20vw">
+      <div class="input-control">
         <div class="input-dates-container">
           <div style="position: relative; width: 45%">
             <label>Početni datum</label>
@@ -155,7 +155,7 @@
           </div>
         </div>
       </div>
-      <div class="input-control" style="width: 20vw">
+      <div class="input-control">
         <label>Filtriraj prema session ID-u</label>
         <div style="display: flex">
           <span class="search-icon"></span>
@@ -167,10 +167,42 @@
           />
         </div>
       </div>
-      <div class="input-control" style="width: 20vw">
+      <div class="input-control">
+        <div class="input-threshold-container">
+          <div style="position: relative; width: 45%">
+            <label>Donji prag</label>
+            <input
+              type="text"
+              class="threshold-input"
+              v-model="minPercentage"
+              @keypress="validateNumberInput"
+              @paste="validatePaste"
+              @input="validateRange($event)"
+              placeholder="min"
+            />
+          </div>
+          <div style="position: relative; width: 45%">
+            <label>Gornji prag</label>
+            <input
+              type="text"
+              class="threshold-input"
+              v-model="maxPercentage"
+              @keypress="validateNumberInput"
+              @paste="validatePaste"
+              @input="validateRange($event)"
+              placeholder="max"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="input-control">
         <label>Filtriraj prema namjerama</label>
         <div class="custom-checkbox-select" tabindex="1">
-          <div class="selected-items" @click="toggleDropdown" ref="selectedItemsRef">
+          <div
+            class="selected-items"
+            @click="toggleDropdown"
+            ref="selectedItemsRef"
+          >
             <span
               v-if="selectedIntents.length === 0"
               style="
@@ -244,11 +276,10 @@
     </div>
   </div>
 
-
   <!-- Table with scrollable tbody and pagination -->
   <div class="table-container">
     <table>
-      <thead style="position:relative;z-index:1">
+      <thead style="position: relative; z-index: 1">
         <tr style="width: 70vw">
           <th
             @mouseenter="setSortIcon(0, true)"
@@ -430,28 +461,28 @@
     <div class="pagination">
       <!-- Your pagination buttons go here -->
       <div
+        style="
+          width: 100%;
+          border: 1px solid #e0e0e0;
+          display: flex;
+          flex-wrap: wrap;
+          font-weight: 400;
+          justify-content: space-between;
+          letter-spacing: 0.16px;
+          line-height: 1.28572;
+          min-height: 2.5rem;
+          align-items: center;
+        "
+      >
+        <div
           style="
-            width:100%;
-            border: 1px solid #e0e0e0;
+            padding: 0 1rem;
+            align-items: center;
             display: flex;
             flex-wrap: wrap;
-            font-weight: 400;
-            justify-content: space-between;
-            letter-spacing: 0.16px;
-            line-height: 1.28572;
-            min-height: 2.5rem;
-            align-items: center;
+            height: 100%;
           "
         >
-          <div
-            style="
-              padding: 0 1rem;
-              align-items: center;
-              display: flex;
-              flex-wrap: wrap;
-              height: 100%;
-            "
-          >
           <div>
             <div
               class="items-per-page"
@@ -549,7 +580,7 @@
   </div>
 
   <!-- Grey background at the bottom -->
-  <div class="bottom-section"/>
+  <div class="bottom-section" />
 </template>
 
 <script>
@@ -584,6 +615,8 @@ export default {
       endMaxDate: "",
       startDateText: "",
       endDateText: "",
+      minPercentage: null,
+      maxPercentage: null,
       filteredLength: 0,
       lowerThreshold: 0
     };
@@ -591,6 +624,7 @@ export default {
   async created() {
     await this.getConversations();
     const today = new Date().toISOString().split("T")[0];
+    console.log(this.conversations);
     this.startMaxDate = today;
     this.endMaxDate = today;
     this.getStoredData();
@@ -610,9 +644,11 @@ export default {
         today.getMonth(),
         today.getDate() - 7
       );
-      const formattedWeekAgo = `${weekAgo.getFullYear()}-${(weekAgo.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${weekAgo.getDate().toString().padStart(2, '0')}`;
+      const formattedWeekAgo = `${weekAgo.getFullYear()}-${(
+        weekAgo.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${weekAgo.getDate().toString().padStart(2, "0")}`;
       const monthAgo = new Date(
         today.getFullYear(),
         today.getMonth() - 1,
@@ -713,6 +749,31 @@ export default {
             .toLowerCase()
             .includes(this.searchBySessionId.toLowerCase())
         );
+      }
+      if (this.minPercentage && !this.maxPercentage) {
+        filtered = filtered.filter((conversation) => {
+          return (
+            Math.round(parseFloat(conversation.threshold) * 100) >=
+            this.minPercentage
+          );
+        });
+      } else if (!this.minPercentage && this.maxPercentage) {
+        filtered = filtered.filter((conversation) => {
+          return (
+            Math.round(parseFloat(conversation.threshold) * 100) <=
+            this.maxPercentage
+          );
+        });
+      } else if (this.minPercentage && this.maxPercentage) {
+        filtered = filtered.filter((conversation) => {
+          const wholeThreshold = Math.round(
+            parseFloat(conversation.threshold) * 100
+          );
+          return (
+            wholeThreshold >= this.minPercentage &&
+            wholeThreshold <= this.maxPercentage
+          );
+        });
       }
       if (this.selectedIntents.length > 0) {
         filtered = filtered.filter((conversation) => {
@@ -1032,6 +1093,39 @@ export default {
     refreshPagination() {
       this.currentPage = 1;
     },
+    validateNumberInput(event) {
+      const key = event.key;
+      if (
+        !(key >= "0" && key <= "9") &&
+        !["Backspace", "Delete", "ArrowLeft", "ArrowRight"].includes(key)
+      ) {
+        event.preventDefault();
+      }
+    },
+    validatePaste(event) {
+      const clipboardData = event.clipboardData || window.Clipboard;
+      const pastedText = clipboardData.getData("text");
+
+      if (!/^\d+$/.test(pastedText)) {
+        event.preventDefault();
+      }
+    },
+    validateRange(event) {
+      let targetPercentageValue = event.target.value;
+      if (
+        targetPercentageValue.toString().startsWith("0") &&
+        targetPercentageValue.toString().length !== 1
+      ) {
+        targetPercentageValue = 0;
+      }
+      if (targetPercentageValue > 100) {
+        targetPercentageValue = Number(
+          targetPercentageValue.toString().slice(0, -1)
+        );
+      } else if (targetPercentageValue < 0) {
+        targetPercentageValue = 0;
+      }
+    },
   },
 };
 </script>
@@ -1042,16 +1136,34 @@ th:hover {
   filter: brightness(80%);
   cursor: pointer;
 }
-.filters-container {
+/* .filters-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
   margin-bottom: 2rem;
+} */
+
+.filters-container {
+  display: grid;
+  /* grid-template-columns:
+    repeat(auto-fill, minmax(5rem, 15vw)) minmax(5rem, 20vw)
+    minmax(5rem, 20vw); */
+  grid-template-columns:
+    minmax(5vw, 20vw) minmax(5vw, 20vw) minmax(5vw, 20vw) minmax(5vw, 15vw)
+    minmax(5vw, 20vw);
+  grid-gap: 2rem 3rem;
+}
+
+@media (max-width: 760px) {
+  .filters-container {
+    grid-template-columns: minmax(5vw, 30vw);
+  }
 }
 
 .input-control > label,
-.input-dates-container label {
+.input-dates-container label,
+.input-threshold-container label {
   display: block;
   font: inherit;
   color: #555353;
@@ -1077,16 +1189,28 @@ input.conversation_input[type="text"] {
   border-right: none;
   border-left: none;
   border-bottom: 1px solid #161616;
-  width: -webkit-fill-available;
   height: 2rem;
   max-height: 2rem;
   position: relative;
   box-sizing: border-box;
 }
 
+.input-threshold-container {
+  display: flex;
+  justify-content: space-between;
+}
+.threshold-input {
+  height: 2rem;
+  max-height: 2rem;
+  box-sizing: border-box;
+  background-color: #f4f4f4 !important;
+  border-bottom: 1px solid #161616 !important;
+  text-align: center;
+}
+
 .thumbs-container {
   display: flex;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
   flex-wrap: wrap;
 }
 
