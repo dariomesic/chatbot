@@ -10,7 +10,7 @@
       />
     </div>
   </div>
-  <div style="flex-grow: 1;overflow: auto;position: relative;">
+  <div style="flex-grow: 1; overflow: auto; position: relative">
     <div class="graphs-container">
       <div class="graph-container">
         <div class="left-part">
@@ -48,20 +48,27 @@
     </div>
     <div class="main-graph-container">
       <div v-show="activeTab === 'Prepoznavanje'">
-          <h4 style="position:absolute;top:20px;left:20px;margin:unset">Koliko dobro virtualni asistent prepoznaje odgovore?</h4>
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 2rem;
+            padding-bottom: none;
+          "
+        >
+          <h4 style="margin: unset">
+            Koliko dobro virtualni asistent prepoznaje odgovore?
+          </h4>
           <CustomSelect
             :placeholder="'Odaberite namjeru...'"
             :options="uniqueIntentsList"
             :value="selectedIntent"
             @update:value="selectedIntent = $event"
-            style="
-              position:absolute;
-              top:20px;
-              right: 20px;
-              width: 20vw;
-              border: 1px solid #161616;
-            "
+            style="width: 20vw; border: 1px solid #161616"
           />
+        </div>
         <div class="main-graph"></div>
       </div>
       <div v-show="activeTab === 'Elektronička pošta'">
@@ -179,7 +186,7 @@
   </div>
 
   <!-- Grey background at the bottom -->
-  <div class="bottom-section"/>
+  <div class="bottom-section" />
 </template>
 
 <script>
@@ -205,9 +212,10 @@ export default {
       bottomFive: [],
     };
   },
-  async mounted() {
+  async created() {
     await this.getConversations();
     this.selectedDateRange = "4 tjedna";
+    console.log(this.conversations);
   },
   watch: {
     selectedDateRange(newVal) {
@@ -219,7 +227,6 @@ export default {
     },
     activeGraph(newVal) {
       this.triggerDateStoring(undefined, undefined, undefined, newVal);
-      console.log("trigeralo se");
     },
   },
   methods: {
@@ -238,9 +245,6 @@ export default {
           today.getMonth(),
           today.getDate() - 28
         );
-        // const formattedfourWeeksAgo = `${fourWeeksAgo.getFullYear()}-${
-        //   fourWeeksAgo.getMonth() + 1
-        // }-${fourWeeksAgo.getDate()}`;
         dateRange = fourWeeksAgo;
       } else if (this.selectedDateRange === "2 mjeseca") {
         const twoMonthsAgo = new Date(
@@ -248,9 +252,6 @@ export default {
           today.getMonth() - 2,
           today.getDate()
         );
-        // const formattedTwoMonthsAgo = `${twoMonthsAgo.getFullYear()}-${
-        //   twoMonthsAgo.getMonth() + 1
-        // }-${twoMonthsAgo.getDate()}`;
         dateRange = twoMonthsAgo;
       } else if (this.selectedDateRange === "4 mjeseca") {
         const fourMonthsAgo = new Date(
@@ -258,9 +259,6 @@ export default {
           today.getMonth() - 4,
           today.getDate()
         );
-        // const formattedFourMonthsAgo = `${fourMonthsAgo.getFullYear()}-${
-        //   fourMonthsAgo.getMonth() + 1
-        // }-${fourMonthsAgo.getDate()}`;
         dateRange = fourMonthsAgo;
       } else if (this.selectedDateRange === "6 mjeseca") {
         const sixMonthsAgo = new Date(
@@ -268,9 +266,6 @@ export default {
           today.getMonth() - 6,
           today.getDate()
         );
-        // const formattedSixMonthsAgo = `${sixMonthsAgo.getFullYear()}-${
-        //   sixMonthsAgo.getMonth() + 1
-        // }-${sixMonthsAgo.getDate()}`;
         dateRange = sixMonthsAgo;
       } else if (this.selectedDateRange === "godina") {
         const yearAgo = new Date(
@@ -278,11 +273,9 @@ export default {
           today.getMonth(),
           today.getDate()
         );
-        // const formattedYearAgo = `${yearAgo.getFullYear()}-${
-        //   yearAgo.getMonth() + 1
-        // }-${yearAgo.getDate()}`;
         dateRange = yearAgo;
       }
+
       if (selectedIntent && previousSelectedIntent) {
         if (selectedIntent !== previousSelectedIntent) {
           this.showData(
@@ -302,10 +295,8 @@ export default {
           this.selectedIntent,
           selectedDate
         );
-        console.log("kfodkfsoak");
       } else {
         this.showData(new Date(dateRange), today, undefined, selectedDate);
-        console.log("salje se data za graph");
       }
     },
     displayGraph(type, filteredConversations, startDate) {
@@ -316,6 +307,7 @@ export default {
       }
 
       const today = new Date();
+      today.setHours(23, 59, 59, 999);
 
       const dates = [];
 
@@ -552,11 +544,15 @@ export default {
 
           const uniqueUnregisteredRequests = conversationForRange.filter(
             (conversation) => {
-              return conversation.intent_name === "nedefinirano";
+              return (
+                conversation.intent_name === "nedefinirano" &&
+                conversation.threshold !== ""
+              );
             }
           );
           uniqueUnregisteredRequestsSum.push(uniqueUnregisteredRequests.length);
         });
+
         this.drawSlopeChart(
           dateRangesFormatted,
           uniqueSessionIdsSum,
@@ -649,7 +645,8 @@ export default {
 
       if (filteredData.length === 0) {
         const errorDiv = document.createElement("div");
-        errorDiv.style.margin = "1rem";
+        errorDiv.style.paddingBottom = "1rem";
+        errorDiv.style.paddingLeft = "2rem";
         errorDiv.style.fontWeight = "bold";
         errorDiv.innerHTML = `Ne postoji prag za "${this.selectedIntent}" namjeru u zadanom vremenskom pragu.`;
         document.querySelector(".main-graph").innerHTML = errorDiv.outerHTML;
@@ -689,10 +686,17 @@ export default {
       const filteredConversations = this.conversations.filter(
         (conversation) => {
           const conversationDate = new Date(conversation.time);
-          return conversationDate <= today && conversationDate >= dateRange;
+          const conversationDateString = conversationDate
+            .toISOString()
+            .split("T")[0];
+          const todayString = today.toISOString().split("T")[0];
+          const dateRangeString = dateRange.toISOString().split("T")[0];
+          return (
+            conversationDateString <= todayString &&
+            conversationDateString >= dateRangeString
+          );
         }
       );
-
       filteredConversations.filter((conversation) => {
         if (!uniqueSessionIds.has(conversation.session_id)) {
           uniqueSessionIds.add(conversation.session_id);
@@ -710,7 +714,10 @@ export default {
 
       const uniqueUnregisteredRequests = filteredConversations.filter(
         (conversation) => {
-          return conversation.intent_name === "nedefinirano";
+          return (
+            conversation.intent_name === "nedefinirano" &&
+            conversation.threshold !== ""
+          );
         }
       );
 
@@ -982,13 +989,23 @@ input[type="date"] {
   position: relative;
 }
 
-.main-graph,
+input[type="text"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f4;
+  border: 1px solid #161616;
+  width: 5vw;
+  box-sizing: border-box;
+  text-align: center;
+}
+
 .the-graph {
-  padding-top: 3rem;
+  padding-top: 6.15rem;
 }
 
 .graph-type-button {
-  padding: 0.1rem 0.2rem;
+  padding: 0.2rem 0.3rem;
   border: 1px solid gray;
   background: var(--background);
 }
