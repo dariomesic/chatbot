@@ -6,7 +6,7 @@
           class="card-header"
           :style="{
             backgroundColor:
-              message === message
+              (message.includes('Uspješno'))
                 ? 'rgb(105, 222, 64)'
                 : '#cd5c5c',
           }"
@@ -162,7 +162,7 @@
                 </div>
                 <div class="file-title">{{ document.title }}</div>
               </div>
-              <div class="delete-icon" @click="deleteFile(index)">
+              <div class="delete-icon" @click="deleteDocument(document.id_doc)">
                 <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon"><path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path></svg>
               </div>
             </div>
@@ -433,9 +433,23 @@ export default {
         console.error(error);
       }
     },
-    deleteDocument(documentId) {
-      // Implement your logic to delete the document
-      console.log("Deleting document with ID:", documentId);
+    async deleteDocument(documentId) {
+      try{
+        await DataService.deleteDocument(documentId);
+        this.show = true;
+        this.message = "Uspješno obrisan dokument.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
+      }
+      catch (error) {
+        this.show = true;
+        this.message =
+          "Pogreška prilikom brisanja dokumenta. Molim Vas pokušajte ponovno.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
+      }
     },
   },
 };
