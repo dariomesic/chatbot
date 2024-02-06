@@ -354,33 +354,30 @@
         <tr
           v-for="(conversation, index) in filteredConversations"
           :key="index"
-          :style="{
-            background:
-              lowerThreshold > (conversation.threshold * 100 - 0.9) &&
-              conversation.threshold
-                ? '#ff8a8a'
-                : 'none',
-          }"
+          :style="lowerThreshold > (conversation.threshold * 100 - 0.9) && conversation.threshold ? { background: '#ff8a8a', color: 'white' } : {}"
         >
           <td>
             <div style="display: flex; flex-direction: column">
               <span
-                style="margin-bottom: 0.5rem; color: var(--main__color)"
-                :class="{
-                  hidden: conversation.keep === 0 && !allSessionsVisible,
-                }"
-                >{{ formatTime(conversation) }}</span
+                :style="lowerThreshold > (conversation.threshold * 100 - 0.9) && conversation.threshold ? { fontWeight: 'bold', color: 'white' } : {color: 'var(--main__color)'}"
+                style="margin-bottom: 0.5rem"
+                :class="{ hidden: conversation.keep === 0 && !allSessionsVisible }"
               >
+                {{ formatTime(conversation) }}
+              </span>
               <span
                 style="font-size: 14px"
-                :class="{
-                  hidden: conversation.keep === 0 && !allSessionsVisible,
-                }"
-                >{{ conversation.session_id }}</span
+                :class="{ hidden: conversation.keep === 0 && !allSessionsVisible }"
               >
+                {{ conversation.session_id }}
+              </span>
             </div>
           </td>
-          <td style="color: var(--main__color)">{{ conversation.intent_name }}</td>
+          <td
+            :style="lowerThreshold > (conversation.threshold * 100 - 0.9) && conversation.threshold ? { fontWeight: 'bold', color: 'white' } : {color: 'var(--main__color)'}"
+          >
+            {{ conversation.intent_name }}
+          </td>
           <td>
             <span>
               <template v-if="conversation.thumbs_up === 1">
