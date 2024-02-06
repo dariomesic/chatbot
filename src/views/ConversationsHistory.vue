@@ -885,12 +885,17 @@ export default {
       this.currentPage = storedCurrentPage
         ? parseInt(storedCurrentPage, 10)
         : this.currentPage;
+
       this.itemsPerPage = storedItemsPerPage
         ? parseInt(storedItemsPerPage, 10)
         : this.itemsPerPage;
+
       this.sortIcon = storedSortIcon
         ? JSON.parse(storedSortIcon)
         : this.sortIcon;
+      if (this.sortIcon !== 1) {
+        this.allSessionsVisible = true;
+      }
       this.isVisible = storedIsVisible
         ? JSON.parse(storedIsVisible)
         : this.isVisible;
