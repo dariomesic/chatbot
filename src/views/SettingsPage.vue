@@ -437,6 +437,7 @@ export default {
       try{
         await DataService.deleteDocument(documentId);
         this.show = true;
+        this.documents = await DataService.getDocumentsBySystemId(this.$route.query.system_id);
         this.message = "Uspješno obrisan dokument.";
         setTimeout(() => {
           this.show = false;
