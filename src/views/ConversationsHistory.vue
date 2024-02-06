@@ -356,7 +356,7 @@
           :key="index"
           :style="{
             background:
-              lowerThreshold > conversation.threshold * 100 &&
+              lowerThreshold > (conversation.threshold * 100 - 0.9) &&
               conversation.threshold
                 ? '#ff8a8a'
                 : 'none',
@@ -380,7 +380,7 @@
               >
             </div>
           </td>
-          <td>{{ conversation.intent_name }}</td>
+          <td style="color: var(--main__color)">{{ conversation.intent_name }}</td>
           <td>
             <span>
               <template v-if="conversation.thumbs_up === 1">

@@ -405,6 +405,18 @@ class DataService {
     })
   }
 
+  deleteDocument(id_doc){
+    return fetch('http://18.194.27.183:8080/deleteDocumentById?id_doc=' + id_doc, {
+      method : "DELETE",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   searchDocuments(text){
     return fetch('http://18.194.27.183:8080/searchDocuments', {
       method : "POST",

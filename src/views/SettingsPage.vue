@@ -423,14 +423,25 @@ export default {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("title", file.name);
+      formData.append("system_id", this.$route.query.system_id)
 
       try {
         // Simulating a response for demonstration purposes
-        const response = await DataService.uploadDocument(formData);
-        console.log(response.data);
+        this.show = true;
+        await DataService.uploadDocument(formData);
+        this.documents = await DataService.getDocumentsBySystemId(this.$route.query.system_id);
         this.uploadedFile = null
+        this.message = "Uspješno učitan dokument.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
       } catch (error) {
-        console.error(error);
+        this.show = true;
+        this.message =
+          "Pogreška prilikom dohvaćanja dokumenta. Molim Vas pokušajte ponovno.";
+        setTimeout(() => {
+          this.show = false;
+        }, 4000);
       }
     },
     async deleteDocument(documentId) {
@@ -533,6 +544,7 @@ button {
 
 /*popup message*/
 .card-header {
+  z-index: 2;
   height: 20px;
   vertical-align: middle;
   border-top-left-radius: 3px;
