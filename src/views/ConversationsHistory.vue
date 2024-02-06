@@ -351,13 +351,33 @@
         </tr>
       </thead>
       <TransitionGroup name="table-list" tag="tbody" mode="out-in">
-        <tr v-for="(conversation, index) in filteredConversations" :key="index" :style="{ background: (lowerThreshold > (conversation.threshold * 100) && conversation.threshold) ? '#ff8a8a' : 'none' }">
+        <tr
+          v-for="(conversation, index) in filteredConversations"
+          :key="index"
+          :style="{
+            background:
+              lowerThreshold > conversation.threshold * 100 &&
+              conversation.threshold
+                ? '#ff8a8a'
+                : 'none',
+          }"
+        >
           <td>
             <div style="display: flex; flex-direction: column">
-              <span style="margin-bottom: 0.5rem; color: var(--main__color)">{{
-                formatTime(conversation)
-              }}</span>
-              <span style="font-size: 14px">{{ conversation.session_id }}</span>
+              <span
+                style="margin-bottom: 0.5rem; color: var(--main__color)"
+                :class="{
+                  hidden: conversation.keep === 0 && !allSessionsVisible,
+                }"
+                >{{ formatTime(conversation) }}</span
+              >
+              <span
+                style="font-size: 14px"
+                :class="{
+                  hidden: conversation.keep === 0 && !allSessionsVisible,
+                }"
+                >{{ conversation.session_id }}</span
+              >
             </div>
           </td>
           <td>{{ conversation.intent_name }}</td>
@@ -596,6 +616,7 @@ export default {
     return {
       conversations: [],
       initialConversationsOrder: [],
+      conversationsWithKeepProperty: [],
       currentPage: 1,
       itemsPerPage: 10,
       sortIcon: [1, 1, 1, 1],
@@ -618,15 +639,16 @@ export default {
       minPercentage: null,
       maxPercentage: null,
       filteredLength: 0,
-      lowerThreshold: 0
+      lowerThreshold: 0,
     };
   },
   async created() {
     await this.getConversations();
     const today = new Date().toISOString().split("T")[0];
-    console.log(this.conversations);
     this.startMaxDate = today;
     this.endMaxDate = today;
+    // this.hideSameSessionId();
+
     this.getStoredData();
   },
   beforeUnmount() {
@@ -725,10 +747,14 @@ export default {
         this.currentPage = 1;
       }
     },
+    // currentPage(newVal, oldVal) {
+    //   if (newVal > oldVal) this.hideSameSessionId("next");
+    //   else this.hideSameSessionId("prev");
+    // },
   },
   computed: {
     filteredConversations() {
-      let filtered = this.conversations;
+      let filtered = this.conversationsWithKeepProperty;
       if (this.filterThumbsUp && this.filterThumbsDown) {
         filtered = filtered.filter(
           (conversation) =>
@@ -873,21 +899,21 @@ export default {
         case "[1,1,1,1]":
           break;
         case "[2,1,1,1]":
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const timeA = new Date(a.time);
             const timeB = new Date(b.time);
             return timeA - timeB;
           });
           break;
         case "[3,1,1,1]":
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const timeA = new Date(a.time);
             const timeB = new Date(b.time);
             return timeB - timeA;
           });
           break;
         case "[1,2,1,1]":
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const intentA = this.uniqueIntents.find(
               (int) => int === a.intent_name
             );
@@ -898,7 +924,7 @@ export default {
           });
           break;
         case "[1,3,1,1]":
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const intentA = this.uniqueIntents.find(
               (int) => int === a.intent_name
             );
@@ -909,20 +935,26 @@ export default {
           });
           break;
         case "[1,1,2,1]":
-          this.conversations.sort((a, b) => a.text.localeCompare(b.text));
+          this.conversationsWithKeepProperty.sort((a, b) =>
+            a.text.localeCompare(b.text)
+          );
           break;
         case "[1,1,3,1]":
-          this.conversations.sort((a, b) => b.text.localeCompare(a.text));
+          this.conversationsWithKeepProperty.sort((a, b) =>
+            b.text.localeCompare(a.text)
+          );
           break;
         case "[1,1,1,2]":
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             if (a.threshold === "") return 1;
             else if (b.threshold === "") return -1;
             else return a.threshold - b.threshold;
           });
           break;
         case "[1,1,1,3]":
-          this.conversations.sort((a, b) => b.threshold - a.threshold);
+          this.conversationsWithKeepProperty.sort(
+            (a, b) => b.threshold - a.threshold
+          );
           break;
         default:
       }
@@ -936,13 +968,22 @@ export default {
           let res = await DataService.getThresholdsBySystemId(
             this.$route.query.system_id
           );
-          this.lowerThreshold = res[0].percentage_lower
+          this.lowerThreshold = res[0].percentage_lower;
           this.conversations.forEach((conversation) => {
             if (!this.uniqueIntents.includes(conversation.intent_name)) {
               this.uniqueIntents.push(conversation.intent_name);
             }
           });
-          this.initialConversationsOrder = JSON.parse(JSON.stringify(this.conversations));
+          this.conversationsWithKeepProperty = this.conversations.map(
+            (conversation) => ({
+              ...conversation,
+              keep: "",
+            })
+          );
+          this.cycleThroughSessionIds();
+          this.initialConversationsOrder = JSON.parse(
+            JSON.stringify(this.conversationsWithKeepProperty)
+          );
         } catch (error) {
           console.error(error);
         }
@@ -966,13 +1007,13 @@ export default {
           }
         }
         if (sortSubject === "conversations") {
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const timeA = new Date(a.time);
             const timeB = new Date(b.time);
             return timeA - timeB;
           });
         } else if (sortSubject === "intents") {
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const intentA = this.uniqueIntents.find(
               (int) => int === a.intent_name
             );
@@ -982,24 +1023,27 @@ export default {
             return intentA.localeCompare(intentB);
           });
         } else if (sortSubject === "requests") {
-          this.conversations.sort((a, b) => a.text.localeCompare(b.text));
+          this.conversationsWithKeepProperty.sort((a, b) =>
+            a.text.localeCompare(b.text)
+          );
         } else if (sortSubject === "threshold") {
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             if (a.threshold === "") return 1;
             else if (b.threshold === "") return -1;
             else return a.threshold - b.threshold;
           });
         }
+        this.allSessionsVisible = true;
       } else if (this.sortIcon[index] === 2) {
         this.sortIcon[index] = 3;
         if (sortSubject === "conversations") {
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const timeA = new Date(a.time);
             const timeB = new Date(b.time);
             return timeB - timeA;
           });
         } else if (sortSubject === "intents") {
-          this.conversations.sort((a, b) => {
+          this.conversationsWithKeepProperty.sort((a, b) => {
             const intentA = this.uniqueIntents.find(
               (int) => int === a.intent_name
             );
@@ -1009,13 +1053,22 @@ export default {
             return intentB.localeCompare(intentA);
           });
         } else if (sortSubject === "requests") {
-          this.conversations.sort((a, b) => b.text.localeCompare(a.text));
+          this.conversationsWithKeepProperty.sort((a, b) =>
+            b.text.localeCompare(a.text)
+          );
         } else if (sortSubject === "threshold") {
-          this.conversations.sort((a, b) => b.threshold - a.threshold);
+          this.conversationsWithKeepProperty.sort(
+            (a, b) => b.threshold - a.threshold
+          );
         }
+        this.allSessionsVisible = true;
       } else if (this.sortIcon[index] === 3) {
         this.sortIcon[index] = 1;
-        this.conversations = [...this.initialConversationsOrder];
+        this.conversationsWithKeepProperty = [
+          ...this.initialConversationsOrder,
+        ];
+        this.allSessionsVisible = false;
+        console.log(this.conversationsWithKeepProperty);
       }
     },
     toggleDropdown() {
@@ -1125,6 +1178,43 @@ export default {
       } else if (targetPercentageValue < 0) {
         targetPercentageValue = 0;
       }
+    },
+    // hideSameSessionId(direction) {
+    //   console.log(direction);
+    //   this.$nextTick(() => {
+    //     const sessionIdContainers = document.querySelectorAll(
+    //       ".session-id-container"
+    //     );
+    //     const formatTimeContainers = document.querySelectorAll(
+    //       ".format-time-container"
+    //     );
+    //     console.log(sessionIdContainers);
+    //     sessionIdContainers.forEach((session, index) => {
+    //       if (
+    //         sessionIdContainers[index].innerHTML ===
+    //         sessionIdContainers[index - 1]?.innerHTML
+    //       ) {
+    //         // session.style.visibility = "hidden";
+    //         formatTimeContainers[index].style.visibility = "hidden";
+    //       } else {
+    //         // session.style.visibility = "visible";
+    //         formatTimeContainers[index].style.visibility = "visible";
+    //       }
+    //     });
+    //   });
+    // },
+    cycleThroughSessionIds() {
+      for (let i = 0; i < this.conversationsWithKeepProperty.length; i++) {
+        if (
+          this.conversationsWithKeepProperty[i].session_id !==
+          this.conversationsWithKeepProperty[i - 1]?.session_id
+        ) {
+          this.conversationsWithKeepProperty[i].keep = 1;
+        } else {
+          this.conversationsWithKeepProperty[i].keep = 0;
+        }
+      }
+      console.log(this.conversationsWithKeepProperty);
     },
   },
 };
@@ -1322,5 +1412,13 @@ input[type="date"] {
   height: 100%;
   opacity: 0;
   cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
 }
 </style>
