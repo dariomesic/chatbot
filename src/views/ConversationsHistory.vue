@@ -666,27 +666,20 @@ export default {
         today.getMonth(),
         today.getDate() - 7
       );
-      const formattedWeekAgo = `${weekAgo.getFullYear()}-${(
-        weekAgo.getMonth() + 1
-      )
-        .toString()
-        .padStart(2, "0")}-${weekAgo.getDate().toString().padStart(2, "0")}`;
+      const formattedWeekAgo = weekAgo.toISOString().split("T")[0];
       const monthAgo = new Date(
         today.getFullYear(),
         today.getMonth() - 1,
         today.getDate()
       );
-      const formattedMonthAgo = `${monthAgo.getFullYear()}-${
-        monthAgo.getMonth() + 1
-      }-${monthAgo.getDate()}`;
+      const formattedMonthAgo = monthAgo.toISOString().split("T")[0];
+
       const yearAgo = new Date(
         today.getFullYear() - 1,
         today.getMonth(),
         today.getDate()
       );
-      const formattedYearAgo = `${yearAgo.getFullYear()}-${
-        yearAgo.getMonth() + 1
-      }-${yearAgo.getDate()}`;
+      const formattedYearAgo = yearAgo.toISOString().split("T")[0];
       if (newVal === "Prilagođeni raspon") {
         this.startMinDate = "";
         this.startMaxDate = todayFormatted;
@@ -699,10 +692,12 @@ export default {
         this.selectedStartDate = formattedWeekAgo;
         this.startMinDate = formattedWeekAgo;
         this.endMinDate = formattedWeekAgo;
+        console.log(this.selectedStartDate);
       } else if (newVal === "Prošli mjesec") {
         this.selectedStartDate = formattedMonthAgo;
         this.startMinDate = formattedMonthAgo;
         this.endMinDate = formattedMonthAgo;
+        console.log(this.selectedStartDate);
       } else if (newVal === "Prošla godina") {
         this.selectedStartDate = formattedYearAgo;
         this.startMinDate = formattedYearAgo;
@@ -710,6 +705,7 @@ export default {
       }
       if (newVal !== "Prilagođeni raspon")
         this.selectedEndDate = todayFormatted;
+      console.log(this.selectedEndDate);
     },
     selectedStartDate(newVal) {
       this.endMinDate = newVal;
@@ -747,6 +743,9 @@ export default {
         this.currentPage = 1;
       }
     },
+    filterThumbsUp: "checkThumbsState",
+    filterThumbsDown: "checkThumbsState",
+
     // currentPage(newVal, oldVal) {
     //   if (newVal > oldVal) this.hideSameSessionId("next");
     //   else this.hideSameSessionId("prev");
@@ -1077,7 +1076,9 @@ export default {
         this.conversationsWithKeepProperty = [
           ...this.initialConversationsOrder,
         ];
-        this.allSessionsVisible = false;
+        if (!this.filterThumbsUp && !this.filterThumbsDown) {
+          this.allSessionsVisible = false;
+        }
         console.log(this.conversationsWithKeepProperty);
       }
     },
@@ -1224,7 +1225,15 @@ export default {
           this.conversationsWithKeepProperty[i].keep = 0;
         }
       }
-      console.log(this.conversationsWithKeepProperty);
+    },
+    checkThumbsState() {
+      if (this.filterThumbsUp || this.filterThumbsDown) {
+        this.allSessionsVisible = true;
+      } else if (this.sortIcon.some((value) => value === 2 || value === 3)) {
+        return;
+      } else {
+        this.allSessionsVisible = false;
+      }
     },
   },
 };
