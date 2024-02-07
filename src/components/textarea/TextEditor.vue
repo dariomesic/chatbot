@@ -284,11 +284,11 @@ export default {
           previousElement === null ||
           previousElement.textContent.trim() === ""
         ) {
-          const spaceBefore = document.createTextNode("\u00A0");
+          const spaceBefore = document.createTextNode(" ");
           tempContainer.parentNode.insertBefore(spaceBefore, tempContainer);
         }
         if (nextElement === null || nextElement.textContent.trim() === "") {
-          const spaceAfter = document.createTextNode("\u00A0");
+          const spaceAfter = document.createTextNode(" ");
           tempContainer.parentNode.insertBefore(
             spaceAfter,
             tempContainer.nextSibling

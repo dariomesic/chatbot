@@ -890,8 +890,13 @@ export default {
       this.sortIcon = storedSortIcon
         ? JSON.parse(storedSortIcon)
         : this.sortIcon;
-      if (this.sortIcon !== 1) {
-        this.allSessionsVisible = true;
+      for (let i = 0; i < this.sortIcon.length; i++) {
+        if (this.sortIcon[i] !== 1) {
+          this.allSessionsVisible = true;
+          break;
+        } else {
+          continue;
+        }
       }
       this.isVisible = storedIsVisible
         ? JSON.parse(storedIsVisible)
