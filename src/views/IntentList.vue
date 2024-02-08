@@ -75,7 +75,7 @@
   <!-- Table with scrollable tbody and pagination -->
   <div class="table-container">
     <table>
-      <thead style="position:relative;z-index:1">
+      <thead style="position: relative; z-index: 1">
         <tr style="width: 70vw">
           <th scope="col">
             <input type="checkbox" v-model="selectAll" />
@@ -202,7 +202,7 @@
     <div class="pagination">
       <div
         style="
-          width:100%;
+          width: 100%;
           border: 1px solid #e0e0e0;
           display: flex;
           flex-wrap: wrap;
@@ -319,10 +319,10 @@
     </div>
   </div>
 
-    <!-- Grey background at the bottom with a chatbot -->
+  <!-- Grey background at the bottom with a chatbot -->
   <div class="bottom-section">
     <section>
-      <img src="../assets/eu.png" height="35" style="margin-right:1rem">
+      <img src="../assets/eu.png" height="35" style="margin-right: 1rem" />
       <div class="chat" @click="showChatbot = !showChatbot">
         <transition name="fade" mode="out-in">
           <svg
@@ -681,7 +681,7 @@ export default {
 };
 </script>
 <style>
-.actions{
+.actions {
   padding-top: 20px;
   margin: 0 0.7rem 0 0.7rem;
 }
@@ -734,6 +734,7 @@ table {
   color: #212529;
   word-break: break-word;
 }
+
 tr,
 th {
   border-top: none;
@@ -750,7 +751,7 @@ th {
 
 thead th {
   position: sticky;
-  top: 0;
+  top: -1px;
   background: #e0e0e0;
   vertical-align: bottom;
   text-align: left;
@@ -833,7 +834,7 @@ th:not(:first-child):not(:nth-child(6)):hover {
   z-index: 2;
 }
 
-.bottom-section section{
+.bottom-section section {
   z-index: 2;
   position: fixed;
   right: 1rem;
@@ -853,7 +854,6 @@ th:not(:first-child):not(:nth-child(6)):hover {
   cursor: pointer;
   bottom: 1rem;
 }
-
 
 /* ---------------------------------- */
 .fade-enter-active,
