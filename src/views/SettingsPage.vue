@@ -54,12 +54,12 @@
         <div>
           <div style="align-items: center; display: flex; flex-wrap: wrap;">
             <span>1. Unesite gornji prag za koji chatbot direktno vraća odgovor:</span>
-            <div contenteditable="true" @blur="upperThreshold = $event.target.innerText" style="background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; padding: 8px 15px 8px 15px; line-height: 17px; box-sizing: border-box; word-wrap: break-word; margin: 0px 7px 0px 7px;">{{ upperThreshold }}</div>
+            <div contenteditable="true" @blur="upperThreshold = $event.target.textContent" style="background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; padding: 8px 15px 8px 15px; line-height: 17px; box-sizing: border-box; word-wrap: break-word; margin: 0px 7px 0px 7px;">{{ upperThreshold }}</div>
             <p style="font-size: 9px;">(0.0 - 100.0)</p>
           </div>
           <div style="align-items: center; flex-wrap: wrap; display: flex; flex-wrap: wrap;">
             <span>2. Unesite donji prag za koji chatbot traži korisnika da ponovno pita pitanje:</span>
-            <div contenteditable="true" @blur="lowerThreshold = $event.target.innerText" style="background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; padding: 8px 15px 8px 15px; line-height: 17px; box-sizing: border-box; word-wrap: break-word; margin: 0px 7px 0px 7px;">{{ lowerThreshold }}</div>
+            <div contenteditable="true" @blur="lowerThreshold = $event.target.textContent" style="background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; padding: 8px 15px 8px 15px; line-height: 17px; box-sizing: border-box; word-wrap: break-word; margin: 0px 7px 0px 7px;">{{ lowerThreshold }}</div>
             <p style="font-size: 9px;">(0.0 - 100.0)</p>
           </div>
         </div>
@@ -166,6 +166,19 @@
                 <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Delete" aria-hidden="true" width="16" height="16" viewBox="0 0 32 32" role="img" class="bx--btn__icon"><path d="M12 12H14V24H12zM18 12H20V24H18z"></path><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"></path></svg>
               </div>
             </div>
+            <section style="margin-top:5rem">
+            <h4>Prag</h4>
+              <div>
+                <div style="align-items: center; display: flex; flex-wrap: wrap;">
+                  <span>Unesite prag za koji chatbot vraća dokument:</span>
+                  <div contenteditable="true" @blur="documentThreshold = $event.target.textContent" style="background: var(--background); padding-right: 2rem; scroll-margin-bottom: 2rem; padding: 8px 15px 8px 15px; line-height: 17px; box-sizing: border-box; word-wrap: break-word; margin: 0px 7px 0px 7px;">{{ documentThreshold }}</div>
+                  <p style="font-size: 9px;">(0.0 - 100.0)</p>
+                </div>
+              </div>
+              <button @click="saveDocumentThreshold" class="background-button" tabindex="0" type="button" style="margin-top: 2rem;">Spremi prag za dokumente
+                <svg class="svg" focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Saved" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" role="img"><path d="M13.9,4.6l-2.5-2.5C11.3,2.1,11.1,2,11,2H3C2.4,2,2,2.4,2,3v10c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1V5	C14,4.9,13.9,4.7,13.9,4.6z M6,3h4v2H6V3z M10,13H6V9h4V13z M11,13V9c0-0.6-0.4-1-1-1H6C5.4,8,5,8.4,5,9v4H3V3h2v2c0,0.6,0.4,1,1,1	h4c0.6,0,1-0.4,1-1V3.2l2,2V13H11z"></path></svg>
+              </button>
+            </section>
           </div>
         </div>
       </div>
@@ -206,6 +219,7 @@ export default {
       isEditable: [],
       upperThreshold: null,
       lowerThreshold: null,
+      documentThreshold: null,
       show: false,
       message: "",
       activeTab: 'synonyms', // Set the default active tab
@@ -229,6 +243,7 @@ export default {
       );
       this.upperThreshold = res[0].percentage_upper;
       this.lowerThreshold = res[0].percentage_lower;
+      this.documentThreshold = res[0].percentage_document;
     } catch (error) {
       console.error("Error fetching thresholds:", error);
     }
@@ -324,11 +339,13 @@ export default {
           this.$route.query.system_id,
           synonymsObject
         );
-        await DataService.updateThresholdsBySystemId(
-          this.$route.query.system_id,
-          this.upperThreshold,
-          this.lowerThreshold
-        );
+        if (!isNaN(parseFloat(this.upperThreshold)) && !isNaN(parseFloat(this.lowerThreshold))) {
+          await DataService.updateThresholdsBySystemId(
+            this.$route.query.system_id,
+            parseFloat(this.upperThreshold),
+            parseFloat(this.lowerThreshold)
+          );
+        }
         this.show = true;
         this.message = "Uspješno spremljene promjene.";
         setTimeout(() => {
@@ -463,6 +480,28 @@ export default {
         }, 4000);
       }
     },
+    async saveDocumentThreshold() {
+      if(!isNaN(parseFloat(this.documentThreshold))){
+        try {
+          await DataService.saveDocumentThreshold(
+            this.$route.query.system_id,
+            parseFloat(this.documentThreshold)
+          );
+          this.show = true;
+          this.message = "Uspješno spremljene promjene.";
+          setTimeout(() => {
+            this.show = false;
+          }, 4000);
+        } catch (error) {
+          this.show = true;
+          this.message =
+            "Pogreška prilikom spremanja promjena. Molim Vas pokušajte ponovno.";
+          setTimeout(() => {
+            this.show = false;
+          }, 4000);
+        }
+      }
+    }
   },
 };
 </script>
