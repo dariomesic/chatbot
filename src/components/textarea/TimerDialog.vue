@@ -176,6 +176,15 @@ input[type="button"] {
   border: none;
   padding-left: 10px;
   padding-right: 10px;
+  cursor: pointer;
+}
+
+input[type="button"]:hover {
+  filter: brightness(80%);
+}
+
+input[type="button"]:active {
+  transform: scale(0.95);
 }
 
 input[type="number"] {
@@ -236,5 +245,9 @@ h4 {
 button {
   all: unset;
   cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.80);
 }
 </style>
