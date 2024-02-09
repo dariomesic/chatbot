@@ -354,27 +354,46 @@
         <tr
           v-for="(conversation, index) in filteredConversations"
           :key="index"
-          :style="lowerThreshold > (conversation.threshold * 100 - 0.9) && conversation.threshold ? { background: '#ff8a8a', color: 'white' } : {}"
+          :style="
+            lowerThreshold > conversation.threshold * 100 - 0.9 &&
+            conversation.threshold
+              ? { background: '#ff8a8a', color: 'white' }
+              : {}
+          "
         >
           <td>
             <div style="display: flex; flex-direction: column">
               <span
-                :style="lowerThreshold > (conversation.threshold * 100 - 0.9) && conversation.threshold ? { fontWeight: 'bold', color: 'white' } : {color: 'var(--main__color)'}"
+                :style="
+                  lowerThreshold > conversation.threshold * 100 - 0.9 &&
+                  conversation.threshold
+                    ? { fontWeight: 'bold', color: 'white' }
+                    : { color: 'var(--main__color)' }
+                "
                 style="margin-bottom: 0.5rem"
-                :class="{ hidden: conversation.keep === 0 && !allSessionsVisible }"
+                :class="{
+                  hidden: conversation.keep === 0,
+                }"
               >
                 {{ formatTime(conversation) }}
               </span>
               <span
                 style="font-size: 14px"
-                :class="{ hidden: conversation.keep === 0 && !allSessionsVisible }"
+                :class="{
+                  hidden: conversation.keep === 0,
+                }"
               >
                 {{ conversation.session_id }}
               </span>
             </div>
           </td>
           <td
-            :style="lowerThreshold > (conversation.threshold * 100 - 0.9) && conversation.threshold ? { fontWeight: 'bold', color: 'white' } : {color: 'var(--main__color)'}"
+            :style="
+              lowerThreshold > conversation.threshold * 100 - 0.9 &&
+              conversation.threshold
+                ? { fontWeight: 'bold', color: 'white' }
+                : { color: 'var(--main__color)' }
+            "
           >
             {{ conversation.intent_name }}
           </td>
@@ -740,9 +759,11 @@ export default {
         this.currentPage = 1;
       }
     },
-    filterThumbsUp: "checkThumbsState",
-    filterThumbsDown: "checkThumbsState",
-
+    // filterThumbsUp: "checkThumbsState",
+    // filterThumbsDown: "checkThumbsState",
+    // selectedIntents(newVal) {
+    //   console.log(newVal.length);
+    // },
     // currentPage(newVal, oldVal) {
     //   if (newVal > oldVal) this.hideSameSessionId("next");
     //   else this.hideSameSessionId("prev");
@@ -802,7 +823,6 @@ export default {
           return this.selectedIntents.includes(conversation.intent_name);
         });
       }
-
       if (this.selectedStartDate && this.selectedEndDate) {
         if (this.selectedStartDate === this.selectedEndDate) {
           filtered = filtered.filter((conversation) => {
@@ -840,6 +860,7 @@ export default {
         });
       }
       this.getFilteredLength(filtered);
+      this.cycleThroughSessionIds(filtered);
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
       return filtered.slice(startIndex, endIndex);
@@ -889,14 +910,7 @@ export default {
       this.sortIcon = storedSortIcon
         ? JSON.parse(storedSortIcon)
         : this.sortIcon;
-      for (let i = 0; i < this.sortIcon.length; i++) {
-        if (this.sortIcon[i] !== 1) {
-          this.allSessionsVisible = true;
-          break;
-        } else {
-          continue;
-        }
-      }
+
       this.isVisible = storedIsVisible
         ? JSON.parse(storedIsVisible)
         : this.isVisible;
@@ -964,6 +978,7 @@ export default {
           break;
         default:
       }
+      this.cycleThroughSessionIds(this.conversationsWithKeepProperty);
     },
     async getConversations() {
       if (this.$route.query.system_id !== undefined) {
@@ -1039,7 +1054,6 @@ export default {
             else return a.threshold - b.threshold;
           });
         }
-        this.allSessionsVisible = true;
       } else if (this.sortIcon[index] === 2) {
         this.sortIcon[index] = 3;
         if (sortSubject === "conversations") {
@@ -1067,17 +1081,13 @@ export default {
             (a, b) => b.threshold - a.threshold
           );
         }
-        this.allSessionsVisible = true;
       } else if (this.sortIcon[index] === 3) {
         this.sortIcon[index] = 1;
         this.conversationsWithKeepProperty = [
           ...this.initialConversationsOrder,
         ];
-        if (!this.filterThumbsUp && !this.filterThumbsDown) {
-          this.allSessionsVisible = false;
-        }
-        console.log(this.conversationsWithKeepProperty);
       }
+      this.cycleThroughSessionIds(this.conversationsWithKeepProperty);
     },
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
@@ -1187,51 +1197,27 @@ export default {
         targetPercentageValue = 0;
       }
     },
-    // hideSameSessionId(direction) {
-    //   console.log(direction);
-    //   this.$nextTick(() => {
-    //     const sessionIdContainers = document.querySelectorAll(
-    //       ".session-id-container"
-    //     );
-    //     const formatTimeContainers = document.querySelectorAll(
-    //       ".format-time-container"
-    //     );
-    //     console.log(sessionIdContainers);
-    //     sessionIdContainers.forEach((session, index) => {
-    //       if (
-    //         sessionIdContainers[index].innerHTML ===
-    //         sessionIdContainers[index - 1]?.innerHTML
-    //       ) {
-    //         // session.style.visibility = "hidden";
-    //         formatTimeContainers[index].style.visibility = "hidden";
-    //       } else {
-    //         // session.style.visibility = "visible";
-    //         formatTimeContainers[index].style.visibility = "visible";
-    //       }
-    //     });
-    //   });
-    // },
-    cycleThroughSessionIds() {
-      for (let i = 0; i < this.conversationsWithKeepProperty.length; i++) {
-        if (
-          this.conversationsWithKeepProperty[i].session_id !==
-          this.conversationsWithKeepProperty[i - 1]?.session_id
-        ) {
-          this.conversationsWithKeepProperty[i].keep = 1;
+    cycleThroughSessionIds(conversationsArray) {
+      const conversations = conversationsArray
+        ? conversationsArray
+        : this.conversationsWithKeepProperty;
+      for (let i = 0; i < conversations.length; i++) {
+        if (conversations[i].session_id !== conversations[i - 1]?.session_id) {
+          conversations[i].keep = 1;
         } else {
-          this.conversationsWithKeepProperty[i].keep = 0;
+          conversations[i].keep = 0;
         }
       }
     },
-    checkThumbsState() {
-      if (this.filterThumbsUp || this.filterThumbsDown) {
-        this.allSessionsVisible = true;
-      } else if (this.sortIcon.some((value) => value === 2 || value === 3)) {
-        return;
-      } else {
-        this.allSessionsVisible = false;
-      }
-    },
+    // checkThumbsState() {
+    //   if (this.filterThumbsUp || this.filterThumbsDown) {
+    //     this.allSessionsVisible = true;
+    //   } else if (this.sortIcon.some((value) => value === 2 || value === 3)) {
+    //     return;
+    //   } else {
+    //     this.allSessionsVisible = false;
+    //   }
+    // },
   },
 };
 </script>
@@ -1252,9 +1238,6 @@ th:hover {
 
 .filters-container {
   display: grid;
-  /* grid-template-columns:
-    repeat(auto-fill, minmax(5rem, 15vw)) minmax(5rem, 20vw)
-    minmax(5rem, 20vw); */
   grid-template-columns:
     minmax(5vw, 20vw) minmax(5vw, 20vw) minmax(5vw, 20vw) minmax(5vw, 15vw)
     minmax(5vw, 20vw);
