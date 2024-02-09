@@ -372,7 +372,7 @@
                 "
                 style="margin-bottom: 0.5rem"
                 :class="{
-                  hidden: conversation.keep === 0 && !allSessionsVisible,
+                  hidden: conversation.keep === 0,
                 }"
               >
                 {{ formatTime(conversation) }}
@@ -380,7 +380,7 @@
               <span
                 style="font-size: 14px"
                 :class="{
-                  hidden: conversation.keep === 0 && !allSessionsVisible,
+                  hidden: conversation.keep === 0,
                 }"
               >
                 {{ conversation.session_id }}
