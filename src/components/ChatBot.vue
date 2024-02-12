@@ -826,19 +826,6 @@ a {
   align-items: center;
 }
 
-.AvatarBot:after {
-  content: "";
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: 100%;
-  border: 1px solid rgb(255, 255, 255);
-  background: rgb(105, 222, 64);
-  position: absolute;
-  bottom: 0px;
-  right: 1px;
-}
-
 .InfoBot {
   margin-left: 17px;
 }
@@ -851,11 +838,6 @@ a {
   font-size: 20px;
   font-weight: 600;
   white-space: nowrap;
-}
-
-.AvatarBot img {
-  width: 50px;
-  height: 50px;
 }
 
 .top {
