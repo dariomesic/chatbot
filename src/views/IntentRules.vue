@@ -322,7 +322,7 @@
           <div class="chat" @click="toggleChatbot">
             <transition name="fade" mode="out-in">
               <svg
-                style="fill: white; margin-top: 3px"
+                style="fill: var(--main__color); margin-top: 3px"
                 v-if="!showChatbot"
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -333,7 +333,7 @@
                 <path d="M3 3h18v12H7l-4 4z" />
               </svg>
               <svg
-                style="fill: white"
+                style="fill: var(--main__color)"
                 v-else
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -895,7 +895,7 @@ export default {
 .chat {
   width: 50px;
   height: 50px;
-  background-color: var(--main__color);
+  background-color: #d6b445;
   border-radius: 50%;
   display: flex;
   justify-content: center;
