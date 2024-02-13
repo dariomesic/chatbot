@@ -204,12 +204,17 @@
 
     <!-- Grey background at the bottom -->
     <div class="bottom-section"/>
+
+     <Teleport to="body">
+        <loading v-if="loading" />
+      </Teleport>
 </template>
 <script>
 import DataService from "../services/data.services";
 import DropZone from "./ui/DropZone.vue"
+import Loading from "../components/popups/LoadingModal.vue";
 export default {
-  components: {DropZone},
+  components: {DropZone, Loading},
   data() {
     return {
       editing: false,
@@ -222,6 +227,7 @@ export default {
       documentThreshold: null,
       show: false,
       message: "",
+      loading: false,
       activeTab: 'synonyms', // Set the default active tab
       uniqueIntents: [],
       isDropdownOpen: false,
@@ -444,16 +450,19 @@ export default {
 
       try {
         // Simulating a response for demonstration purposes
-        this.show = true;
+        this.loading = true
         await DataService.uploadDocument(formData);
         this.documents = await DataService.getDocumentsBySystemId(this.$route.query.system_id);
         this.uploadedFile = null
+        this.show = true;
         this.message = "Uspješno učitan dokument.";
+        this.loading = false
         setTimeout(() => {
           this.show = false;
         }, 4000);
       } catch (error) {
         this.show = true;
+        this.loading = false
         this.message =
           "Pogreška prilikom dohvaćanja dokumenta. Molim Vas pokušajte ponovno.";
         setTimeout(() => {
@@ -463,16 +472,19 @@ export default {
     },
     async deleteDocument(documentId) {
       try{
+        this.loading = true
         await DataService.deleteDocument(documentId);
-        this.show = true;
         this.documents = await DataService.getDocumentsBySystemId(this.$route.query.system_id);
+        this.show = true;
         this.message = "Uspješno obrisan dokument.";
+        this.loading = false
         setTimeout(() => {
           this.show = false;
         }, 4000);
       }
       catch (error) {
         this.show = true;
+        this.loading = false
         this.message =
           "Pogreška prilikom brisanja dokumenta. Molim Vas pokušajte ponovno.";
         setTimeout(() => {

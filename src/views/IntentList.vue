@@ -1,6 +1,22 @@
 <template>
   <div class="actions">
     <h3>Namjera korisnika u komunikaciji s virtualnim asistentom</h3>
+    <div v-if="notification">
+      <transition name="fade" appear>
+        <div
+          class="card-header"
+          :style="{
+            backgroundColor:
+              (message.includes('Uspješno'))
+                ? 'rgb(105, 222, 64)'
+                : '#cd5c5c',
+          }"
+        >
+          <span>{{ message }}</span>
+          <div @click="notification = false" class="cross">✕</div>
+        </div>
+      </transition>
+    </div>
     <section>
       <div style="display: flex; width: 100%">
         <div class="search-container">
@@ -384,6 +400,8 @@ export default {
       showChatbot: false,
       loading: false,
       filteredLength: 0,
+      message: '',
+      notification: false
     };
   },
   async created() {
@@ -528,6 +546,13 @@ export default {
         await DataService.deleteQuestionsById(id, this.$route.query.system_id);
         await DataService.deleteIntent(id, this.$route.query.system_id);
       } catch (error) {
+        this.loading = false
+        this.notification = true;
+        this.message =
+          "Pogreška prilikom spremanja promjena. Molim Vas pokušajte ponovno.";
+        setTimeout(() => {
+          this.notification = false;
+        }, 4000);
         console.error(error);
       }
     },
@@ -537,6 +562,11 @@ export default {
       for (const intent of this.selectedIntents) {
         await this.deleteIntent(intent, this.$route.query.system_id);
       }
+      this.notification = true;
+      this.message = "Uspješno spremljene promjene.";
+      setTimeout(() => {
+        this.notification = false;
+      }, 4000);
       this.loading = false;
       this.getIntents();
       // Clear the selectedIntents array after deleting

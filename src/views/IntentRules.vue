@@ -10,6 +10,22 @@
       />
     </div>
     <div class="content-container">
+      <section v-if="notification">
+        <transition name="fade" appear>
+          <div
+            class="card-header"
+            :style="{
+              backgroundColor:
+                (message.includes('Uspješno'))
+                  ? 'rgb(105, 222, 64)'
+                  : '#cd5c5c',
+            }"
+          >
+            <span>{{ message }}</span>
+            <div @click="notification = false" class="cross">✕</div>
+          </div>
+        </transition>
+      </section>
       <button @click="toggleLeftPanel" class="show-hide-button">
         <span>
           {{ isLeftPanelCollapsed ? "Prikaži" : "Sakrij" }}
@@ -456,6 +472,8 @@ export default {
       selectedRuleIndex: 0,
       rule_copy: null,
       cards_copy: [],
+      message: '',
+      notification: false,
       isZooming: false,
       componentKey: 0,
       dragOptions: {
@@ -784,10 +802,21 @@ export default {
           console.log(ml_questions)
           await DataService.sendQuestions(ml_questions, this.$route.query.intent_id, this.questions.length);
         }
-
+        this.notification = true;
+        this.message = "Uspješno spremljene promjene.";
+        setTimeout(() => {
+          this.notification = false;
+        }, 4000);
         // Reload questions and rules after the batch operations
         await this.loadQuestionsAndRules(this.intentTextCopy, intentId);
       } catch (error) {
+        this.loading = false;
+        this.notification = true;
+        this.message =
+          "Pogreška prilikom spremanja promjena. Molim Vas pokušajte ponovno.";
+        setTimeout(() => {
+          this.notification = false;
+        }, 4000);
         console.error("API request failed:", error);
       }
     },
@@ -954,6 +983,34 @@ export default {
 .ghost {
   opacity: 0.5;
   background: #c8ebfb;
+}
+
+/*popup message*/
+.card-header {
+  z-index: 2;
+  height: 20px;
+  vertical-align: middle;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  line-height: 20px;
+  padding: 15px;
+  color: white;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  min-width: 420px;
+  border-radius: 5px;
+  padding-right: 5rem;
+  box-shadow: 0 0 15px 5px #ccc;
+}
+
+.cross {
+  position: absolute;
+  top: 16px;
+  right: 15px;
+  font-size: 25px;
+  font-weight: 100;
+  cursor: pointer;
 }
 
 /* Left-to-right animation */
