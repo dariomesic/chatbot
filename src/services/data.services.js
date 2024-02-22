@@ -417,14 +417,14 @@ class DataService {
     })
   }
 
-  searchDocuments(text){
+  searchDocuments(text, systemID){
     return fetch('http://18.194.27.183:8080/searchDocuments', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({text: text})
+      body: JSON.stringify({text: text, systemID: systemID})
     })
     .then((response) => {
         if (!response.ok) {
