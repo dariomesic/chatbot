@@ -669,6 +669,10 @@ input[type="text"]:focus {
     margin-top: 10px;
 }
 
+.bot-response a{
+    color: #d6b445;
+}
+
 .text[text-first] {
   border-bottom-left-radius: 5px;
   margin-top: 0;

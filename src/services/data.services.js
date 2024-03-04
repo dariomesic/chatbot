@@ -446,6 +446,20 @@ class DataService {
     })
   }
 
+  versioningBySystemId(system_id){
+    return fetch('http://18.194.27.183:8080/versioningBySystemId?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+
+
   sendQuestions(questions, intent_id, questions_len){
     return fetch('http://18.194.27.183:8080/sendQuestions', {
       method : "POST",

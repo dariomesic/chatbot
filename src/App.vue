@@ -102,7 +102,9 @@ button:disabled {
 
 .background-button {
   background-color: var(--main__color);
-  border: 1px solid transparent;
+  border: 1px solid #000;
+  outline: 1px solid #fff;
+  outline-offset: -3px;
   color: #fff;
   min-width: 12rem;
   padding: calc(0.675rem - 3px) 60px calc(0.675rem - 3px) 12px;
