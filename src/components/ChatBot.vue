@@ -143,7 +143,7 @@ export default{
           }
           else{
             response = {
-              assistant_answer: `<div><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4>${response_tmp.document_title}${response_tmp.document_page ? `(${response_tmp.document_page}.str)` : ''}</h4><div style="font-style:italic">${response_tmp.text}</div></div>`
+              assistant_answer: `<div><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4>${response_tmp.document_title}${response_tmp.document_page ? `(${response_tmp.document_page}.str)` : ''}</h4><div>...</div><div style="font-style:italic">${response_tmp.text}</div><div>...</div></div>`
             };
           }
           this.addBotMessage(response);
@@ -413,10 +413,11 @@ export default{
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
       let counter = 0;
+      console.log(message.length)
       message.forEach((option) => {
         counter++;
         messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}" data-threshold="${option.threshold}">${option.intent_name.toUpperCase()}</button>`;
-        counter == 4 ? messageText += "<p style='text-align:center'>ili</p>" : ''
+        (counter == 4 && message.length > 4) ? messageText += "<p style='text-align:center'>ili</p>" : ''
       });
       messageText += '</div></div><p class="time-text">' + new Date().toLocaleTimeString('en-US', { hour12: false }); + `</p>`
       this.messages.push({
