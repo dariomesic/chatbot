@@ -446,8 +446,32 @@ class DataService {
     })
   }
 
+  checkForPreviousVersion(system_id){
+    return fetch('http://18.194.27.183:8080/checkForPreviousVersion?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
   versioningBySystemId(system_id){
     return fetch('http://18.194.27.183:8080/versioningBySystemId?system_id=' + system_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response.json();
+    })
+  }
+
+  goToPreviousVersion(system_id){
+    return fetch('http://18.194.27.183:8080/goToPreviousVersion?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {

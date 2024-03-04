@@ -6,7 +6,7 @@
           class="card-header"
           :style="{
             backgroundColor:
-              (message.includes('Uspješno'))
+              (!message.includes('Pogreška'))
                 ? 'rgb(105, 222, 64)'
                 : '#cd5c5c',
           }"
@@ -204,6 +204,7 @@
             tabindex="0"
             type="button"
             style="margin: 2rem 10px 0 10px;background:#d6b445"
+            :disabled="!previousVersion"
           >
             Povratak na prethodnu verziju
             <svg class="svg" viewBox="0 0 48 48" style="fill:white" height="25px" width="25px" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="previous"> <g id="previous_2"> <path id="Combined Shape" fill-rule="evenodd" clip-rule="evenodd" d="M28.9682 15.5438L39.257 8.52571C41.2485 7.16707 43.9486 8.59383 43.9486 11.0038V36.9158C43.9486 39.3272 41.249 40.7548 39.257 39.3958L20.2635 26.4382C18.5169 25.2492 18.5171 22.6726 20.2631 21.4817L26.9682 16.908V11.0064C26.9682 10.2023 26.0683 9.7271 25.4042 10.1802L6.43638 23.134C5.85532 23.5311 5.85532 24.3887 6.43618 24.7866L25.4038 37.7403C26.0683 38.1936 26.9682 37.7185 26.9682 36.9144V35.9744C26.9682 35.4221 27.4159 34.9744 27.9682 34.9744C28.5205 34.9744 28.9682 35.4221 28.9682 35.9744V36.9144C28.9682 39.3259 26.2685 40.7513 24.2762 39.3922L5.30706 26.4374C3.56509 25.2441 3.56509 22.6737 5.30824 21.4826L24.2766 8.52831C26.2685 7.16942 28.9682 8.59489 28.9682 11.0064V15.5438ZM26.9682 19.329V23.0024C26.9682 23.5547 27.4159 24.0024 27.9682 24.0024C28.5205 24.0024 28.9682 23.5547 28.9682 23.0024V17.9648L40.3841 10.1779C41.048 9.72496 41.9486 10.2009 41.9486 11.0038V36.9158C41.9486 37.7205 41.0482 38.1967 40.3842 37.7437L21.3892 24.785C20.8083 24.3898 20.8083 23.5308 21.3901 23.1339L26.9682 19.329Z" fill="white"></path> </g> </g> </g></svg>
@@ -287,6 +288,7 @@ export default {
       initialChat: '',
       showNewDialog: false,
       showPreviousDialog: false,
+      previousVersion: '',
     };
   },
   async created() {
@@ -294,6 +296,7 @@ export default {
     this.getDocuments();
     this.getIntents();
     this.getInitialChat();
+    this.checkForPreviousVersion();
     try {
       let res = await DataService.getThresholdsBySystemId(
         this.$route.query.system_id
@@ -566,8 +569,14 @@ export default {
       }
     },
 
+    async checkForPreviousVersion(){
+      let res = await DataService.checkForPreviousVersion(this.$route.query.system_id);
+      this.previousVersion = res.previous_version[0]
+    },
+
     async versioning(){
       try {
+          this.showNewDialog = false
           await DataService.versioningBySystemId(
             this.$route.query.system_id,
           );
@@ -584,7 +593,31 @@ export default {
             this.show = false;
           }, 4000);
         }
-    }
+        this.checkForPreviousVersion();
+    },
+
+    async goToPreviousVersion(){
+      try {
+          this.showPreviousDialog = false
+          await DataService.goToPreviousVersion(
+            this.$route.query.system_id,
+          );
+          this.show = true;
+          this.message = "Uspješan povratak na prethodnu verziju sustava";
+          setTimeout(() => {
+            this.show = false;
+          }, 4000);
+        } catch (error) {
+          this.show = true;
+          this.message =
+            "Pogreška prilikom povratka na prethodnu verziju sustava. Molim Vas pokušajte ponovno.";
+          setTimeout(() => {
+            this.show = false;
+          }, 4000);
+        }
+        this.checkForPreviousVersion();
+    },
+
   },
 };
 </script>
