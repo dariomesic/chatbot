@@ -143,6 +143,22 @@ export default {
   padding: calc(0.875rem - 3px) 63px calc(0.875rem - 3px) 15px;
   color: white;
 }
+
+.exit-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.75rem;
+  width: 3rem;
+  height: 3rem;
+  transition: all 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.exit-button:hover {
+  background: var(--hover__color);
+  transition: 0.2s;
+}
+
 /* ---------------------------------- */
 .fade-enter-active,
 .fade-leave-active {

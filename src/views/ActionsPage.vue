@@ -69,7 +69,7 @@
         <h3>{{ system_name }}</h3>
         <IntentList v-if="activeTab === 'Namjere'" />
         <ConversationsHistory v-if="activeTab === 'Razgovori'" />
-        <SettingsPage v-if="activeTab === 'Postavke'" />
+        <SettingsPage v-if="activeTab === 'Postavke'" :system_name="system_name"/>
         <DocumentsBase v-if="activeTab === 'Baza znanja'" />
         <AnalyticsPage v-if="activeTab === 'Analitika'" />
       </div>
