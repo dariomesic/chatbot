@@ -225,7 +225,7 @@
         :showDialog="showNewDialog"
         :rightButtonText="'Potvrda'"
         @close="showNewDialog = false"
-        @confirm-action="goLive"
+        @confirm-action="versioning"
       >
         <template #title>Verzioniranje</template>
         <template #text
@@ -234,7 +234,7 @@
           Sve promjene u ovom sustavu bit će dostupne korisnicima na stranicama <b>{{this.system_name}}</b>.
           <br />
           <br />
-          Napomena: Ovisno o broju promjena, ovaj postupak može potrajati.</template
+          <i>Napomena</i>: Ovisno o broju promjena, ovaj postupak može potrajati.</template
         >
       </action-dialog>
     </Teleport>
@@ -252,7 +252,7 @@
           Sve promjene u ovoj verziji bit će poništene te se nećete moći vratiti na novu verziju za sustav <b>{{this.system_name}}</b>.
           <br />
           <br />
-          Napomena: Ovisno o broju promjena, ovaj postupak može potrajati.</template
+          <i>Napomena</i>: Ovisno o broju promjena, ovaj postupak može potrajati.</template
         >
       </action-dialog>
     </Teleport>
@@ -564,6 +564,26 @@ export default {
           }, 4000);
         }
       }
+    },
+
+    async versioning(){
+      try {
+          await DataService.versioningBySystemId(
+            this.$route.query.system_id,
+          );
+          this.show = true;
+          this.message = "Kreirana nova verzija sustava.";
+          setTimeout(() => {
+            this.show = false;
+          }, 4000);
+        } catch (error) {
+          this.show = true;
+          this.message =
+            "Pogreška prilikom kreiranja nove verzije sustava. Molim Vas pokušajte ponovno.";
+          setTimeout(() => {
+            this.show = false;
+          }, 4000);
+        }
     }
   },
 };
