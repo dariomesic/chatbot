@@ -36,15 +36,6 @@
             <div class="captionBot msgCaption" data-user="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="3" y="11" width="18" height="10" rx="2"></rect> <circle cx="12" cy="5" r="2"></circle> <path d="M12 7v4"></path> <line x1="8" y1="16" x2="8" y2="16"></line> <line x1="16" y1="16" x2="16" y2="16"></line> </g></svg> <span style="margin-top:2px">Virtualni asistent</span></div>
             <div class="message"> <div class="bot-response text" text-first="true"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;" xml:space="preserve"> <rect x="0" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="10" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.2s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> <rect x="20" y="0" width="4" height="10" fill="rgb(155, 166, 178)"> <animateTransform attributeType="xml" attributeName="transform" type="translate" values="0 0; 0 20; 0 0" begin="0.4s" dur="0.6s" repeatCount="indefinite"> </animateTransform> </rect> </svg></div> </div>
           </section>
-          <!-- SVG icons for thumbs up and thumbs down -->
-          <div v-if="showFeedbackButtons" style="padding: 0 25px 0px;">
-            <button class="thumb" :disabled="selectedFeedbackButton" :style="selectedFeedbackButton === 'up' ? { transform: 'scale(1)', opacity: '1' } : {}" @click="handleFeedback(true)">
-              <svg style="padding:15px 5px;height:25px;width:25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 10C3 9.44772 3.44772 9 4 9H7V21H4C3.44772 21 3 20.5523 3 20V10Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M7 11V19L8.9923 20.3282C9.64937 20.7662 10.4214 21 11.2111 21H16.4586C17.9251 21 19.1767 19.9398 19.4178 18.4932L20.6119 11.3288C20.815 10.1097 19.875 9 18.6391 9H14" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14 9L14.6872 5.56415C14.8659 4.67057 14.3512 3.78375 13.4867 3.49558V3.49558C12.6336 3.21122 11.7013 3.59741 11.2992 4.4017L8 11H7" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-            </button>
-            <button class="thumb" :disabled="selectedFeedbackButton" :style="selectedFeedbackButton === 'down' ? { transform: 'scale(1)', opacity: '1' } : {}" @click="handleFeedback(false)">
-              <svg style="padding:15px 5px;height:25px;width:25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21 14C21 14.5523 20.5523 15 20 15H17V3H20C20.5523 3 21 3.44772 21 4V14Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M17 13V5L15.0077 3.6718C14.3506 3.23375 13.5786 3 12.7889 3H7.54138C6.07486 3 4.82329 4.06024 4.5822 5.5068L3.38813 12.6712C3.18496 13.8903 4.12504 15 5.36092 15H10" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M10 15L9.31283 18.4358C9.13411 19.3294 9.64876 20.2163 10.5133 20.5044V20.5044C11.3664 20.7888 12.2987 20.4026 12.7008 19.5983L16 13H17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-            </button>
-          </div>
         </div>
         <div class="BoxSentMSG " ref="messageBox">
             <textarea
@@ -79,8 +70,6 @@ export default{
       status_func_SendMsgBot: 0,
       showOptions: false, // Add this property to control input/option visibility
       chatbotOptions: '',
-      showFeedbackButtons: false,
-      selectedFeedbackButton: false,
       responseApi: {},
       minimized: false,
       intent_id: '',
@@ -138,17 +127,16 @@ export default{
           let response_tmp = await DataService.searchDocuments(event.target.getAttribute('data-question'), this.$route.query.system_id)
           if(Number(response_tmp.threshold) > Number(response_tmp.score) * 100){
             response = {
-              assistant_answer: `<div><p>Nismo pronašli niti jedan dokument koji odgovara Vašem pitanju. Molim Vas pokušajte ponovno.</p><div style="font-style:italic">${response_tmp.text}</div></div>`
+              assistant_answer: `<section><p>Nismo pronašli niti jedan dokument koji odgovara Vašem pitanju. Molim Vas pokušajte ponovno.</p><section style="font-style:italic">${response_tmp.text}</section></section>`
             };
           }
           else{
             response = {
-              assistant_answer: `<div><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4>${response_tmp.document_title}${response_tmp.document_page ? `(${response_tmp.document_page}.str)` : ''}</h4><div>...</div><div style="font-style:italic">${response_tmp.text}</div><div>...</div></div>`
+              assistant_answer: `<section><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4>${response_tmp.document_title}${response_tmp.document_page ? `(${response_tmp.document_page}.str)` : ''}</h4><section>...</section><section style="font-style:italic">${response_tmp.text}</section><section>...</section></section>`
             };
           }
           this.addBotMessage(response);
         }
-        await DataService.updateConversationTmp(this.sessionUUID, this.$route.query.system_id, Number(event.target.getAttribute('data-intent-id')), event.target.getAttribute('data-question'), event.target.getAttribute('data-threshold'), response)
         // Disable all options after the user makes a selection and change the style of the selected button
         const allOptions = document.querySelectorAll(`.bot-option[data-intent-id="${event.target.getAttribute('data-intent-id')}"]`);
         allOptions.forEach((optionElement) => {
@@ -192,6 +180,7 @@ export default{
             // Check the response type
             if (this.responseApi.response_type === 'Slobodni tekst') {
               if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
+                this.conditions[this.sessionUUID] = [];
                 let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
                 response.intent_id = this.responseApi.intent_id
                 this.selectedFeedbackButton = false;
@@ -238,6 +227,7 @@ export default{
                 var regEx = new RegExp(this.responseApi.customer_response.split(' ')[1]);
                 if (regEx.test(sanitizedInput)) {
                   if(this.responseApi.continuation === 'Vrati se na pod-akciju'){
+                    this.conditions[this.sessionUUID] = [];
                     let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
                     response.intent_id = this.responseApi.intent_id
                     this.selectedFeedbackButton = false;
@@ -370,6 +360,7 @@ export default{
       }
       else if(message.response_type === 'Regularni izraz' || message.response_type === 'Slobodni tekst'){console.log()}
       else if(message.continuation === 'Vrati se na pod-akciju'){
+        this.conditions[this.sessionUUID] = [];
         let response = await DataService.goToStep(this.responseApi.intent_id, this.responseApi.previous_response.id)
         response.intent_id = message.intent_id
         this.selectedFeedbackButton = false;
@@ -495,14 +486,6 @@ export default{
           chatContainer.scrollTop = chatContainer.scrollHeight;
         }
       });
-    },
-
-    async handleFeedback(value){
-      try {
-        value ? (await DataService.thumbsUp(this.sessionUUID, this.$route.query.system_id, this.intent_id),this.selectedFeedbackButton = 'up') : (await DataService.thumbsDown(this.sessionUUID, this.$route.query.system_id, this.intent_id),this.selectedFeedbackButton = 'down')
-      } catch (error) {
-        console.error(error);
-      }
     },
 
 
@@ -821,11 +804,6 @@ a {
     opacity: 1;
 }
 
-.thumb{
-  transform: scale(.85);
-  transition: all .2s ease-in-out;
-  opacity: .6;
-}
 
 .AvatarBot {
   display: grid;

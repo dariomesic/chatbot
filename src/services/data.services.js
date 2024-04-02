@@ -58,23 +58,6 @@ class DataService {
         return response.json();
     })
   }
-
-  updateConversationTmp(uuid, system_id, intent_id, question, threshold, response){
-    return fetch('http://18.194.27.183:8080/updateConversationTmp', {
-      method : "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({uuid: uuid, system_id: system_id, intent_id: intent_id, question: question, threshold: threshold, response: response})
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.error)
-        }
-        return response.json();
-    })
-  }
   
   getQuestionsForIntent(intent_id){
     return fetch('http://18.194.27.183:8080/getQuestionsForIntent?intent_id=' + intent_id, {
@@ -447,7 +430,7 @@ class DataService {
   }
 
   checkForPreviousVersion(system_id){
-    return fetch('http://18.194.27.183:8080/checkForPreviousVersion?system_id=' + system_id, {
+    return fetch('http://18.194.27.183:8081/checkForPreviousVersion?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -459,7 +442,7 @@ class DataService {
   }
 
   versioningBySystemId(system_id){
-    return fetch('http://18.194.27.183:8080/versioningBySystemId?system_id=' + system_id, {
+    return fetch('http://18.194.27.183:8081/versioningBySystemId?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -471,7 +454,7 @@ class DataService {
   }
 
   goToPreviousVersion(system_id){
-    return fetch('http://18.194.27.183:8080/goToPreviousVersion?system_id=' + system_id, {
+    return fetch('http://18.194.27.183:8081/goToPreviousVersion?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -532,30 +515,6 @@ class DataService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({conditions: conditions, intent_id: intent_id, id: id, uuid: uuid, systemID: systemID, answer: answer})
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.error)
-        }
-        return response.json();
-    })
-  }
-
-  thumbsUp(uuid, system_id, intent_id){
-    return fetch('http://18.194.27.183:8080/thumbsUp?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
-      method : "GET",
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.error)
-        }
-        return response.json();
-    })
-  }
-
-  thumbsDown(uuid, system_id, intent_id){
-    return fetch('http://18.194.27.183:8080/thumbsDown?uuid=' + uuid + '&intent_id=' + intent_id + '&system_id=' + system_id, {
-      method : "GET",
     })
     .then((response) => {
         if (!response.ok) {

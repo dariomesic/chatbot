@@ -337,7 +337,7 @@
 
   <!-- Grey background at the bottom with a chatbot -->
   <div class="bottom-section">
-    <section>
+    <section class="eu">
       <img src="../assets/eu.png" height="35" style="margin-right: 1rem" />
       <div class="chat" @click="showChatbot = !showChatbot">
         <transition name="fade" mode="out-in">
@@ -864,7 +864,7 @@ th:not(:first-child):not(:nth-child(6)):hover {
   z-index: 2;
 }
 
-.bottom-section section {
+.bottom-section .eu {
   z-index: 2;
   position: fixed;
   right: 1rem;
@@ -883,6 +883,34 @@ th:not(:first-child):not(:nth-child(6)):hover {
   align-items: center;
   cursor: pointer;
   bottom: 1rem;
+}
+
+/*popup message*/
+.card-header {
+  z-index: 2;
+  height: 20px;
+  vertical-align: middle;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  line-height: 20px;
+  padding: 15px;
+  color: white;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  min-width: 420px;
+  border-radius: 5px;
+  padding-right: 5rem;
+  box-shadow: 0 0 15px 5px #ccc;
+}
+
+.cross {
+  position: absolute;
+  top: 16px;
+  right: 15px;
+  font-size: 25px;
+  font-weight: 100;
+  cursor: pointer;
 }
 
 /* ---------------------------------- */

@@ -186,7 +186,7 @@
       <!-- LIVE TAB CONTENT -->
       <div v-if="activeTab === 'live'" class="tabcontent">
         <h3>Ažuriranje sustava</h3>
-        <div style="display:flex"><p style="font-style:italic">Posljednje ažuriranje sustava</p>: <p style="text-decoration:underline;margin-left:10px">7.siječnja 2024.</p></div>
+        <div style="display:flex"><p style="font-style:italic">Posljednje ažuriranje sustava</p>: <p style="text-decoration:underline;margin-left:10px">{{defaultVersion}}</p></div>
         <div style="display:flex;justify-content:space-between">
           <button
             @click="showNewDialog = true"
@@ -289,6 +289,7 @@ export default {
       showNewDialog: false,
       showPreviousDialog: false,
       previousVersion: '',
+      defaultVersion: '',
     };
   },
   async created() {
@@ -571,21 +572,25 @@ export default {
 
     async checkForPreviousVersion(){
       let res = await DataService.checkForPreviousVersion(this.$route.query.system_id);
-      this.previousVersion = res.previous_version[0]
+      this.previousVersion = res.previous_version
+      this.defaultVersion = res.default_version.split('t')[0].replaceAll('_', '/') + ", " + res.default_version.split('t')[1].substring(0, 8).replaceAll('_', ':')
     },
 
     async versioning(){
       try {
           this.showNewDialog = false
+          this.loading = true
           await DataService.versioningBySystemId(
             this.$route.query.system_id,
           );
           this.show = true;
           this.message = "Kreirana nova verzija sustava.";
+          this.loading = false
           setTimeout(() => {
             this.show = false;
           }, 4000);
         } catch (error) {
+          this.loading = false
           this.show = true;
           this.message =
             "Pogreška prilikom kreiranja nove verzije sustava. Molim Vas pokušajte ponovno.";
@@ -598,16 +603,19 @@ export default {
 
     async goToPreviousVersion(){
       try {
+          this.loading = true
           this.showPreviousDialog = false
           await DataService.goToPreviousVersion(
             this.$route.query.system_id,
           );
           this.show = true;
           this.message = "Uspješan povratak na prethodnu verziju sustava";
+          this.loading = false
           setTimeout(() => {
             this.show = false;
           }, 4000);
         } catch (error) {
+          this.loading = false
           this.show = true;
           this.message =
             "Pogreška prilikom povratka na prethodnu verziju sustava. Molim Vas pokušajte ponovno.";

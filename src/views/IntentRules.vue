@@ -985,34 +985,6 @@ export default {
   background: #c8ebfb;
 }
 
-/*popup message*/
-.card-header {
-  z-index: 2;
-  height: 20px;
-  vertical-align: middle;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  line-height: 20px;
-  padding: 15px;
-  color: white;
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  min-width: 420px;
-  border-radius: 5px;
-  padding-right: 5rem;
-  box-shadow: 0 0 15px 5px #ccc;
-}
-
-.cross {
-  position: absolute;
-  top: 16px;
-  right: 15px;
-  font-size: 25px;
-  font-weight: 100;
-  cursor: pointer;
-}
-
 /* Left-to-right animation */
 .card-slide-enter-active {
   transition: transform 0.3s, opacity 0.6s ease-in;
