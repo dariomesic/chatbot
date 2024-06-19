@@ -105,7 +105,15 @@ export default{
     const chatContainer = this.$refs.chatContainer;
 
     chatContainer.addEventListener('click', async (event) => {
-      if (event.target.classList.contains('bot-option')) {
+      if (event.target && event.target.id === 'downloadLink') {
+        // Retrieve data from data attributes
+        const documentId = event.target.getAttribute('data-id');
+        const documentTitle = event.target.getAttribute('data-title');
+
+        // Call your method with appropriate arguments
+        this.downloadDocument(documentId, documentTitle);
+      }
+      else if (event.target.classList.contains('bot-option')) {
         let response;
         if(!(event.target.getAttribute('data-text') == 'PRETRAŽI BAZU ZNANJA' || event.target.getAttribute('data-text') == 'PREFORMULIRAT ĆU PITANJE')){
           this.addUserMessage(event.target.getAttribute('data-text'))
@@ -132,7 +140,7 @@ export default{
           }
           else{
             response = {
-              assistant_answer: `<section><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4>${response_tmp.document_title}${response_tmp.document_page ? `(${response_tmp.document_page}.str)` : ''}</h4><section>...</section><section style="font-style:italic">${response_tmp.text}</section><section>...</section></section>`
+              assistant_answer: `<section><p>U našoj bazi pronašli smo sljedeći dokument s najvećim podudaranjem:</p><h4 id="downloadLink" style="cursor:pointer" data-id=${response_tmp.document_id} data-title=${response_tmp.document_title.split('.')[1]}>${response_tmp.document_title}${response_tmp.document_page ? `(${response_tmp.document_page}.str)` : ''}</h4><section>...</section><section style="font-style:italic">${response_tmp.text}</section><section>...</section></section>`
             };
           }
           this.addBotMessage(response);
@@ -403,12 +411,9 @@ export default{
         dataUser: false,
       });
       let messageText = `<div class="bot-response text" text-first="true"> Molim Vas odaberite temu na koju biste htjeli odgovor <br> <div style="display:grid">`;
-      let counter = 0;
-      console.log(message.length)
       message.forEach((option) => {
-        counter++;
+        (option.intent_name == 'PRETRAŽI BAZU ZNANJA' || option.intent_name == 'PREFORMULIRAT ĆU PITANJE') ? messageText += "<p style='text-align:center'>ili</p>" : ''
         messageText += `<button class="bot-option" data-intent-id="${option.intent_id}" data-text="${option.intent_name}" data-question="${option.question}" data-threshold="${option.threshold}">${option.intent_name.toUpperCase()}</button>`;
-        (counter == 4 && message.length > 4) ? messageText += "<p style='text-align:center'>ili</p>" : ''
       });
       messageText += '</div></div><p class="time-text">' + new Date().toLocaleTimeString('en-US', { hour12: false }); + `</p>`
       this.messages.push({
@@ -619,6 +624,31 @@ export default{
       const textarea = this.$refs.textarea;
       textarea.style.height = 'auto';
       textarea.style.height = `${textarea.scrollHeight}px`;
+    },
+
+    async downloadDocument(documentId, filename) {
+      try {
+        this.loading = true
+        // Call your backend API to download the document by its ID
+        const response = await DataService.downloadDocument(documentId);
+        // Create a URL for the Blob
+        const url = window.URL.createObjectURL(response);
+        // Create a link element
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename); // Set the filename here
+        // Simulate clicking the link to trigger the download
+        document.body.appendChild(link);
+        link.click();
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        this.loading = false
+      } catch (error) {
+        console.error('Error downloading document:', error);
+        this.loading = false
+        // Handle error
+      }
     },
   },
 }

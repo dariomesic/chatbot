@@ -388,8 +388,8 @@ class DataService {
     })
   }
 
-  deleteDocument(id_doc){
-    return fetch('http://18.194.27.183:8080/deleteDocumentById?id_doc=' + id_doc, {
+  deleteDocument(id_doc, system_id){
+    return fetch('http://18.194.27.183:8080/deleteDocumentById?id_doc=' + id_doc + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -425,7 +425,19 @@ class DataService {
         if (!response.ok) {
             throw new Error(response.error)
         }
-        return response.json();
+        return response.blob();
+    })
+  }
+
+  downloadDocument(document_id){
+    return fetch('http://18.194.27.183:8080/downloadDocument?document_id=' + document_id, {
+      method : "GET",
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(response.error)
+        }
+        return response;
     })
   }
 

@@ -5,7 +5,8 @@
           <img src="../assets/grb.png" height="35" alt="Republika Hrvatska">
           <h2>
             <p>REPUBLIKA HRVATSKA</p>
-            <p style="margin-top:3px">Ministarstvo pravosuđa i uprave</p>
+            <p style="margin-top:3px">Ministarstvo pravosuđa, uprave i</p>
+            <p>digitalne transformacije</p>
           </h2>
         </a>
       </div>
@@ -29,8 +30,8 @@
 
 .navbar h2{
   text-align: left;
-  margin-left: 1rem;
+  margin-left: .5rem;
   font-weight: bolder;
-  font-size: .635rem;
+  font-size: .435rem;
 }
 </style>

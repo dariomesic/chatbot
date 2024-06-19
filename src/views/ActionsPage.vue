@@ -64,7 +64,7 @@
               ></path>
             </g>
           </svg>
-          <a>Virtualni asistenti za Ministarstvo pravosuđa i uprave</a>
+          <a>Virtualni asistenti za Ministarstvo pravosuđa, uprave i digitalne transformacije</a>
         </span>
         <h3>{{ system_name }}</h3>
         <IntentList v-if="activeTab === 'Namjere'" />
