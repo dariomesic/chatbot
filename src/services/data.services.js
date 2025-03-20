@@ -1,6 +1,6 @@
 class DataService {
   getSystems() {
-    return fetch('http://18.194.27.183:8080/getSystems', {
+    return fetch('http://3.70.45.159:8080/getSystems', {
       method: "GET",
     })
     .then((response) => {
@@ -12,7 +12,7 @@ class DataService {
   }
 
   getNameForSystem(system_id){
-    return fetch('http://18.194.27.183:8080/getNameForSystem?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getNameForSystem?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -24,7 +24,7 @@ class DataService {
   }
 
   getIntentsForSystem(system_id) {
-    return fetch('http://18.194.27.183:8080/getIntentsForSystem?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getIntentsForSystem?system_id=' + system_id, {
       method: "GET",
     })
     .then((response) => {
@@ -36,7 +36,7 @@ class DataService {
   }
 
   getNameForIntent(intent_id){
-    return fetch('http://18.194.27.183:8080/getNameForIntent?intent_id=' + intent_id, {
+    return fetch('http://3.70.45.159:8080/getNameForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -48,7 +48,7 @@ class DataService {
   }
 
   getConversationsForSystem(system_id){
-    return fetch('http://18.194.27.183:8080/getConversationsForSystem?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getConversationsForSystem?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -60,7 +60,7 @@ class DataService {
   }
   
   getQuestionsForIntent(intent_id){
-    return fetch('http://18.194.27.183:8080/getQuestionsForIntent?intent_id=' + intent_id, {
+    return fetch('http://3.70.45.159:8080/getQuestionsForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -72,7 +72,7 @@ class DataService {
   }
 
   getThresholdsBySystemId(system_id){
-    return fetch('http://18.194.27.183:8080/getThresholdsBySystemId?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getThresholdsBySystemId?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -84,7 +84,7 @@ class DataService {
   }
 
   updateThresholdsBySystemId(system_id, percentage_upper, percentage_lower){
-    return fetch('http://18.194.27.183:8080/updateThresholdsBySystemId?system_id=' + system_id + '&percentage_upper=' + percentage_upper + '&percentage_lower=' + percentage_lower, {
+    return fetch('http://3.70.45.159:8080/updateThresholdsBySystemId?system_id=' + system_id + '&percentage_upper=' + percentage_upper + '&percentage_lower=' + percentage_lower, {
       method : "GET",
     })
     .then((response) => {
@@ -96,7 +96,7 @@ class DataService {
   }
 
   postQuestion(question, intent_id, system_id){
-    return fetch('http://18.194.27.183:8080/postQuestion', {
+    return fetch('http://3.70.45.159:8080/postQuestion', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -113,7 +113,7 @@ class DataService {
   }
 
   deleteQuestion(question_id){
-    return fetch('http://18.194.27.183:8080/deleteQuestion?question_id=' + question_id, {
+    return fetch('http://3.70.45.159:8080/deleteQuestion?question_id=' + question_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -125,7 +125,7 @@ class DataService {
   }
 
   addIntentForSystem(system_id){
-    return fetch('http://18.194.27.183:8080/addIntentForSystem?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/addIntentForSystem?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -137,7 +137,7 @@ class DataService {
   }
 
   deleteIntent(intent_id, system_id){
-    return fetch('http://18.194.27.183:8080/deleteIntent?intent_id=' + intent_id + '&system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/deleteIntent?intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -149,7 +149,7 @@ class DataService {
   }
 
   updateIntent(new_intent, intent_id){
-    return fetch('http://18.194.27.183:8080/updateIntent', {
+    return fetch('http://3.70.45.159:8080/updateIntent', {
       method : "PUT",
       headers: {
         'Accept': 'application/json',
@@ -166,7 +166,7 @@ class DataService {
   }
 
   updateQuestion(new_question, question_id){
-    return fetch('http://18.194.27.183:8080/updateQuestion', {
+    return fetch('http://3.70.45.159:8080/updateQuestion', {
       method : "PUT",
       headers: {
         'Accept': 'application/json',
@@ -183,7 +183,7 @@ class DataService {
   }
 
   deleteQuestionsById(intent_id, system_id){
-    return fetch('http://18.194.27.183:8080/deleteQuestionsById?intent_id=' + intent_id + '&system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/deleteQuestionsById?intent_id=' + intent_id + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -195,7 +195,7 @@ class DataService {
   }
 
   addRuleForIntent(intent_id){
-    return fetch('http://18.194.27.183:8080/addRuleForIntent?intent_id=' + intent_id, {
+    return fetch('http://3.70.45.159:8080/addRuleForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -207,7 +207,7 @@ class DataService {
   }
 
   updateRule(new_step, intent_id){
-    return fetch('http://18.194.27.183:8080/updateStep', {
+    return fetch('http://3.70.45.159:8080/updateStep', {
       method : "PUT",
       headers: {
         'Accept': 'application/json',
@@ -224,7 +224,7 @@ class DataService {
   }
 
   deleteStep(intent_id){
-    return fetch('http://18.194.27.183:8080/deleteStep?intent_id=' + intent_id, {
+    return fetch('http://3.70.45.159:8080/deleteStep?intent_id=' + intent_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -236,7 +236,7 @@ class DataService {
   }
 
   getRulesForIntent(intent_id){
-    return fetch('http://18.194.27.183:8080/getRulesForIntent?intent_id=' + intent_id, {
+    return fetch('http://3.70.45.159:8080/getRulesForIntent?intent_id=' + intent_id, {
       method : "GET",
     })
     .then((response) => {
@@ -248,7 +248,7 @@ class DataService {
   }
 
   nextStep(response, conditions){
-    return fetch('http://18.194.27.183:8080/nextStep', {
+    return fetch('http://3.70.45.159:8080/nextStep', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -265,7 +265,7 @@ class DataService {
   }
 
   goToStep(intent_id,id){
-    return fetch('http://18.194.27.183:8080/goToStep?intent_id=' + intent_id + '&id=' + id, {
+    return fetch('http://3.70.45.159:8080/goToStep?intent_id=' + intent_id + '&id=' + id, {
       method : "GET",
     })
     .then((response) => {
@@ -277,7 +277,7 @@ class DataService {
   }
 
   getSynonyms(system_id){
-    return fetch('http://18.194.27.183:8080/getSynonyms?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getSynonyms?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -289,7 +289,7 @@ class DataService {
   }
 
   updateSynonyms(system_id, synonyms){
-    return fetch('http://18.194.27.183:8080/updateSynonyms', {
+    return fetch('http://3.70.45.159:8080/updateSynonyms', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -306,7 +306,7 @@ class DataService {
   }
 
   getInitialChat(system_id){
-    return fetch('http://18.194.27.183:8080/getInitialChat?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getInitialChat?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -318,7 +318,7 @@ class DataService {
   }
 
   saveInitial(text, system_id){
-    return fetch('http://18.194.27.183:8080/saveInitial', {
+    return fetch('http://3.70.45.159:8080/saveInitial', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -335,7 +335,7 @@ class DataService {
   }
 
   getThemes(system_id){
-    return fetch('http://18.194.27.183:8080/getThemes?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getThemes?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -347,7 +347,7 @@ class DataService {
   }
 
   updateThemes(system_id, intents){
-    return fetch('http://18.194.27.183:8080/updateThemes', {
+    return fetch('http://3.70.45.159:8080/updateThemes', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -364,7 +364,7 @@ class DataService {
   }
 
   uploadDocument(formData){
-    return fetch('http://18.194.27.183:8080/uploadDocument', {
+    return fetch('http://3.70.45.159:8080/uploadDocument', {
       method : "POST",
       body: formData
     })
@@ -377,7 +377,7 @@ class DataService {
   }
 
   getDocumentsBySystemId(system_id){
-    return fetch('http://18.194.27.183:8080/getDocumentsBySystemId?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/getDocumentsBySystemId?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -389,7 +389,7 @@ class DataService {
   }
 
   deleteDocument(id_doc, system_id){
-    return fetch('http://18.194.27.183:8080/deleteDocumentById?id_doc=' + id_doc + '&system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/deleteDocumentById?id_doc=' + id_doc + '&system_id=' + system_id, {
       method : "DELETE",
     })
     .then((response) => {
@@ -401,7 +401,7 @@ class DataService {
   }
 
   searchDocuments(text, systemID){
-    return fetch('http://18.194.27.183:8080/searchDocuments', {
+    return fetch('http://3.70.45.159:8080/searchDocuments', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -418,7 +418,7 @@ class DataService {
   }
 
   saveDocumentThreshold(system_id, threshold){
-    return fetch('http://18.194.27.183:8080/saveDocumentThreshold?system_id=' + system_id + '&threshold=' + threshold, {
+    return fetch('http://3.70.45.159:8080/saveDocumentThreshold?system_id=' + system_id + '&threshold=' + threshold, {
       method : "GET",
     })
     .then((response) => {
@@ -430,7 +430,7 @@ class DataService {
   }
 
   downloadDocument(document_id){
-    return fetch('http://18.194.27.183:8080/downloadDocument?document_id=' + document_id, {
+    return fetch('http://3.70.45.159:8080/downloadDocument?document_id=' + document_id, {
       method : "GET",
     })
     .then((response) => {
@@ -442,7 +442,7 @@ class DataService {
   }
 
   checkForPreviousVersion(system_id){
-    return fetch('http://18.194.27.183:8081/checkForPreviousVersion?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8081/checkForPreviousVersion?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -454,7 +454,7 @@ class DataService {
   }
 
   versioningBySystemId(system_id){
-    return fetch('http://18.194.27.183:8081/versioningBySystemId?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8081/versioningBySystemId?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -466,7 +466,7 @@ class DataService {
   }
 
   goToPreviousVersion(system_id){
-    return fetch('http://18.194.27.183:8081/goToPreviousVersion?system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8081/goToPreviousVersion?system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -480,7 +480,7 @@ class DataService {
 
 
   sendQuestions(questions, intent_id, questions_len){
-    return fetch('http://18.194.27.183:8080/sendQuestions', {
+    return fetch('http://3.70.45.159:8080/sendQuestions', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -491,7 +491,7 @@ class DataService {
   }
 
   reloadQuestions(system_id){
-    return fetch('http://18.194.27.183:8080/reloadQuestions?&system_id=' + system_id, {
+    return fetch('http://3.70.45.159:8080/reloadQuestions?&system_id=' + system_id, {
       method : "GET",
     })
     .then((response) => {
@@ -503,7 +503,7 @@ class DataService {
   }
 
   sendMessage(question, systemID, uuid){
-    return fetch('http://18.194.27.183:8080/chatbotSentMessage', {
+    return fetch('http://3.70.45.159:8080/chatbotSentMessage', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -520,7 +520,7 @@ class DataService {
   }
 
   userResponse(conditions, intent_id, id, uuid, systemID, answer){
-    return fetch('http://18.194.27.183:8080/chatbotUserResponse', {
+    return fetch('http://3.70.45.159:8080/chatbotUserResponse', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
@@ -537,7 +537,7 @@ class DataService {
   }
 
   sendMail(response, session_id, data, conditions, system_id){
-    return fetch('http://18.194.27.183:8080/sendMail', {
+    return fetch('http://3.70.45.159:8080/sendMail', {
       method : "POST",
       headers: {
         'Accept': 'application/json',
