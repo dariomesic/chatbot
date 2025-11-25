@@ -297,7 +297,7 @@ export default {
     this.getDocuments();
     this.getIntents();
     this.getInitialChat();
-    this.checkForPreviousVersion();
+    //this.checkForPreviousVersion();
     try {
       let res = await DataService.getThresholdsBySystemId(
         this.$route.query.system_id

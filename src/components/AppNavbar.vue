@@ -5,7 +5,7 @@
           <img src="../assets/grb.png" height="35" alt="Republika Hrvatska">
           <h2>
             <p>REPUBLIKA HRVATSKA</p>
-            <p style="margin-top:3px">Ministarstvo pravosuđa, uprave i</p>
+            <p style="margin-top:3px">Ministarstvo pravosuđa, uprave i digitalne transformacije i</p>
             <p>digitalne transformacije</p>
           </h2>
         </a>

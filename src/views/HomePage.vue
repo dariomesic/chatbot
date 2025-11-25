@@ -2,7 +2,7 @@
   <div>
     <Navbar />
     <div class="actions">
-      <h3>Virtualni asistenti za Ministarstvo pravosuđa, uprave i digitalne transformacije</h3>
+      <h3>Virtualni asistenti za Ministarstvo pravosuđa, uprave i digitalne transformacije i digitalne transformacije</h3>
       <table>
         <thead>
           <tr>
